@@ -21,8 +21,8 @@ production (phase 3).
 
 | Application | URL |
 | --- | --- |
-| Frontend (Vercel) | _à compléter après déploiement — voir [Déploiement](#déploiement)_ |
-| API (Render) | _à compléter après déploiement — voir [Déploiement](#déploiement)_ |
+| Frontend (Vercel) | https://sunuprix.vercel.app |
+| API (Render) | https://sunuprix-api.onrender.com |
 
 ## Sommaire
 
@@ -322,16 +322,23 @@ Vercel sur `frontend`, les commandes `cd .. && npm install` et
 `cd .. && npm run build:frontend` remontent au dépôt pour construire d'abord
 `@sunuprix/shared`, puis le frontend, exactement comme en local.
 
-Variable d'environnement à renseigner dans Vercel :
+Variable d'environnement à renseigner dans Vercel (Project Settings →
+Environment Variables — Vercel n'a pas d'étape de build capable de la lire
+automatiquement, elle doit être saisie manuellement puis suivie d'un
+redéploiement) :
 
 | Variable | Valeur en production |
 | --- | --- |
 | `NEXT_PUBLIC_API_URL` | URL du backend déployé sur Render (ex : `https://sunuprix-api.onrender.com`, **sans** slash final) |
 
-Une fois les deux services déployés, mettre à jour `CORS_ORIGIN` sur Render
-avec le domaine Vercel définitif, et `NEXT_PUBLIC_API_URL` sur Vercel avec
-l'URL Render définitive — les deux plateformes redéploient automatiquement
-au changement de variable d'environnement.
+Une fois les deux services déployés, `CORS_ORIGIN` sur Render doit
+correspondre exactement au domaine Vercel définitif, et
+`NEXT_PUBLIC_API_URL` sur Vercel à l'URL Render définitive. Contrairement à
+Render (qui redéploie automatiquement dès qu'une variable d'environnement
+change), Vercel exige de déclencher manuellement un nouveau déploiement
+après avoir modifié une variable pour qu'elle soit prise en compte (elle est
+injectée au moment du build, pas à l'exécution, pour les variables
+`NEXT_PUBLIC_*`).
 
 Le cookie de session JWT est explicitement configuré pour fonctionner entre
 les deux domaines distincts (`sameSite: "none"` et `secure: true` en
@@ -482,7 +489,17 @@ DEMO.md                     Scénario de démonstration pour la soutenance
   environnement avec accès réseau standard (poste de développement, CI,
   Render), `npm run prisma:generate`, `npm run build` et `npm run seed`
   fonctionnent normalement — c'est une contrainte de l'environnement de
-  préparation, pas une limitation du code.
+  préparation, pas une limitation du code. Confirmation : le déploiement réel
+  sur Render (voir ci-dessous) a exécuté `prisma generate` avec un accès
+  réseau complet et a immédiatement détecté un vrai défaut de typage
+  (`chatbot.service.ts`, cast direct d'un champ `Json` Prisma) invisible dans
+  l'environnement de préparation faute de client généré — corrigé
+  (`as unknown as MessageConversation[]`), puis déploiement réussi.
+- **Déploiement réel vérifié en production** : backend en ligne sur Render
+  (`GET /api/health` → `{"statut":"ok","baseDeDonnees":"ok"}`, confirmant la
+  connexion à la base Neon pooled), frontend en ligne sur Vercel (page
+  d'accueil chargée avec succès), base Neon migrée (10 tables) et peuplée
+  (5 régions, 12 produits, 5 comptes de démonstration, 720 relevés de prix).
 - Sécurité des dépendances : `npm audit` ne signale plus aucune vulnérabilité
   côté `bcrypt`/`tar` (mis à jour vers bcrypt 6). Next.js 14.2.35 (dernier
   correctif de la branche 14 demandée) reste concerné par des avis de
