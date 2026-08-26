@@ -1,0 +1,31 @@
+{
+  "name": "sunuprix",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SunuPrix — plateforme multi-rôles de suivi et de prédiction des prix au Sénégal (projet de fin de formation, données fictives).",
+  "workspaces": [
+    "packages/shared",
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "build:shared": "npm run build -w @sunuprix/shared",
+    "build:backend": "npm run build:shared && npm run build -w @sunuprix/backend",
+    "build:frontend": "npm run build:shared && npm run build -w @sunuprix/frontend",
+    "build": "npm run build:shared && npm run build -w @sunuprix/backend && npm run build -w @sunuprix/frontend",
+    "dev:backend": "npm run build:shared && npm run dev -w @sunuprix/backend",
+    "dev:frontend": "npm run build:shared && npm run dev -w @sunuprix/frontend",
+    "dev": "npm run build:shared && concurrently -k -n backend,frontend -c green,yellow \"npm run dev -w @sunuprix/backend\" \"npm run dev -w @sunuprix/frontend\"",
+    "prisma:generate": "npm run prisma:generate -w @sunuprix/backend",
+    "prisma:migrate": "npm run prisma:migrate -w @sunuprix/backend",
+    "seed": "npm run build:shared && npm run seed -w @sunuprix/backend",
+    "render-build": "npm run build:shared && npm run prisma:generate -w @sunuprix/backend && npm run build -w @sunuprix/backend",
+    "render-start": "npm run prisma:deploy -w @sunuprix/backend && npm run start -w @sunuprix/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>SunuPrix — icône maskable (PWA Android)</title>
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#FBF9F3" />
+      <stop offset="100%" stop-color="#EFE8D6" />
+    </radialGradient>
+  </defs>
+
+  <!-- Carte arrondie vert très foncé (fond d'icône mobile) -->
+  <rect x="0" y="0" width="512" height="512" fill="#0B2E24" />
+
+  <g transform="translate(256,256) scale(0.72) translate(-256,-256)">
+    <!-- Anneau extérieur doré -->
+    <circle cx="256" cy="256" r="246" fill="#0B4A3B" />
+    <circle cx="256" cy="256" r="246" fill="none" stroke="#EF9F27" stroke-width="10" />
+    <circle cx="256" cy="256" r="228" fill="none" stroke="#F7D48A" stroke-width="2" opacity="0.6" />
+
+    <!-- Fond vert foncé du badge -->
+    <circle cx="256" cy="256" r="222" fill="#0F6E56" />
+
+    <!-- Halo crème derrière l'arbre -->
+    <circle cx="256" cy="222" r="168" fill="url(#halo)" />
+    <circle cx="256" cy="222" r="168" fill="none" stroke="#EF9F27" stroke-width="3" opacity="0.5" />
+
+    <!-- ============ ARBRE BAS-POLY (baobab géométrique) ============ -->
+    <g>
+      <path d="M 212 350
+               C 216 318, 224 278, 234 244
+               L 278 244
+               C 288 278, 296 318, 300 350
+               Z"
+            fill="#0F6E56" stroke="#EF9F27" stroke-width="3.5" stroke-linejoin="round" />
+      <line x1="256" y1="244" x2="256" y2="349" stroke="#EF9F27" stroke-width="1.6" opacity="0.85" />
+      <path d="M 249 246 L 244 348 L 250 348 L 254 246 Z" fill="#0B4A3B" opacity="0.5" />
+
+      <polygon
+        fill="#0F6E56" stroke="#EF9F27" stroke-width="3.4" stroke-linejoin="round"
+        points="256,64 300,72 338,98 362,140 366,184 344,218 300,236 256,242 212,236 168,218 146,184 150,140 174,98 212,72"
+      />
+
+      <g fill="none" stroke="#EF9F27" stroke-width="1.5" opacity="0.85">
+        <line x1="256" y1="120" x2="256" y2="64" />
+        <line x1="256" y1="120" x2="300" y2="72" />
+        <line x1="256" y1="120" x2="338" y2="98" />
+        <line x1="256" y1="120" x2="212" y2="72" />
+        <line x1="256" y1="120" x2="174" y2="98" />
+        <line x1="256" y1="120" x2="256" y2="196" />
+        <line x1="312" y1="182" x2="338" y2="98" />
+        <line x1="312" y1="182" x2="362" y2="140" />
+        <line x1="312" y1="182" x2="366" y2="184" />
+        <line x1="312" y1="182" x2="344" y2="218" />
+        <line x1="312" y1="182" x2="300" y2="236" />
+        <line x1="312" y1="182" x2="256" y2="196" />
+        <line x1="200" y1="182" x2="174" y2="98" />
+        <line x1="200" y1="182" x2="146" y2="140" />
+        <line x1="200" y1="182" x2="150" y2="184" />
+        <line x1="200" y1="182" x2="168" y2="218" />
+        <line x1="200" y1="182" x2="212" y2="236" />
+        <line x1="200" y1="182" x2="256" y2="196" />
+        <line x1="256" y1="196" x2="256" y2="242" />
+        <line x1="212" y1="236" x2="256" y2="242" />
+        <line x1="300" y1="236" x2="256" y2="242" />
+      </g>
+
+      <g fill="#0B4A3B" opacity="0.45" stroke="none">
+        <polygon points="200,182 168,218 212,236 256,196" />
+        <polygon points="146,140 150,184 200,182 174,98" />
+        <polygon points="256,120 256,196 200,182 174,98" />
+      </g>
+      <g fill="#1D8A6C" opacity="0.35" stroke="none">
+        <polygon points="256,120 338,98 312,182 256,196" />
+        <polygon points="338,98 362,140 366,184 312,182" />
+      </g>
+    </g>
+
+    <!-- ============ FLÈCHE / CHEVRONS DE CROISSANCE ============ -->
+    <g>
+      <path d="M 160 388 L 256 322 L 352 388 L 352 364 L 256 298 L 160 364 Z" fill="#EF9F27" />
+      <path d="M 172 414 L 256 354 L 340 414 L 340 390 L 256 330 L 172 390 Z" fill="#F7F5EF" />
+      <path d="M 184 440 L 256 386 L 328 440 L 328 416 L 256 362 L 184 416 Z" fill="#EF9F27" />
+
+      <g fill="#F7F5EF" opacity="0.9">
+        <polygon points="134,432 146,432 140,444" />
+        <polygon points="154,440 166,440 160,452" />
+        <polygon points="346,432 358,432 352,444" />
+        <polygon points="366,440 378,440 372,452" />
+      </g>
+      <g fill="#EF9F27" opacity="0.9">
+        <polygon points="118,440 130,440 124,452" />
+        <polygon points="382,440 394,440 388,452" />
+      </g>
+    </g>
+  </g>
+</svg>

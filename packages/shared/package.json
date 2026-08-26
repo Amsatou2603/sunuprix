@@ -1,0 +1,16 @@
+{
+  "name": "@sunuprix/shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Constantes et types partagés entre le backend et le frontend de SunuPrix (rôles, régions, produits). Source unique de vérité — ne jamais dupliquer ces listes ailleurs.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "rimraf": "^6.0.1"
+  }
+}

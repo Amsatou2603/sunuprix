@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+body {
+  @apply bg-surface text-header antialiased;
+}
+
+/* Composants réutilisables au-dessus des utilitaires Tailwind pour éviter la
+   duplication de classes répétées sur les cartes / boutons à travers les pages. */
+@layer components {
+  .carte {
+    @apply rounded-xl2 border border-black/5 bg-white p-6 shadow-card;
+  }
+
+  .bouton-primaire {
+    @apply inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .bouton-secondaire {
+    @apply inline-flex items-center justify-center rounded-lg border border-primary/20 bg-white px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary/30;
+  }
+
+  .champ-formulaire {
+    @apply w-full rounded-lg border border-black/10 bg-white px-3.5 py-2.5 text-sm text-header placeholder:text-header/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+  }
+
+  .etiquette-champ {
+    @apply mb-1.5 block text-sm font-medium text-header/80;
+  }
+
+  .badge-hausse {
+    @apply inline-flex items-center rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-semibold text-accent-dark;
+  }
+
+  .badge-baisse {
+    @apply inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-700;
+  }
+}

@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: sunuprix-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    rootDir: .
+    # --include=dev est indispensable : NODE_ENV=production (défini ci-dessous)
+    # ferait sinon ignorer les devDependencies par npm install, alors que
+    # `prisma`, `typescript` et `tsx` (nécessaires à la compilation et à
+    # `prisma generate`) sont déclarés en devDependencies du backend.
+    buildCommand: npm install --include=dev && npm run render-build
+    startCommand: npm run render-start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: BCRYPT_SALT_ROUNDS
+        value: "10"
+      - key: CORS_ORIGIN
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash

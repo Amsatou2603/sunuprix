@@ -1,0 +1,228 @@
+// SunuPrix — schéma de données (Prisma / PostgreSQL)
+//
+// Ce fichier est la source de vérité du modèle de données. Les listes fermées
+// "régions" et "produits" ne sont PAS des enums Prisma (elles sont peuplées en
+// lignes par le script de seed à partir de `@sunuprix/shared`) afin de rester
+// gérables depuis l'espace Administrateur sans migration de schéma.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --------------------------------------------------------------------------
+// Enums
+// --------------------------------------------------------------------------
+
+/// Rôle applicatif d'un utilisateur. Reflète exactement `ROLES` défini dans
+/// packages/shared/src/roles.ts — toute modification doit être faite aux deux
+/// endroits en même temps.
+enum RoleUtilisateur {
+  ADMIN
+  CHERCHEUR
+  MINISTERE
+  VENDEUR
+  CONSOMMATEUR
+}
+
+/// Origine d'un relevé de prix.
+enum SourcePrix {
+  SYSTEME
+  VENDEUR
+}
+
+/// Statut de modération d'un relevé de prix déclaré par un vendeur.
+enum StatutPrix {
+  VALIDE
+  EN_ATTENTE
+  REJETE
+}
+
+/// Niveau de sévérité d'une alerte de variation de prix.
+enum SeveriteAlerte {
+  INFO
+  ATTENTION
+  CRITIQUE
+}
+
+/// Rôle de l'émetteur d'un message dans une conversation de chatbot.
+enum RoleMessage {
+  UTILISATEUR
+  ASSISTANT
+}
+
+// --------------------------------------------------------------------------
+// Modèles
+// --------------------------------------------------------------------------
+
+model Utilisateur {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  motDePasseHash String
+  nom            String
+  role           RoleUtilisateur
+  actif          Boolean         @default(true)
+  creeLe         DateTime        @default(now())
+  misAJourLe     DateTime        @updatedAt
+
+  relevesDePrix       RelevePrix[]           @relation("VendeurReleves")
+  relevesModeres      RelevePrix[]           @relation("ModerateurReleves")
+  alertes             Alerte[]
+  notifications       Notification[]
+  annonces            Annonce[]
+  conversationsChatbot ConversationChatbot[]
+  configurationsSeuilsModifiees ConfigurationSeuils[]
+
+  @@index([role])
+  @@map("utilisateurs")
+}
+
+model Region {
+  id   String @id @default(cuid())
+  nom  String @unique
+
+  relevesDePrix RelevePrix[]
+  predictions   Prediction[]
+  alertes       Alerte[]
+
+  @@map("regions")
+}
+
+model Produit {
+  id           String @id @default(cuid())
+  nom          String @unique
+  unite        String
+  prixBaseFcfa Float
+
+  relevesDePrix RelevePrix[]
+  predictions   Prediction[]
+  alertes       Alerte[]
+
+  @@map("produits")
+}
+
+/// Un relevé de prix, qu'il soit généré par le système (historique de seed /
+/// import) ou déclaré par un vendeur (et alors soumis à modération).
+model RelevePrix {
+  id          String     @id @default(cuid())
+  produit     Produit    @relation(fields: [produitId], references: [id], onDelete: Cascade)
+  produitId   String
+  region      Region     @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  regionId    String
+  prixFcfa    Float
+  source      SourcePrix
+  statut      StatutPrix @default(VALIDE)
+  dateReleve  DateTime
+
+  // Renseigné uniquement lorsque source = VENDEUR.
+  vendeur      Utilisateur? @relation("VendeurReleves", fields: [vendeurId], references: [id], onDelete: SetNull)
+  vendeurId    String?
+
+  // Renseigné lorsqu'un administrateur a validé ou rejeté la déclaration.
+  moderateur   Utilisateur? @relation("ModerateurReleves", fields: [moderateurId], references: [id], onDelete: SetNull)
+  moderateurId String?
+  modereLe     DateTime?
+
+  creeLe DateTime @default(now())
+
+  @@index([produitId, regionId, dateReleve])
+  @@index([statut])
+  @@map("releves_de_prix")
+}
+
+/// Résultat persisté du moteur de prédiction (branché en phase 2).
+model Prediction {
+  id               String   @id @default(cuid())
+  produit          Produit  @relation(fields: [produitId], references: [id], onDelete: Cascade)
+  produitId        String
+  region           Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  regionId         String
+  dateCible        DateTime
+  prixPredit       Float
+  margeErreurFcfa  Float?
+  methode          String
+  genereLe         DateTime @default(now())
+
+  // Une seule prédiction "courante" par (produit, région, date cible) : le
+  // recalcul met à jour la ligne existante (upsert) plutôt que d'empiler des
+  // doublons à chaque appel de l'endpoint de prédiction.
+  @@unique([produitId, regionId, dateCible])
+  @@map("predictions")
+}
+
+/// Alerte de variation de prix (déclenchée par le service de seuils, phase 2).
+model Alerte {
+  id              String          @id @default(cuid())
+  utilisateur     Utilisateur     @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  utilisateurId   String
+  produit         Produit?        @relation(fields: [produitId], references: [id], onDelete: SetNull)
+  produitId       String?
+  region          Region?         @relation(fields: [regionId], references: [id], onDelete: SetNull)
+  regionId        String?
+  seuilPourcent   Float
+  severite        SeveriteAlerte  @default(INFO)
+  active          Boolean         @default(true)
+  creeLe          DateTime        @default(now())
+
+  @@index([utilisateurId])
+  @@map("alertes")
+}
+
+/// Notification personnelle (générée par le système d'alertes, phase 2).
+model Notification {
+  id            String      @id @default(cuid())
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  utilisateurId String
+  titre         String
+  message       String
+  lue           Boolean     @default(false)
+  creeLe        DateTime    @default(now())
+
+  @@index([utilisateurId, lue])
+  @@map("notifications")
+}
+
+/// Annonce officielle publiée par le Ministère, visible par tous les rôles.
+model Annonce {
+  id         String      @id @default(cuid())
+  auteur     Utilisateur @relation(fields: [auteurId], references: [id], onDelete: Cascade)
+  auteurId   String
+  titre      String
+  contenu    String
+  publieeLe  DateTime    @default(now())
+
+  @@map("annonces")
+}
+
+/// Seuils par défaut du système d'alerte, configurables par un administrateur
+/// (endpoint /api/admin/seuils). Ligne singleton : une seule configuration
+/// active à la fois, lue avec `findFirst` et créée paresseusement si absente.
+model ConfigurationSeuils {
+  id                     String   @id @default(cuid())
+  seuilAttentionPourcent Float
+  seuilCritiquePourcent  Float
+  misAJourLe             DateTime @updatedAt
+
+  misAJourPar   Utilisateur? @relation(fields: [misAJourParId], references: [id], onDelete: SetNull)
+  misAJourParId String?
+
+  @@map("configuration_seuils")
+}
+
+/// Une conversation avec le chatbot (branché en phase 2) ; les messages sont
+/// stockés en JSON pour rester simples pour une démonstration pédagogique.
+model ConversationChatbot {
+  id            String      @id @default(cuid())
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  utilisateurId String
+  messages      Json        @default("[]")
+  creeLe        DateTime    @default(now())
+  misAJourLe    DateTime    @updatedAt
+
+  @@index([utilisateurId])
+  @@map("conversations_chatbot")
+}
