@@ -106,7 +106,9 @@ export async function envoyerMessage(
     if (!conversation) {
       throw ApiError.introuvable("Conversation introuvable.");
     }
-    const messagesExistants = Array.isArray(conversation.messages) ? (conversation.messages as MessageConversation[]) : [];
+    const messagesExistants = Array.isArray(conversation.messages)
+      ? (conversation.messages as unknown as MessageConversation[])
+      : [];
     const misAJour = await chatbotRepository.ajouterMessages(conversationId, [
       ...messagesExistants,
       messageUtilisateur,
