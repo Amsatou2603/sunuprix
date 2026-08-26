@@ -1,78 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
-  <title>SunuPrix — logo (badge + nom)</title>
+  <title>SunuPrix — Logo Officiel (Badge + Typographie)</title>
   <defs>
-    <radialGradient id="haloLockup" cx="50%" cy="40%" r="65%">
-      <stop offset="0%" stop-color="#FBF9F3" />
-      <stop offset="100%" stop-color="#EFE8D6" />
+    <linearGradient id="goldGradL" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3CD" />
+      <stop offset="35%" stop-color="#E5C158" />
+      <stop offset="70%" stop-color="#B8860B" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+    <radialGradient id="creamBgL" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FBF9F4" />
+      <stop offset="70%" stop-color="#F3ECE0" />
+      <stop offset="100%" stop-color="#E5DAC9" />
     </radialGradient>
+    <linearGradient id="emeraldGradL" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#115A46" />
+      <stop offset="100%" stop-color="#073327" />
+    </linearGradient>
+    <pattern id="arrowPatternL" width="30" height="30" patternUnits="userSpaceOnUse" patternTransform="rotate(25)">
+      <rect width="30" height="30" fill="#073327" />
+      <path d="M0 15 L15 0 L30 15 L15 30 Z" fill="none" stroke="#E5C158" stroke-width="2" />
+      <circle cx="15" cy="15" r="2.5" fill="#E5C158" />
+    </pattern>
   </defs>
 
-  <g transform="translate(4,4) scale(0.176)">
-    <circle cx="256" cy="256" r="246" fill="#0B4A3B" />
-    <circle cx="256" cy="256" r="246" fill="none" stroke="#EF9F27" stroke-width="10" />
-    <circle cx="256" cy="256" r="228" fill="none" stroke="#F7D48A" stroke-width="2" opacity="0.6" />
-    <circle cx="256" cy="256" r="222" fill="#0F6E56" />
-    <circle cx="256" cy="222" r="168" fill="url(#haloLockup)" />
-    <circle cx="256" cy="222" r="168" fill="none" stroke="#EF9F27" stroke-width="3" opacity="0.5" />
+  <g transform="translate(6, 6) scale(0.172)">
+    <circle cx="256" cy="256" r="248" fill="#062920" />
+    <circle cx="256" cy="256" r="244" fill="none" stroke="url(#goldGradL)" stroke-width="14" />
+    <circle cx="256" cy="256" r="226" fill="url(#creamBgL)" />
 
-    <path d="M 212 350 C 216 318, 224 278, 234 244 L 278 244 C 288 278, 296 318, 300 350 Z"
-          fill="#0F6E56" stroke="#EF9F27" stroke-width="3.5" stroke-linejoin="round" />
-    <line x1="256" y1="244" x2="256" y2="349" stroke="#EF9F27" stroke-width="1.6" opacity="0.85" />
-    <path d="M 249 246 L 244 348 L 250 348 L 254 246 Z" fill="#0B4A3B" opacity="0.5" />
-
-    <polygon fill="#0F6E56" stroke="#EF9F27" stroke-width="3.4" stroke-linejoin="round"
-      points="256,64 300,72 338,98 362,140 366,184 344,218 300,236 256,242 212,236 168,218 146,184 150,140 174,98 212,72" />
-
-    <g fill="none" stroke="#EF9F27" stroke-width="1.5" opacity="0.85">
-      <line x1="256" y1="120" x2="256" y2="64" />
-      <line x1="256" y1="120" x2="300" y2="72" />
-      <line x1="256" y1="120" x2="338" y2="98" />
-      <line x1="256" y1="120" x2="212" y2="72" />
-      <line x1="256" y1="120" x2="174" y2="98" />
-      <line x1="256" y1="120" x2="256" y2="196" />
-      <line x1="312" y1="182" x2="338" y2="98" />
-      <line x1="312" y1="182" x2="362" y2="140" />
-      <line x1="312" y1="182" x2="366" y2="184" />
-      <line x1="312" y1="182" x2="344" y2="218" />
-      <line x1="312" y1="182" x2="300" y2="236" />
-      <line x1="312" y1="182" x2="256" y2="196" />
-      <line x1="200" y1="182" x2="174" y2="98" />
-      <line x1="200" y1="182" x2="146" y2="140" />
-      <line x1="200" y1="182" x2="150" y2="184" />
-      <line x1="200" y1="182" x2="168" y2="218" />
-      <line x1="200" y1="182" x2="212" y2="236" />
-      <line x1="200" y1="182" x2="256" y2="196" />
-      <line x1="256" y1="196" x2="256" y2="242" />
-      <line x1="212" y1="236" x2="256" y2="242" />
-      <line x1="300" y1="236" x2="256" y2="242" />
-    </g>
-    <g fill="#0B4A3B" opacity="0.45" stroke="none">
-      <polygon points="200,182 168,218 212,236 256,196" />
-      <polygon points="146,140 150,184 200,182 174,98" />
-      <polygon points="256,120 256,196 200,182 174,98" />
-    </g>
-    <g fill="#1D8A6C" opacity="0.35" stroke="none">
-      <polygon points="256,120 338,98 312,182 256,196" />
-      <polygon points="338,98 362,140 366,184 312,182" />
+    <!-- Baobab -->
+    <path d="M 204 390 C 212 330, 222 280, 234 220 L 278 220 C 290 280, 300 330, 308 390 Z" fill="url(#emeraldGradL)" stroke="url(#goldGradL)" stroke-width="4.5" />
+    <polygon points="256,40 310,50 360,82 390,130 394,185 365,225 315,245 256,252 197,245 147,225 118,185 122,130 152,82 202,50" fill="url(#emeraldGradL)" stroke="url(#goldGradL)" stroke-width="4.5" />
+    
+    <g fill="none" stroke="url(#goldGradL)" stroke-width="2.5">
+      <line x1="256" y1="40" x2="256" y2="115" />
+      <line x1="310" y1="50" x2="256" y2="115" />
+      <line x1="360" y1="82" x2="256" y2="115" />
+      <line x1="202" y1="50" x2="256" y2="115" />
+      <line x1="152" y1="82" x2="256" y2="115" />
+      <line x1="256" y1="115" x2="325" y2="135" />
+      <line x1="256" y1="115" x2="187" y2="135" />
+      <line x1="256" y1="115" x2="256" y2="195" />
+      <line x1="390" y1="130" x2="325" y2="135" />
+      <line x1="118" y1="130" x2="187" y2="135" />
     </g>
 
-    <g>
-      <path d="M 160 388 L 256 322 L 352 388 L 352 364 L 256 298 L 160 364 Z" fill="#EF9F27" />
-      <path d="M 172 414 L 256 354 L 340 414 L 340 390 L 256 330 L 172 390 Z" fill="#F7F5EF" />
-      <path d="M 184 440 L 256 386 L 328 440 L 328 416 L 256 362 L 184 416 Z" fill="#EF9F27" />
-      <g fill="#F7F5EF" opacity="0.9">
-        <polygon points="134,432 146,432 140,444" />
-        <polygon points="154,440 166,440 160,452" />
-        <polygon points="346,432 358,432 352,444" />
-        <polygon points="366,440 378,440 372,452" />
-      </g>
-      <g fill="#EF9F27" opacity="0.9">
-        <polygon points="118,440 130,440 124,452" />
-        <polygon points="382,440 394,440 388,452" />
-      </g>
-    </g>
+    <!-- Arrow -->
+    <path d="M 70 380 Q 140 430, 200 370 T 320 310 L 395 240 L 410 300 L 420 200 L 320 215 L 365 248 L 295 310 Q 220 375, 175 355 Q 125 330, 70 380 Z" 
+          fill="url(#arrowPatternL)" stroke="url(#goldGradL)" stroke-width="6" />
   </g>
 
-  <text x="98" y="48" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="34" font-weight="700" fill="#0B2E24">Sunu<tspan fill="#0F6E56">Prix</tspan></text>
-  <text x="98" y="70" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#EF9F27" letter-spacing="1.5">SUIVI &amp; PRÉDICTION DES PRIX</text>
+  <!-- Typography SunuPrix -->
+  <text x="104" y="60" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" fill="#0B4736" letter-spacing="-0.5">Sunu<tspan fill="#04281E">Prix</tspan></text>
 </svg>
+
