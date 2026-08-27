@@ -29,7 +29,8 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
 - Montrer la page d'accueil non connectée : logo, annonces officielles du
   Ministère affichées publiquement, boutons **Connexion** / **Inscription**.
 - Une phrase de contexte : plateforme multi-rôles de suivi et de prédiction
-  des prix, 5 régions, 12 produits, 12 mois d'historique simulé.
+  des prix, 5 régions, 12 produits, 24 mois d'historique simulé à partir de
+  tendances et prix de référence recherchés (ANSD, relevés de marché).
 
 ## 1. Rôle Vendeur — déclarer un prix (2 min)
 

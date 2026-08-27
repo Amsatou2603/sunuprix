@@ -3,9 +3,11 @@
  * cet environnement de préparation n'a pas accès réseau à
  * `binaries.prisma.sh` pour générer le client Prisma. Reproduit exactement
  * la même logique déterministe que `backend/prisma/seed.ts` (mêmes régions,
- * produits, comptes de démonstration, génération d'historique de prix
- * tendance + saisonnalité + bruit). En production (Render), le seed normal
- * (`npm run seed`, basé sur Prisma Client) fonctionne sans ce contournement.
+ * produits, comptes de démonstration, génération d'historique de prix par
+ * profils produit + multiplicateurs régionaux — voir ce fichier pour les
+ * sources détaillées de chaque chiffre). En production (Render), le seed
+ * normal (`npm run seed`, basé sur Prisma Client) fonctionne sans ce
+ * contournement.
  */
 import pg from "pg";
 import bcrypt from "bcrypt";
@@ -22,17 +24,17 @@ if (!DATABASE_URL) {
 const REGIONS = ["Dakar", "Saint-Louis", "Thiès", "Louga", "Kaolack"];
 
 const PRODUITS = [
-  { nom: "Riz", unite: "kg", prixBaseFcfa: 450 },
+  { nom: "Riz", unite: "kg", prixBaseFcfa: 370 },
   { nom: "Sucre", unite: "kg", prixBaseFcfa: 650 },
-  { nom: "Huile", unite: "litre", prixBaseFcfa: 1100 },
-  { nom: "Oignons", unite: "kg", prixBaseFcfa: 350 },
-  { nom: "Pommes de terre", unite: "kg", prixBaseFcfa: 400 },
+  { nom: "Huile", unite: "litre", prixBaseFcfa: 1050 },
+  { nom: "Oignons", unite: "kg", prixBaseFcfa: 380 },
+  { nom: "Pommes de terre", unite: "kg", prixBaseFcfa: 480 },
   { nom: "Mil", unite: "kg", prixBaseFcfa: 300 },
-  { nom: "Farine de blé", unite: "kg", prixBaseFcfa: 380 },
-  { nom: "Poisson frais", unite: "kg", prixBaseFcfa: 1500 },
-  { nom: "Tomate", unite: "kg", prixBaseFcfa: 425 },
+  { nom: "Farine de blé", unite: "kg", prixBaseFcfa: 340 },
+  { nom: "Poisson frais", unite: "kg", prixBaseFcfa: 1000 },
+  { nom: "Tomate", unite: "kg", prixBaseFcfa: 450 },
   { nom: "Lait en poudre", unite: "kg", prixBaseFcfa: 3200 },
-  { nom: "Gaz butane", unite: "bonbonne", prixBaseFcfa: 3800 },
+  { nom: "Gaz butane", unite: "bonbonne (6 kg)", prixBaseFcfa: 2900 },
   { nom: "Savon", unite: "unité", prixBaseFcfa: 500 },
 ];
 
@@ -45,9 +47,44 @@ const LIBELLES_ROLES = {
   CONSOMMATEUR: "Consommateur",
 };
 
-const NB_MOIS_HISTORIQUE = 12;
+const NB_MOIS_HISTORIQUE = 24;
 const MOT_DE_PASSE_DEMO = "SunuPrix2026!";
 const BCRYPT_SALT_ROUNDS = 10;
+
+// Voir backend/prisma/seed.ts pour le détail des sources de chaque profil.
+const PROFIL_PAR_DEFAUT = { tendanceAnnuelle: 0.02, amplitudeSaisonniere: 0.02, moisPicSaisonnier: 6, volatilite: 0.02 };
+
+const PROFILS_PRODUITS = {
+  Riz: { tendanceAnnuelle: -0.03, amplitudeSaisonniere: 0.02, moisPicSaisonnier: 7, volatilite: 0.015 },
+  Sucre: { tendanceAnnuelle: 0.04, amplitudeSaisonniere: 0.02, moisPicSaisonnier: 3, volatilite: 0.02 },
+  Huile: { tendanceAnnuelle: 0.05, amplitudeSaisonniere: 0.025, moisPicSaisonnier: 3, volatilite: 0.025 },
+  Oignons: { tendanceAnnuelle: 0.02, amplitudeSaisonniere: 0.22, moisPicSaisonnier: 8, volatilite: 0.05 },
+  "Pommes de terre": { tendanceAnnuelle: 0.06, amplitudeSaisonniere: 0.1, moisPicSaisonnier: 8, volatilite: 0.03 },
+  Mil: { tendanceAnnuelle: 0.02, amplitudeSaisonniere: 0.12, moisPicSaisonnier: 7, volatilite: 0.025 },
+  "Farine de blé": { tendanceAnnuelle: 0.05, amplitudeSaisonniere: 0.02, moisPicSaisonnier: 5, volatilite: 0.02 },
+  "Poisson frais": { tendanceAnnuelle: -0.05, amplitudeSaisonniere: 0.08, moisPicSaisonnier: 8, volatilite: 0.04 },
+  Tomate: { tendanceAnnuelle: 0.02, amplitudeSaisonniere: 0.35, moisPicSaisonnier: 7, volatilite: 0.06 },
+  "Lait en poudre": { tendanceAnnuelle: 0.03, amplitudeSaisonniere: 0.015, moisPicSaisonnier: 0, volatilite: 0.012 },
+  "Gaz butane": { tendanceAnnuelle: 0.005, amplitudeSaisonniere: 0, moisPicSaisonnier: 0, volatilite: 0.005 },
+  Savon: { tendanceAnnuelle: 0.02, amplitudeSaisonniere: 0.01, moisPicSaisonnier: 0, volatilite: 0.015 },
+};
+
+const MULTIPLICATEUR_REGIONAL_PAR_DEFAUT = { Dakar: 1.0, "Saint-Louis": 1.0, Thiès: 1.01, Louga: 1.03, Kaolack: 1.04 };
+
+const MULTIPLICATEURS_REGIONAUX = {
+  Riz: { Dakar: 1.0, "Saint-Louis": 0.97, Thiès: 1.15, Louga: 1.03, Kaolack: 1.1 },
+  Oignons: { Dakar: 1.05, "Saint-Louis": 1.0, Thiès: 0.85, Louga: 0.78, Kaolack: 1.12 },
+  "Pommes de terre": { Dakar: 1.0, "Saint-Louis": 1.02, Thiès: 1.15, Louga: 1.05, Kaolack: 1.08 },
+  "Poisson frais": { Dakar: 0.9, "Saint-Louis": 0.85, Thiès: 0.88, Louga: 1.85, Kaolack: 1.15 },
+  Mil: { Dakar: 1.05, "Saint-Louis": 0.98, Thiès: 0.97, Louga: 0.98, Kaolack: 0.95 },
+  Tomate: { Dakar: 1.03, "Saint-Louis": 0.98, Thiès: 0.97, Louga: 0.98, Kaolack: 0.95 },
+};
+
+function multiplicateurRegional(nomProduit, nomRegion) {
+  const parProduit = MULTIPLICATEURS_REGIONAUX[nomProduit];
+  if (parProduit && nomRegion in parProduit) return parProduit[nomRegion];
+  return MULTIPLICATEUR_REGIONAL_PAR_DEFAUT[nomRegion] ?? 1;
+}
 
 function hacherChaineVersEntier(chaine) {
   let h = 0x811c9dc5;
@@ -69,13 +106,12 @@ function creerGenerateurDeterministe(graine) {
 }
 
 function genererHistoriquePrix(nomProduit, nomRegion, prixBaseFcfa) {
+  const profil = PROFILS_PRODUITS[nomProduit] ?? PROFIL_PAR_DEFAUT;
+  const prixReference = prixBaseFcfa * multiplicateurRegional(nomProduit, nomRegion);
+  const tauxTendanceMensuel = profil.tendanceAnnuelle / 12;
+
   const graine = hacherChaineVersEntier(`${nomProduit}::${nomRegion}`);
   const tirer = creerGenerateurDeterministe(graine);
-
-  const tauxTendanceMensuel = tirer() * 0.02 - 0.006;
-  const amplitudeSaisonniere = 0.015 + tirer() * 0.02;
-  const dephasageSaisonnier = tirer() * 2 * Math.PI;
-  const bruitRelatifMax = 0.01 + tirer() * 0.015;
 
   const maintenant = new Date();
   const anneeCourante = maintenant.getFullYear();
@@ -84,12 +120,15 @@ function genererHistoriquePrix(nomProduit, nomRegion, prixBaseFcfa) {
   const points = [];
   for (let indexMois = 0; indexMois < NB_MOIS_HISTORIQUE; indexMois++) {
     const moisAvantAujourdHui = NB_MOIS_HISTORIQUE - 1 - indexMois;
-    const facteurTendance = (1 + tauxTendanceMensuel) ** -moisAvantAujourdHui;
-    const facteurSaison = 1 + amplitudeSaisonniere * Math.sin((indexMois / 12) * 2 * Math.PI + dephasageSaisonnier);
-    const facteurBruit = 1 + (tirer() * 2 - 1) * bruitRelatifMax;
-
-    const prixFcfa = Math.round(prixBaseFcfa * facteurTendance * facteurSaison * facteurBruit);
     const date = new Date(anneeCourante, moisCourant - moisAvantAujourdHui, 1);
+    const moisCalendaire = date.getMonth();
+
+    const facteurTendance = (1 + tauxTendanceMensuel) ** -moisAvantAujourdHui;
+    const phase = ((moisCalendaire - profil.moisPicSaisonnier) / 12) * 2 * Math.PI + Math.PI / 2;
+    const facteurSaison = 1 + profil.amplitudeSaisonniere * Math.sin(phase);
+    const facteurBruit = 1 + (tirer() * 2 - 1) * profil.volatilite;
+
+    const prixFcfa = Math.max(1, Math.round(prixReference * facteurTendance * facteurSaison * facteurBruit));
 
     points.push({ date, prixFcfa });
   }
@@ -177,7 +216,7 @@ async function main() {
         }
       }
     }
-    console.log(`  Historique de prix : ${total} relevés créés (12 mois × ${produitInfoParNom.size} produits × ${REGIONS.length} régions).`);
+    console.log(`  Historique de prix : ${total} relevés créés (${NB_MOIS_HISTORIQUE} mois × ${produitInfoParNom.size} produits × ${REGIONS.length} régions).`);
 
     console.log("Seed SunuPrix (direct pg) — terminé avec succès.");
   } finally {

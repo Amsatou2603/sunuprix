@@ -11,12 +11,14 @@ export default function PageAPropos() {
         <h1 className="text-xl font-bold text-header">À propos de SunuPrix</h1>
         <p className="mt-3 text-sm leading-relaxed text-header/70">
           SunuPrix est un projet de fin de formation. La plateforme simule le suivi et la prédiction des prix de
-          produits de consommation courante dans cinq régions du Sénégal.{" "}
+          produits de consommation courante dans cinq régions du Sénégal. Les niveaux de prix de départ et les
+          tendances d&apos;évolution s&apos;appuient sur des statistiques publiques (ANSD) et des relevés de marché
+          récents, pour rester plausibles.{" "}
           <strong className="text-header">
-            Toutes les données affichées (prix, tendances, utilisateurs) sont fictives et générées à des fins
-            pédagogiques
+            L&apos;historique complet affiché (prix, tendances, utilisateurs) reste néanmoins simulé, généré à des
+            fins pédagogiques
           </strong>{" "}
-          — elles ne reflètent pas des relevés de terrain réels.
+          — ce ne sont pas des relevés de terrain quotidiens réels.
         </p>
       </div>
 

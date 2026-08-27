@@ -120,8 +120,13 @@ identique pour tous, à changer avant toute mise en production réelle :
 | Vendeur | `vendeur@sunuprix.sn` | `SunuPrix2026!` |
 | Consommateur | `consommateur@sunuprix.sn` | `SunuPrix2026!` |
 
-Le seed génère également 12 mois d'historique de prix (tendance + bruit,
-déterministe) pour chacun des 12 produits dans chacune des 5 régions.
+Le seed génère également 24 mois d'historique de prix pour chacun des 12
+produits dans chacune des 5 régions, à partir de profils de tendance et de
+saisonnalité documentés par produit (pas un tirage aléatoire par paire) —
+prix de départ, tendances et écarts régionaux recherchés à partir des
+statistiques ANSD et de relevés de marché récents (voir les commentaires en
+tête de `backend/prisma/seed.ts` pour le détail des sources). Le bruit
+résiduel reste déterministe (seedé par le nom du produit et de la région).
 
 ## Installation locale
 

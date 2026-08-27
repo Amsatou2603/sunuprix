@@ -23,5 +23,11 @@ export const NOM_COOKIE_SESSION = "sunuprix_session";
 export const SEUIL_ATTENTION_POURCENT_DEFAUT = 5;
 export const SEUIL_CRITIQUE_POURCENT_DEFAUT = 10;
 
-/** Nombre de mois d'historique utilisés par le moteur de régression. */
-export const NB_MOIS_REGRESSION = 12;
+/**
+ * Nombre de mois d'historique généré par le seed pour chaque couple
+ * produit/région (voir `backend/prisma/seed.ts`). Documentaire : le moteur
+ * de régression (`predictions/regression.service.ts`) utilise en réalité
+ * tout l'historique validé disponible pour un couple donné, sans fenêtre
+ * fixe — cette constante ne le limite pas.
+ */
+export const NB_MOIS_REGRESSION = 24;
