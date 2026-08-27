@@ -14,6 +14,7 @@ import {
 import { referentielApi } from "@/lib/api/referentiel";
 import { prixApi } from "@/lib/api/prix";
 import { predictionsApi } from "@/lib/api/predictions";
+import { analyseApi } from "@/lib/api/analyse";
 import { ErreurApi } from "@/lib/api/api-client";
 import { Chargement, EtatVide, MessageErreur } from "@/components/partages/EtatAsync";
 import type { Produit, Region } from "@/lib/api/types";
@@ -27,6 +28,8 @@ interface EntiteComparee {
   label: string;
   margeErreurFcfa: number | null;
   prixPredit: number | null;
+  /** Historique brut de l'entité, conservé uniquement pour alimenter le diagnostic IA. */
+  historique: { date: string; prixFcfa: number }[];
 }
 
 interface ProprietesVueComparative {
@@ -51,6 +54,10 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
   const [chargementReferentiel, setChargementReferentiel] = useState(true);
   const [erreur, setErreur] = useState<string | null>(null);
   const [aLanceUneComparaison, setALanceUneComparaison] = useState(false);
+
+  const [diagnostic, setDiagnostic] = useState<{ texte: string; source: "GEMINI" | "REPLI_LOCAL" } | null>(null);
+  const [chargementDiagnostic, setChargementDiagnostic] = useState(false);
+  const [erreurDiagnostic, setErreurDiagnostic] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([referentielApi.produits(), referentielApi.regions()])
@@ -81,6 +88,8 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
     setChargement(true);
     setErreur(null);
     setALanceUneComparaison(true);
+    setDiagnostic(null);
+    setErreurDiagnostic(null);
     try {
       const resultats = await Promise.all(
         idsSelectionnes.map(async (id) => {
@@ -115,6 +124,7 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
           label: r.label,
           margeErreurFcfa: r.prediction?.margeErreurFcfa ?? null,
           prixPredit: r.prediction?.prixPredit ?? null,
+          historique: r.historique.map((p) => ({ date: p.date, prixFcfa: p.prixFcfa })),
         })),
       );
       onResultat?.({
@@ -125,6 +135,33 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
       setErreur(e instanceof ErreurApi ? e.message : "Impossible de générer la comparaison.");
     } finally {
       setChargement(false);
+    }
+  };
+
+  const lancerDiagnostic = async () => {
+    if (entites.length === 0) return;
+    setChargementDiagnostic(true);
+    setErreurDiagnostic(null);
+    try {
+      const axeFixeLabel =
+        mode === "REGIONS" ? produits.find((p) => p.id === axeFixeId)?.nom ?? axeFixeId : regions.find((r) => r.id === axeFixeId)?.nom ?? axeFixeId;
+
+      const reponse = await analyseApi.diagnostiquer({
+        mode,
+        axeFixeLabel,
+        entites: entites.map((entite) => ({
+          label: entite.label,
+          historique: entite.historique,
+          prediction:
+            entite.prixPredit !== null ? { prixPredit: entite.prixPredit, margeErreurFcfa: entite.margeErreurFcfa } : null,
+        })),
+      });
+
+      setDiagnostic({ texte: reponse.diagnostic, source: reponse.source });
+    } catch (e) {
+      setErreurDiagnostic(e instanceof ErreurApi ? e.message : "Impossible de générer le diagnostic IA pour le moment.");
+    } finally {
+      setChargementDiagnostic(false);
     }
   };
 
@@ -265,6 +302,44 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Diagnostic IA : interprétation en langage naturel de la comparaison ci-dessus. */}
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-header/70">✨ Diagnostic IA</h3>
+              <button
+                type="button"
+                onClick={lancerDiagnostic}
+                disabled={chargementDiagnostic}
+                className="bouton-secondaire !px-3 !py-1.5 !text-xs"
+              >
+                {chargementDiagnostic ? "Analyse en cours…" : diagnostic ? "Régénérer le diagnostic" : "Générer le diagnostic"}
+              </button>
+            </div>
+
+            {chargementDiagnostic && <div className="mt-3"><Chargement libelle="SunuBot interprète la comparaison…" /></div>}
+
+            {erreurDiagnostic && (
+              <div className="mt-3">
+                <MessageErreur message={erreurDiagnostic} />
+              </div>
+            )}
+
+            {!chargementDiagnostic && diagnostic && (
+              <div className="mt-3 space-y-1.5">
+                <p className="text-sm leading-relaxed text-header">{diagnostic.texte}</p>
+                <p className="text-xs text-header/40">
+                  {diagnostic.source === "GEMINI" ? "Généré par Gemini (IA)" : "Généré localement (Gemini indisponible)"}
+                </p>
+              </div>
+            )}
+
+            {!chargementDiagnostic && !diagnostic && !erreurDiagnostic && (
+              <p className="mt-2 text-xs text-header/50">
+                Demandez à l&apos;IA de résumer en quelques phrases ce que montre cette comparaison.
+              </p>
+            )}
           </div>
         </>
       )}

@@ -10,6 +10,7 @@ import notificationsRoutes from "../modules/alertes/notifications.routes";
 import adminRoutes from "../modules/admin/admin.routes";
 import ministereRoutes from "../modules/ministere/ministere.routes";
 import exportRoutes from "../modules/export/export.routes";
+import analyseRoutes from "../modules/analyse/analyse.routes";
 
 /**
  * Point d'entrée unique de montage des routes de l'API. Chaque module définit
@@ -32,5 +33,6 @@ router.use("/admin", adminRoutes);
 // Ministère : chemins /annonces et /inflation définis dans le module lui-même.
 router.use(ministereRoutes);
 router.use("/export", exportRoutes);
+router.use("/analyse", analyseRoutes);
 
 export default router;
