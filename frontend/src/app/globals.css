@@ -52,11 +52,20 @@ body {
     @apply rounded-3xl border border-white/50 bg-white/60 shadow-[0_8px_32px_rgba(11,46,36,0.12)] backdrop-blur-xl;
   }
 
+  /* Teinte de base sombre (et non `bg-white/10`) : un panneau "verre sombre"
+     doit rester lisible même posé directement sur le fond clair de la page
+     (`bg-surface`), pas seulement sur un ancien héros de couleur foncée. */
   .verre-sombre {
-    @apply rounded-3xl border border-white/15 bg-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl;
+    @apply rounded-3xl border border-white/10 bg-header/90 shadow-[0_8px_32px_rgba(11,46,36,0.35)] backdrop-blur-xl;
   }
 
   .bouton-verre {
     @apply inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-white/30;
+  }
+
+  /* Variante claire du bouton verre, pour les panneaux/héros à fond clair
+     (où `.bouton-verre` — pensé pour un fond sombre — serait peu lisible). */
+  .bouton-verre-clair {
+    @apply inline-flex items-center justify-center rounded-full border border-header/10 bg-white/50 px-6 py-3 text-sm font-semibold text-header backdrop-blur-md transition hover:bg-white/80 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/20;
   }
 }

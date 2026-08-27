@@ -111,14 +111,10 @@ export default function PageAccueil() {
   const regionCourante = regions[0];
 
   return (
-    <div className="mx-auto max-w-7xl space-y-20 px-4 pb-16 sm:px-6">
+    <div className="mx-auto max-w-7xl space-y-20 px-4 pb-16 pt-8 sm:px-6 sm:pt-14">
       {/* ==================== HERO SECTION ==================== */}
-      <section className="relative -mx-4 overflow-hidden bg-[#093327] text-white shadow-2xl sm:-mx-6 sm:rounded-b-[2.5rem]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#00C49F_1px,transparent_1px)] [background-size:24px_24px] opacity-15" />
-        <div className="pointer-events-none absolute -left-20 top-10 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
-        <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
-
-        <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-12 lg:items-center">
+      <section className="relative">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
           {/* Colonne gauche : texte + CTA */}
           <motion.div
             initial="cache"
@@ -127,16 +123,16 @@ export default function PageAccueil() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="space-y-6 lg:col-span-7"
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-[#00C49F]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1 text-xs font-bold text-primary-dark">
               ✨ Plateforme nationale de suivi &amp; IA
             </span>
 
-            <h1 className="font-serif text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl leading-tight">
-              Maîtrisez les prix du marché au Sénégal avec <span className="text-[#00C49F]">Sunu</span>
-              <span className="text-[#E5C158]">Prix</span>
+            <h1 className="font-serif text-4xl font-extrabold tracking-tight text-header sm:text-5xl lg:text-6xl leading-tight">
+              Maîtrisez les prix du marché au Sénégal avec <span className="text-primary">Sunu</span>
+              <span className="text-accent-dark">Prix</span>
             </h1>
 
-            <p className="max-w-xl text-sm sm:text-base text-emerald-100/80 leading-relaxed">
+            <p className="max-w-xl text-sm sm:text-base text-header/60 leading-relaxed">
               Suivi et prédiction des prix de produits de première nécessité à travers les régions du Sénégal,
               ancrés sur des relevés réels et assistés par l&apos;IA.
             </p>
@@ -147,7 +143,7 @@ export default function PageAccueil() {
                   <Link href="/inscription" className="bouton-primaire px-6 py-3.5 text-sm">
                     Commencer gratuitement
                   </Link>
-                  <Link href="/a-propos" className="bouton-verre">
+                  <Link href="/a-propos" className="bouton-verre-clair">
                     En savoir plus
                   </Link>
                 </>
@@ -157,7 +153,7 @@ export default function PageAccueil() {
                   <Link href="/donnees" className="bouton-primaire px-6 py-3.5 text-sm">
                     Accéder au tableau de bord
                   </Link>
-                  <Link href="/alertes" className="bouton-verre">
+                  <Link href="/alertes" className="bouton-verre-clair">
                     Voir mes alertes
                   </Link>
                 </>
