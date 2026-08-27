@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>SunuBot — Logo Officiel Assistant IA</title>
+  <defs>
+    <!-- Dégradés Or Métallique -->
+    <linearGradient id="botGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3CD" />
+      <stop offset="35%" stop-color="#E5C158" />
+      <stop offset="70%" stop-color="#B8860B" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+
+    <linearGradient id="botGoldDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B8860B" />
+      <stop offset="100%" stop-color="#5C4008" />
+    </linearGradient>
+
+    <!-- Fond crème parchemin -->
+    <radialGradient id="botCreamBg" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#FBF9F4" />
+      <stop offset="70%" stop-color="#F3ECE0" />
+      <stop offset="100%" stop-color="#E5DAC9" />
+    </radialGradient>
+
+    <!-- Écran du robot vert foncé -->
+    <linearGradient id="botScreenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0B382C" />
+      <stop offset="100%" stop-color="#041E17" />
+    </linearGradient>
+
+    <!-- Yeux cyan lumineux -->
+    <linearGradient id="botCyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F2C2" />
+      <stop offset="100%" stop-color="#00C49F" />
+    </linearGradient>
+
+    <!-- Motif tribal bas de badge -->
+    <pattern id="botPattern" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(20)">
+      <rect width="24" height="24" fill="#062920" />
+      <path d="M0 12 L12 0 L24 12 L12 24 Z" fill="none" stroke="#E5C158" stroke-width="1.8" />
+      <circle cx="12" cy="12" r="2" fill="#E5C158" />
+    </pattern>
+
+    <!-- Ombres portées 3D -->
+    <filter id="botShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <g filter="url(#botShadow)">
+    <!-- Anneau extérieur vert très foncé -->
+    <circle cx="256" cy="256" r="248" fill="#062920" />
+
+    <!-- Anneau métallique or 3D biseauté -->
+    <circle cx="256" cy="256" r="244" fill="none" stroke="url(#botGoldGrad)" stroke-width="14" />
+    <circle cx="256" cy="256" r="234" fill="none" stroke="url(#botGoldDark)" stroke-width="3" opacity="0.7" />
+
+    <!-- Cercle intérieur parchemin crème -->
+    <circle cx="256" cy="256" r="226" fill="url(#botCreamBg)" />
+    <circle cx="256" cy="256" r="222" fill="none" stroke="url(#botGoldGrad)" stroke-width="3" opacity="0.5" />
+
+    <!-- Section inférieure découpée avec motif tribal & courbe dorée -->
+    <path d="M 50 310 C 130 390, 380 390, 462 310 C 430 420, 350 480, 256 480 C 162 480, 82 420, 50 310 Z" fill="url(#botPattern)" />
+    
+    <!-- Courbe boursière dorée en bas -->
+    <path d="M 65 315 L 140 375 L 200 325 L 280 385 L 350 320 L 450 345" 
+          fill="none" stroke="url(#botGoldGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- ==================== TÊTE DE ROBOT EN BULLE DE DIALOGUE ==================== -->
+    <g id="robotHead">
+      <!-- Antenne dorée avec sphère supérieure -->
+      <line x1="256" y1="120" x2="256" y2="78" stroke="url(#botGoldGrad)" stroke-width="6" stroke-linecap="round" />
+      <circle cx="256" cy="72" r="14" fill="url(#botGoldGrad)" stroke="url(#botGoldDark)" stroke-width="2" />
+      <circle cx="252" cy="68" r="4" fill="#FFF3CD" />
+
+      <!-- Casque / Oreilles dorées à gauche et à droite -->
+      <!-- Ear Left -->
+      <rect x="94" y="185" width="22" height="60" rx="11" fill="url(#botGoldGrad)" stroke="url(#botGoldDark)" stroke-width="3" />
+      <!-- Ear Right -->
+      <rect x="396" y="185" width="22" height="60" rx="11" fill="url(#botGoldGrad)" stroke="url(#botGoldDark)" stroke-width="3" />
+
+      <!-- Contour principal de la bulle de dialogue / Tête de robot -->
+      <path d="M 170 120
+               L 342 120
+               C 385 120, 410 145, 410 190
+               L 410 260
+               C 410 305, 385 325, 342 325
+               L 230 325
+               L 165 375
+               L 175 325
+               C 130 325, 102 305, 102 260
+               L 102 190
+               C 102 145, 130 120, 170 120 Z"
+            fill="#FFF9EF" stroke="url(#botGoldGrad)" stroke-width="9" stroke-linejoin="round" />
+
+      <!-- Bordure intérieure or crème -->
+      <path d="M 170 125 L 342 125 C 380 125, 403 148, 403 190 L 403 260 C 403 300, 380 320, 342 320 L 225 320 L 172 360 L 180 320 C 135 320, 109 300, 109 260 L 109 190 C 109 148, 135 125, 170 125 Z"
+            fill="none" stroke="#E5C158" stroke-width="2.5" opacity="0.6" />
+
+      <!-- Écran intérieur vert très foncé -->
+      <rect x="135" y="148" width="242" height="135" rx="28" fill="url(#botScreenGrad)" stroke="url(#botGoldGrad)" stroke-width="4" />
+
+      <!-- Yeux cyan lumineux en arc souriant (^ ^) -->
+      <!-- Eye Left -->
+      <path d="M 172 215 C 172 192, 218 192, 218 215" fill="none" stroke="url(#botCyanGlow)" stroke-width="9" stroke-linecap="round" />
+      <!-- Eye Right -->
+      <path d="M 294 215 C 294 192, 340 192, 340 215" fill="none" stroke="url(#botCyanGlow)" stroke-width="9" stroke-linecap="round" />
+    </g>
+  </g>
+</svg>

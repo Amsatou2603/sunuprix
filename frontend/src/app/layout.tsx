@@ -21,12 +21,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/design/icon.svg", type: "image/svg+xml" },
       { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
       { url: "/icons/favicon-16.png", sizes: "16x16", type: "image/png" },
     ],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
+
 
 export const viewport: Viewport = {
   themeColor: "#0B2E24",
@@ -40,10 +42,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-screen flex-col font-sans">
         <AuthProvider>
           <Header />
-          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">{children}</main>
+          <main className="w-full flex-1">{children}</main>
           <Footer />
           <ChatbotWidget />
         </AuthProvider>
+
         <EnregistreurServiceWorker />
       </body>
     </html>

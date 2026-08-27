@@ -116,9 +116,10 @@ function ContenuPageAdmin() {
               href="/chatbot"
               className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition"
             >
-              <span className="text-base text-purple-600">🤖</span>
+              <Image src="/design/sunubot-icon.svg" alt="SunuBot Icon" width={20} height={20} />
               Centre IA SunuBot
             </Link>
+
 
             <button
               onClick={() => setOngletActif("VUE_DENSEMBLE")}

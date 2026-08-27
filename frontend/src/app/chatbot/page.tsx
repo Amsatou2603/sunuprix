@@ -19,19 +19,19 @@ function ContenuPageChatbot() {
     {
       id: "1",
       sender: "bot",
-      text: "Good morning. I've analyzed the latest market trends for commodities in West Africa. Notably, rice prices have shown a slight upward volatility.",
+      text: "Bonjour ! 👋 Je suis SunuBot, l'assistant IA de SunuPrix. J'ai analysé les tendances récentes sur les marchés au Sénégal. Notamment, le prix du riz et de l'huile enregistre des variations par région.",
       time: "09:41 AM",
     },
     {
       id: "2",
       sender: "user",
-      text: "Show me the specific data for rice in Senegal, compared to last month.",
+      text: "Montre-moi les données spécifiques pour le riz au Sénégal par rapport au mois dernier.",
       time: "09:43 AM",
     },
     {
       id: "3",
       sender: "bot",
-      text: "Here is the breakdown for Rice (Long Grain) in Senegal. We are seeing a 4.2% increase compared to a 30-day moving average.",
+      text: "Voici la synthèse pour le Riz Parfumé (Long Grain) au Sénégal. Nous observons une hausse moyenne de +4.2% par rapport aux 30 derniers jours.",
       time: "09:43 AM",
       widgets: true,
     },
@@ -82,7 +82,7 @@ function ContenuPageChatbot() {
   };
 
   return (
-    <div className="flex h-screen bg-[#F8FAFC] text-gray-900 overflow-hidden">
+    <div className="flex h-screen bg-[#F8FAFC] text-gray-900 overflow-hidden w-full">
       {/* ==================== LEFT CONTROL CENTER SIDEBAR ==================== */}
       <aside className="w-64 flex-shrink-0 border-r border-gray-200 bg-white p-5 flex flex-col justify-between hidden md:flex">
         <div className="space-y-8">
@@ -101,12 +101,12 @@ function ContenuPageChatbot() {
               <span>📊</span> Dashboard
             </Link>
 
-            {/* Active item: Market Insights */}
+            {/* Active item: Market Insights / SunuBot */}
             <Link
               href="/chatbot"
               className="flex items-center gap-3 rounded-xl bg-[#00C49F] px-3.5 py-2.5 text-xs font-bold text-white shadow-sm transition"
             >
-              <span>📈</span> Market Insights
+              <span>🤖</span> SunuBot IA
             </Link>
 
             <Link
@@ -135,18 +135,18 @@ function ContenuPageChatbot() {
         {/* Bottom items */}
         <div className="space-y-3 pt-6 border-t border-gray-100">
           <button className="flex w-full items-center justify-center gap-2 rounded-xl border border-purple-300 bg-purple-50/50 py-2.5 text-xs font-bold text-purple-700 hover:bg-purple-100 transition">
-            ✨ AI Insights
+            ✨ SunuBot Insights
           </button>
           <div className="flex items-center justify-between text-xs font-medium text-gray-500 px-2 pt-1">
-            <Link href="/a-propos" className="hover:text-gray-900">Help</Link>
-            <Link href="/" className="hover:text-gray-900">Logout</Link>
+            <Link href="/a-propos" className="hover:text-gray-900">Aide</Link>
+            <Link href="/" className="hover:text-gray-900">Accueil</Link>
           </div>
         </div>
       </aside>
 
       {/* ==================== MAIN CHAT CONTENT ==================== */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Top Header */}
+        {/* Top Header Bar */}
         <header className="border-b border-gray-200 bg-white px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
@@ -165,42 +165,42 @@ function ContenuPageChatbot() {
 
           <div className="flex items-center gap-3">
             <button className="rounded-lg bg-[#00C49F] px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-[#00a989] transition">
-              Create Report
+              Créer un Rapport
             </button>
             <button className="p-1.5 text-gray-400 hover:text-gray-600">🔔</button>
             <button className="p-1.5 text-gray-400 hover:text-gray-600">⚙️</button>
             <div className="h-8 w-8 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-xs">
-              SA
+              SB
             </div>
           </div>
         </header>
 
         {/* Chat Header Subbar */}
-        <div className="border-b border-gray-100 bg-white px-6 py-3 flex items-center justify-between">
+        <div className="border-b border-gray-100 bg-[#041B13] text-white px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500 text-white font-bold text-sm">
-              🤖
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#E5C158]/40 bg-[#F3ECE0] p-0.5 shadow">
+              <Image src="/design/sunubot-icon.svg" alt="SunuBot Logo" width={36} height={36} priority />
             </div>
             <div>
-              <p className="text-sm font-bold text-gray-900">SunuPrix Assistant</p>
-              <p className="text-[11px] font-medium text-emerald-600 flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
-                Online - AI Active
+              <p className="text-sm font-bold text-white tracking-wide">SunuPrix Assistant IA (SunuBot)</p>
+              <p className="text-[11px] font-semibold text-[#00C49F] flex items-center gap-1.5 mt-0.5">
+                <span className="h-2 w-2 rounded-full bg-[#00C49F] inline-block animate-pulse" />
+                En ligne - IA Active
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-gray-400 text-sm">
-            <button className="p-1.5 hover:text-gray-600">📜</button>
-            <button className="p-1.5 hover:text-gray-600">⋮</button>
+          <div className="flex items-center gap-2 text-gray-300 text-sm">
+            <button className="p-1.5 hover:text-white">📜</button>
+            <button className="p-1.5 hover:text-white">⋮</button>
           </div>
         </div>
 
         {/* Chat Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#F8FAFC]">
           <div className="text-center">
             <span className="rounded-full bg-gray-200/60 px-3 py-1 text-[11px] font-medium text-gray-500">
-              Today, 09:41 AM
+              Aujourd&apos;hui, 09:41 AM
             </span>
           </div>
 
@@ -215,11 +215,15 @@ function ContenuPageChatbot() {
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
                   msg.sender === "user"
-                    ? "bg-gray-200 text-gray-700"
-                    : "bg-blue-500 text-white"
+                    ? "bg-[#00C49F] text-white"
+                    : "border border-[#E5C158]/30 bg-[#F3ECE0]"
                 }`}
               >
-                {msg.sender === "user" ? "👤" : "🤖"}
+                {msg.sender === "user" ? (
+                  "👤"
+                ) : (
+                  <Image src="/design/sunubot-icon.svg" alt="SunuBot" width={26} height={26} />
+                )}
               </div>
 
               {/* Message Content */}
@@ -228,38 +232,38 @@ function ContenuPageChatbot() {
                   className={`rounded-2xl px-4 py-3 text-xs leading-relaxed ${
                     msg.sender === "user"
                       ? "bg-[#0B5D48] text-white"
-                      : "border border-gray-100 bg-white text-gray-800 shadow-sm"
+                      : "border border-gray-200/80 bg-white text-gray-900 shadow-sm"
                   }`}
                 >
                   <p>{msg.text}</p>
                 </div>
 
-                {/* Embedded Interactive Widgets matching Image 4 */}
+                {/* Embedded Interactive Widgets */}
                 {msg.widgets && (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {/* Widget 1: Current Avg Price */}
                       <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                         <div className="flex items-center justify-between text-xs text-gray-400">
-                          <span>Current Avg Price</span>
+                          <span>Prix Moyen Actuel</span>
                           <span>📈</span>
                         </div>
                         <p className="mt-2 text-2xl font-extrabold text-gray-900">
-                          450 <span className="text-xs font-normal text-gray-500">XOF/kg</span>
+                          450 <span className="text-xs font-normal text-gray-500">FCFA/kg</span>
                         </p>
                         <span className="mt-2 inline-block rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold text-red-600">
-                          ↑ +4.2% (MoM)
+                          ↑ +4.2% (vs 30j)
                         </span>
                       </div>
 
                       {/* Widget 2: Regional Heatmap */}
                       <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                         <p className="text-xs font-bold text-gray-700 mb-2">
-                          Regional Heatmap (Dakar vs Regions)
+                          Carte Régionale (Dakar vs Régions)
                         </p>
                         <div className="h-20 w-full rounded-lg bg-emerald-900/10 p-2 flex items-center justify-center relative">
                           <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-gray-800 shadow-md">
-                            📍 Dakar Focus
+                            📍 Focus Dakar &amp; Thiès
                           </span>
                         </div>
                       </div>
@@ -268,10 +272,10 @@ function ContenuPageChatbot() {
                     {/* Widget Action Pills */}
                     <div className="flex flex-wrap gap-2">
                       <button className="rounded-full border border-gray-300 bg-gray-50 px-3.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition">
-                        📥 Export Data
+                        📥 Exporter les données
                       </button>
                       <button className="rounded-full bg-purple-100 px-3.5 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-200 transition">
-                        ✨ Predict next month
+                        ✨ Prédire le mois suivant
                       </button>
                     </div>
                   </div>
@@ -284,13 +288,13 @@ function ContenuPageChatbot() {
 
           {enCours && (
             <div className="flex gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">
-                🤖
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5C158]/30 bg-[#F3ECE0]">
+                <Image src="/design/sunubot-icon.svg" alt="SunuBot" width={26} height={26} />
               </div>
-              <div className="flex items-center gap-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 text-xs text-gray-500 shadow-sm">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.3s]" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400 [animation-delay:-0.15s]" />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-gray-400" />
+              <div className="flex items-center gap-1 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xs text-gray-500 shadow-sm">
+                <span className="h-2 w-2 animate-bounce rounded-full bg-[#00C49F] [animation-delay:-0.3s]" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-[#00C49F] [animation-delay:-0.15s]" />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-[#00C49F]" />
               </div>
             </div>
           )}
@@ -301,22 +305,22 @@ function ContenuPageChatbot() {
           {/* Suggestion Chips */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
             <button
-              onClick={() => void envoyerQuestion("Compare with Mali")}
-              className="rounded-full border border-gray-200 bg-white px-3 py-1 font-medium text-gray-600 hover:bg-gray-50 transition whitespace-nowrap"
+              onClick={() => void envoyerQuestion("Comparer avec Kaolack")}
+              className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 font-medium text-gray-600 hover:bg-gray-50 transition whitespace-nowrap"
             >
-              Compare with Mali
+              Comparer avec Kaolack
             </button>
             <button
-              onClick={() => void envoyerQuestion("Show vendor distribution")}
-              className="rounded-full border border-gray-200 bg-white px-3 py-1 font-medium text-gray-600 hover:bg-gray-50 transition whitespace-nowrap"
+              onClick={() => void envoyerQuestion("Afficher la distribution des vendeurs")}
+              className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 font-medium text-gray-600 hover:bg-gray-50 transition whitespace-nowrap"
             >
-              Show vendor distribution
+              Afficher la distribution des vendeurs
             </button>
             <button
-              onClick={() => void envoyerQuestion("Alert me if price > 460")}
-              className="rounded-full border border-gray-200 bg-white px-3 py-1 font-medium text-gray-600 hover:bg-gray-50 transition whitespace-nowrap"
+              onClick={() => void envoyerQuestion("Alertez-moi si le prix > 460 FCFA")}
+              className="rounded-full border border-gray-200 bg-white px-3.5 py-1.5 font-medium text-gray-600 hover:bg-gray-50 transition whitespace-nowrap"
             >
-              Alert me if price &gt; 460
+              Alertez-moi si le prix &gt; 460 FCFA
             </button>
           </div>
 
@@ -335,7 +339,7 @@ function ContenuPageChatbot() {
               type="text"
               value={saisie}
               onChange={(e) => setSaisie(e.target.value)}
-              placeholder="Ask for insights, compare data, or analyze trends..."
+              placeholder="Posez une question sur les prix, comparez des données ou analysez des tendances..."
               className="flex-1 bg-transparent text-xs text-gray-900 placeholder-gray-400 focus:outline-none"
               disabled={enCours}
             />
@@ -349,7 +353,7 @@ function ContenuPageChatbot() {
           </form>
 
           <p className="text-center text-[10px] text-gray-400">
-            ℹ AI can make mistakes. Verify important data.
+            SunuBot IA ancré dans les données officielles de SunuPrix Sénégal.
           </p>
         </div>
       </div>
@@ -364,3 +368,4 @@ export default function PageChatbot() {
     </RouteProtegee>
   );
 }
+
