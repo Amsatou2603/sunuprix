@@ -139,11 +139,6 @@ export function ChatbotWidget() {
                   }`}
                 >
                   <p>{message.contenu}</p>
-                  {message.source === "REPLI_LOCAL" && (
-                    <p className="mt-1 text-[9px] font-bold uppercase tracking-wider text-emerald-400/60">
-                      Mode hors-ligne
-                    </p>
-                  )}
                 </div>
               </div>
             ))}

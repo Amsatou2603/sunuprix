@@ -14,12 +14,13 @@ import type { ContexteChatbot, MessageConversation, ReponseChatbot } from "./cha
  */
 function construirePrompt(message: string, contexte: ContexteChatbot): string {
   return [
-    "Tu es l'assistant conversationnel de SunuPrix, une plateforme pédagogique de suivi des prix au Sénégal.",
-    "Réponds en français, de façon concise (3 phrases maximum), en te basant UNIQUEMENT sur les faits ci-dessous.",
-    "Si les faits ne permettent pas de répondre précisément, dis-le clairement plutôt que d'inventer un chiffre.",
-    "Rappelle si pertinent que les données sont fictives, à but pédagogique.",
+    "Tu es SunuBot, l'assistant conversationnel intelligent de SunuPrix, une plateforme de suivi des prix au Sénégal.",
+    "Réponds en français de façon naturelle, utile et concise (2-4 phrases maximum).",
+    "Base-toi UNIQUEMENT sur les faits de marché ci-dessous pour les prix. Ne t'invente aucun chiffre.",
+    "Si les données sont insuffisantes, propose des alternatives ou reformule la question de l'utilisateur.",
+    "Sois chaleureux, précis et professionnel. N'utilise pas de préfixes comme 'Réponse:' ou 'Note:'.",
     "",
-    "Faits disponibles :",
+    "Données de marché disponibles :",
     contexte.resume,
     "",
     `Question de l'utilisateur : ${message}`,
@@ -29,7 +30,7 @@ function construirePrompt(message: string, contexte: ContexteChatbot): string {
 /** Tente un appel réel à l'API Gemini. Lève une exception si la clé est absente ou l'appel échoue. */
 async function essayerGemini(message: string, contexte: ContexteChatbot): Promise<string> {
   if (!env.geminiApiKey) {
-    throw new Error("GEMINI_API_KEY absente : bascule sur le mode de repli local.");
+    throw new Error("GEMINI_API_KEY absente.");
   }
 
   const client = new GoogleGenerativeAI(env.geminiApiKey);
@@ -45,19 +46,25 @@ async function essayerGemini(message: string, contexte: ContexteChatbot): Promis
 }
 
 /**
- * Mode de repli local : construit une réponse en langage naturel directement
- * à partir du même contexte factuel que celui envoyé à Gemini. Utilisé
- * chaque fois que la clé API est absente ou que l'appel échoue (quota,
- * réseau, erreur du service) — la démonstration ne dépend donc jamais de la
- * disponibilité d'un service externe.
+ * Génère une réponse propre et naturelle à partir des données locales,
+ * sans exposer le mode de fonctionnement interne.
  */
 export function genererReponseRepli(contexte: ContexteChatbot): string {
   if (contexte.faits.length === 0) {
-    return "Je n'ai pas trouvé de données correspondant précisément à votre question. Essayez par exemple : « Quel est le prix du riz à Dakar ? » ou « Comment évolue le sucre à Thiès ? ».";
+    return "Je n'ai pas de données précises pour répondre à votre question. Essayez de mentionner un produit spécifique (riz, huile, sucre…) et/ou une région (Dakar, Thiès, Saint-Louis…).";
   }
 
-  return `${contexte.resume} Ces données sont fictives et générées à des fins pédagogiques.`;
+  const fait = contexte.faits[0];
+  const variation =
+    fait.variationPourcent !== null
+      ? fait.variationPourcent >= 0
+        ? `en hausse de ${Math.abs(fait.variationPourcent).toFixed(1)}%`
+        : `en baisse de ${Math.abs(fait.variationPourcent).toFixed(1)}%`
+      : "sans variation connue";
+
+  return `D'après nos dernières données, le ${fait.produit} à ${fait.region} est à **${fait.prixActuelFcfa} FCFA/${fait.unite}**, ${variation} par rapport au relevé précédent. Ces informations proviennent de notre base de données SunuPrix.`;
 }
+
 
 
 export async function genererReponseAvecRepli(
@@ -69,13 +76,16 @@ export async function genererReponseAvecRepli(
     return { texte, source: "GEMINI" };
   } catch (erreur) {
     // eslint-disable-next-line no-console
-    console.warn(
-      "[SunuPrix][chatbot] Appel Gemini indisponible, bascule sur le mode de repli local :",
-      erreur instanceof Error ? erreur.message : erreur,
+    console.error(
+      "[SunuPrix][chatbot] Gemini indisponible — clé présente:",
+      !!env.geminiApiKey,
+      "— erreur:",
+      erreur instanceof Error ? erreur.message : String(erreur),
     );
     return { texte: genererReponseRepli(contexte), source: "REPLI_LOCAL" };
   }
 }
+
 
 function horodatageMaintenant(): string {
   return new Date().toISOString();
