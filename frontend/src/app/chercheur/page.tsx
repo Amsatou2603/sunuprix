@@ -27,7 +27,7 @@ function ContenuPageChercheur() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-8 text-gray-900">
+    <div className="min-h-screen bg-white py-8 text-gray-900">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6">
         {/* Page Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -45,21 +45,21 @@ function ContenuPageChercheur() {
 
         {/* 4 Metric KPI Cards — données réelles (référentiel + dernière analyse comparative) */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="relative rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="relative rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <span className="text-xs font-medium text-gray-500">Produits suivis</span>
             <div className="mt-3">
               <span className="text-3xl font-extrabold text-gray-900">{produits.length}</span>
             </div>
           </div>
 
-          <div className="relative rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="relative rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <span className="text-xs font-medium text-gray-500">Régions couvertes</span>
             <div className="mt-3">
               <span className="text-3xl font-extrabold text-gray-900">{regions.length}</span>
             </div>
           </div>
 
-          <div className="relative rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="relative rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <span className="text-xs font-medium text-gray-500">Points de données (dernière analyse)</span>
             <div className="mt-3">
               <span className="text-3xl font-extrabold text-gray-900">
@@ -68,7 +68,7 @@ function ContenuPageChercheur() {
             </div>
           </div>
 
-          <div className="relative rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="relative rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <span className="text-xs font-medium text-gray-500">Entités comparées</span>
             <div className="mt-3">
               <span className="text-3xl font-extrabold text-gray-900">

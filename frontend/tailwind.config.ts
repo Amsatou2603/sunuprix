@@ -24,7 +24,8 @@ const config: Config = {
           DEFAULT: "#0B2E24",
         },
         surface: {
-          DEFAULT: "#F7F5EF",
+          DEFAULT: "#FFFFFF",
+          card: "#F5F5F7",
         },
       },
       fontFamily: {

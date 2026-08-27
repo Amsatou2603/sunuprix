@@ -96,7 +96,7 @@ function ContenuPageDonnees() {
   const alertesActives = alertes.filter((a) => a.active);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-8 text-gray-900">
+    <div className="min-h-screen bg-white py-8 text-gray-900">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6">
         {/* Greeting Banner */}
         <div>
@@ -111,7 +111,7 @@ function ContenuPageDonnees() {
         {/* 3 Top Highlight Cards — données réelles */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Card 1: Prédiction du jour (réelle, déjà chargée pour le produit/région sélectionnés) */}
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
                 🔮
@@ -129,7 +129,7 @@ function ContenuPageDonnees() {
           </div>
 
           {/* Card 2: Alertes actives (réelles) */}
-          <div className="rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between">
+          <div className="rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-100 bg-[#F5F5F7] p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600 text-lg">
@@ -178,7 +178,7 @@ function ContenuPageDonnees() {
 
         {/* Main Content: synthèse régionale + mes alertes (remplace le graphique statique et les "favoris" fictifs) */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-7">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm lg:col-span-7">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-bold text-gray-900">Synthèse par région — {produitCourant?.nom ?? "…"}</h2>
               <Link href="/chercheur" className="text-xs font-semibold text-[#00B493] hover:underline">
@@ -188,7 +188,7 @@ function ContenuPageDonnees() {
             <CartesSynthese snapshots={carte} regionSelectionneeId={regionId} onSelectionner={setRegionId} />
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-5">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm lg:col-span-5">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-base font-bold text-gray-900">Mes alertes</h2>
               <Link

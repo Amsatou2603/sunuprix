@@ -82,7 +82,7 @@ function ContenuPageChatbot() {
   };
 
   return (
-    <div className="flex h-screen bg-[#F8FAFC] text-gray-900 overflow-hidden w-full">
+    <div className="flex h-screen bg-white text-gray-900 overflow-hidden w-full">
       {/* ==================== LEFT CONTROL CENTER SIDEBAR ==================== */}
       <aside className="w-64 flex-shrink-0 border-r border-gray-200 bg-white p-5 flex flex-col justify-between hidden md:flex">
         <div className="space-y-8">
@@ -158,7 +158,7 @@ function ContenuPageChatbot() {
         </div>
 
         {/* Chat Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#F8FAFC]">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -187,7 +187,7 @@ function ContenuPageChatbot() {
                   className={`rounded-2xl px-4 py-3 text-xs leading-relaxed ${
                     msg.sender === "user"
                       ? "bg-[#0B5D48] text-white"
-                      : "border border-gray-200/80 bg-white text-gray-900 shadow-sm"
+                      : "border border-gray-200/80 bg-[#F5F5F7] text-gray-900 shadow-sm"
                   }`}
                 >
                   <p>{msg.text}</p>
@@ -203,7 +203,7 @@ function ContenuPageChatbot() {
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5C158]/30 bg-[#F3ECE0]">
                 <Image src="/design/sunubot-icon.svg" alt="SunuBot" width={26} height={26} />
               </div>
-              <div className="flex items-center gap-1 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xs text-gray-500 shadow-sm">
+              <div className="flex items-center gap-1 rounded-2xl border border-gray-200 bg-[#F5F5F7] px-4 py-3 text-xs text-gray-500 shadow-sm">
                 <span className="h-2 w-2 animate-bounce rounded-full bg-[#00C49F] [animation-delay:-0.3s]" />
                 <span className="h-2 w-2 animate-bounce rounded-full bg-[#00C49F] [animation-delay:-0.15s]" />
                 <span className="h-2 w-2 animate-bounce rounded-full bg-[#00C49F]" />

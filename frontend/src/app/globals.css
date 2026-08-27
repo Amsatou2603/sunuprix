@@ -14,7 +14,7 @@ body {
    duplication de classes répétées sur les cartes / boutons à travers les pages. */
 @layer components {
   .carte {
-    @apply rounded-xl2 border border-black/5 bg-white p-6 shadow-card;
+    @apply rounded-xl2 border border-black/5 bg-surface-card p-6 shadow-card;
   }
 
   .bouton-primaire {

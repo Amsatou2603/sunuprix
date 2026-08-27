@@ -76,7 +76,7 @@ function ContenuPageAdmin() {
   const maxParRole = Math.max(1, ...repartitionRoles.map((r) => r.total));
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC] text-gray-900">
+    <div className="flex min-h-screen bg-white text-gray-900">
       {/* ==================== LEFT SIDEBAR NAVIGATION ==================== */}
       <aside className="w-64 flex-shrink-0 border-r border-gray-200 bg-white p-5 flex flex-col justify-between hidden md:flex">
         <div className="space-y-8">
@@ -213,7 +213,7 @@ function ContenuPageAdmin() {
 
         {/* 4 Top KPI Cards — données réelles */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
               👥
             </div>
@@ -223,7 +223,7 @@ function ContenuPageAdmin() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 text-lg">
               📋
             </div>
@@ -231,7 +231,7 @@ function ContenuPageAdmin() {
             <p className="mt-1 text-2xl font-extrabold text-gray-900">{declarations.length}</p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600 text-lg">
               🏷️
             </div>
@@ -239,7 +239,7 @@ function ContenuPageAdmin() {
             <p className="mt-1 text-2xl font-extrabold text-gray-900">{produits.length}</p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 text-lg">
               🗺️
             </div>
@@ -251,7 +251,7 @@ function ContenuPageAdmin() {
         {/* Middle Section: répartition réelle des rôles & aperçu de modération */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Répartition des utilisateurs par rôle (calculée à partir des vrais comptes) */}
-          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-8">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm lg:col-span-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-base font-bold text-gray-900">Répartition des utilisateurs par rôle</h2>
             </div>
@@ -273,7 +273,7 @@ function ContenuPageAdmin() {
 
           {/* Aperçu réel : déclarations en attente + régions couvertes */}
           <div className="space-y-6 lg:col-span-4">
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-emerald-600 text-lg">📊</span>
                 <span className="text-xs font-bold text-emerald-700">Aperçu</span>
@@ -308,7 +308,7 @@ function ContenuPageAdmin() {
             </div>
 
             {regions.length > 0 && (
-              <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-4 shadow-sm">
                 <p className="text-xs font-bold text-gray-900 mb-2">Régions couvertes</p>
                 <p className="text-[11px] text-gray-600 leading-relaxed">{regions.map((r) => r.nom).join(" · ")}</p>
               </div>
@@ -317,7 +317,7 @@ function ContenuPageAdmin() {
         </div>
 
         {/* Bottom Section: aperçu réel des déclarations en attente, avec actions fonctionnelles */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-base font-bold text-gray-900">Déclarations récentes en attente</h2>
             <button onClick={() => setOngletActif("MODERATION")} className="text-xs font-semibold text-[#00B493] hover:underline">
