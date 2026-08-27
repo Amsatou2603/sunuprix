@@ -111,10 +111,10 @@ export default function PageAccueil() {
   const regionCourante = regions[0];
 
   return (
-    <div className="mx-auto max-w-7xl space-y-20 px-4 pb-16 pt-8 sm:px-6 sm:pt-14">
+    <div className="mx-auto max-w-7xl space-y-20 px-4 pb-16 pt-14 sm:px-6 sm:pt-20">
       {/* ==================== HERO SECTION ==================== */}
       <section className="relative">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
           {/* Colonne gauche : texte + CTA */}
           <motion.div
             initial="cache"

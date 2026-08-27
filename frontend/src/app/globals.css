@@ -54,9 +54,11 @@ body {
 
   /* Teinte de base sombre (et non `bg-white/10`) : un panneau "verre sombre"
      doit rester lisible même posé directement sur le fond clair de la page
-     (`bg-surface`), pas seulement sur un ancien héros de couleur foncée. */
+     (`bg-surface`), pas seulement sur un ancien héros de couleur foncée.
+     Vert primaire de la marque (pas le vert quasi noir de `header`), pour
+     rester dans le même registre que les boutons/accents du reste du site. */
   .verre-sombre {
-    @apply rounded-3xl border border-white/10 bg-header/90 shadow-[0_8px_32px_rgba(11,46,36,0.35)] backdrop-blur-xl;
+    @apply rounded-3xl border border-white/10 bg-primary/85 shadow-[0_8px_32px_rgba(15,110,86,0.3)] backdrop-blur-xl;
   }
 
   .bouton-verre {
