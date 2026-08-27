@@ -3,18 +3,28 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ROLES, LIBELLES_ROLES } from "@sunuprix/shared";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { TableauUtilisateurs } from "@/components/admin/TableauUtilisateurs";
 import { FileModeration } from "@/components/admin/FileModeration";
 import { ConfigurationSeuilsForm } from "@/components/admin/ConfigurationSeuilsForm";
 import { adminApi } from "@/lib/api/admin";
-import type { DeclarationPrixPublique, UtilisateurPublic } from "@/lib/api/types";
+import { referentielApi } from "@/lib/api/referentiel";
+import { telechargerExportCsv } from "@/lib/api/export";
+import { ErreurApi } from "@/lib/api/api-client";
+import { MessageErreur } from "@/components/partages/EtatAsync";
+import type { DeclarationPrixPublique, Produit, Region, UtilisateurPublic } from "@/lib/api/types";
 
 function ContenuPageAdmin() {
   const [utilisateurs, setUtilisateurs] = useState<UtilisateurPublic[]>([]);
   const [declarations, setDeclarations] = useState<DeclarationPrixPublique[]>([]);
+  const [produits, setProduits] = useState<Produit[]>([]);
+  const [regions, setRegions] = useState<Region[]>([]);
   const [chargement, setChargement] = useState(true);
   const [ongletActif, setOngletActif] = useState<"VUE_DENSEMBLE" | "UTILISATEURS" | "MODERATION" | "CONFIG">("VUE_DENSEMBLE");
+  const [enCoursExport, setEnCoursExport] = useState(false);
+  const [idEnCoursApercu, setIdEnCoursApercu] = useState<string | null>(null);
+  const [erreurApercu, setErreurApercu] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([adminApi.utilisateurs(), adminApi.declarationsEnAttente()])
@@ -24,7 +34,46 @@ function ContenuPageAdmin() {
       })
       .catch(() => undefined)
       .finally(() => setChargement(false));
+
+    Promise.all([referentielApi.produits(), referentielApi.regions()])
+      .then(([listeProduits, listeRegions]) => {
+        setProduits(listeProduits);
+        setRegions(listeRegions);
+      })
+      .catch(() => undefined);
   }, []);
+
+  const exporterRapport = async () => {
+    setEnCoursExport(true);
+    try {
+      await telechargerExportCsv();
+    } catch {
+      // Le bouton reste silencieux en cas d'échec ponctuel ; l'export complet reste disponible côté Chercheur.
+    } finally {
+      setEnCoursExport(false);
+    }
+  };
+
+  const traiterDeclarationApercu = async (id: string, action: "valider" | "rejeter") => {
+    setIdEnCoursApercu(id);
+    setErreurApercu(null);
+    try {
+      await (action === "valider" ? adminApi.validerDeclaration(id) : adminApi.rejeterDeclaration(id));
+      setDeclarations((prev) => prev.filter((d) => d.id !== id));
+    } catch (e) {
+      setErreurApercu(e instanceof ErreurApi ? e.message : "Impossible de traiter cette déclaration.");
+    } finally {
+      setIdEnCoursApercu(null);
+    }
+  };
+
+  const utilisateursActifs = utilisateurs.filter((u) => u.actif).length;
+  const repartitionRoles = ROLES.map((role) => ({
+    role,
+    libelle: LIBELLES_ROLES[role],
+    total: utilisateurs.filter((u) => u.role === role).length,
+  }));
+  const maxParRole = Math.max(1, ...repartitionRoles.map((r) => r.total));
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] text-gray-900">
@@ -74,17 +123,7 @@ function ContenuPageAdmin() {
             >
               <div className="flex items-center gap-2.5">
                 <span className="text-base">👥</span>
-                Utilisateurs (1.2M)
-              </div>
-            </button>
-
-            <button
-              onClick={() => setOngletActif("VUE_DENSEMBLE")}
-              className="w-full flex items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <span className="text-base">🏪</span>
-                Boutiques &amp; Marchés
+                Utilisateurs ({utilisateurs.length})
               </div>
             </button>
 
@@ -100,9 +139,11 @@ function ContenuPageAdmin() {
                 <span className="text-base">⚖️</span>
                 Validations Prix
               </div>
-              <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
-                42
-              </span>
+              {declarations.length > 0 && (
+                <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                  {declarations.length}
+                </span>
+              )}
             </button>
           </div>
 
@@ -119,15 +160,6 @@ function ContenuPageAdmin() {
               <Image src="/design/sunubot-icon.svg" alt="SunuBot Icon" width={20} height={20} />
               Centre IA SunuBot
             </Link>
-
-
-            <button
-              onClick={() => setOngletActif("VUE_DENSEMBLE")}
-              className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition"
-            >
-              <span className="text-base">🖥️</span>
-              Santé Serveurs
-            </button>
 
             <button
               onClick={() => setOngletActif("CONFIG")}
@@ -149,8 +181,8 @@ function ContenuPageAdmin() {
             AS
           </div>
           <div>
-            <p className="text-xs font-bold text-gray-900">Admin Suprême</p>
-            <p className="text-[10px] font-medium text-gray-400">Niveau d&apos;accès: 5</p>
+            <p className="text-xs font-bold text-gray-900">Administrateur</p>
+            <p className="text-[10px] font-medium text-gray-400">SunuPrix Sénégal</p>
           </div>
         </div>
       </aside>
@@ -161,133 +193,108 @@ function ContenuPageAdmin() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-extrabold text-[#0F172A]">
-              Centre de Contrôle National
+              Centre de Contrôle
             </h1>
             <p className="mt-1 text-sm font-medium text-gray-500">
-              Supervision en temps réel du réseau SunuPrix Sénégal.
+              Supervision du réseau SunuPrix Sénégal.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition">
-              <span>📄</span> Rapport
-            </button>
-            <button className="inline-flex items-center gap-2 rounded-lg bg-[#0B5D48] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#074737] transition">
-              <span>+</span> Action Rapide
+            <button
+              onClick={exporterRapport}
+              disabled={enCoursExport}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition disabled:opacity-50"
+            >
+              <span>📄</span> {enCoursExport ? "Export…" : "Rapport (CSV)"}
             </button>
           </div>
         </div>
 
-        {/* 4 Top KPI Cards */}
+        {/* 4 Top KPI Cards — données réelles */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Card 1 */}
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
-                👥
-              </div>
-              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-600">
-                📈 +12%
-              </span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
+              👥
             </div>
             <p className="mt-3 text-xs font-medium text-gray-500">Utilisateurs Actifs</p>
-            <p className="mt-1 text-2xl font-extrabold text-gray-900">1,245,892</p>
+            <p className="mt-1 text-2xl font-extrabold text-gray-900">
+              {utilisateursActifs} <span className="text-xs font-normal text-gray-400">/ {utilisateurs.length}</span>
+            </p>
           </div>
 
-          {/* Card 2 */}
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 text-lg">
-                📋
-              </div>
-              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-600">
-                📈 +5.4%
-              </span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 text-lg">
+              📋
             </div>
-            <p className="mt-3 text-xs font-medium text-gray-500">Prix Validés (24h)</p>
-            <p className="mt-1 text-2xl font-extrabold text-gray-900">84,520</p>
+            <p className="mt-3 text-xs font-medium text-gray-500">Déclarations en attente</p>
+            <p className="mt-1 text-2xl font-extrabold text-gray-900">{declarations.length}</p>
           </div>
 
-          {/* Card 3 */}
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600 text-lg">
-                💻
-              </div>
-              <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-600">
-                Stable
-              </span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600 text-lg">
+              🏷️
             </div>
-            <p className="mt-3 text-xs font-medium text-gray-500">Santé Serveurs</p>
-            <p className="mt-1 text-2xl font-extrabold text-gray-900">99.98% <span className="text-xs font-normal text-gray-400">Uptime</span></p>
+            <p className="mt-3 text-xs font-medium text-gray-500">Produits suivis</p>
+            <p className="mt-1 text-2xl font-extrabold text-gray-900">{produits.length}</p>
           </div>
 
-          {/* Card 4 (RED LEFT ACCENT BORDER) */}
-          <div className="rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-100 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600 text-lg">
-                📢
-              </div>
-              <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-bold text-red-600">
-                Action Requise
-              </span>
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 text-lg">
+              🗺️
             </div>
-            <p className="mt-3 text-xs font-medium text-gray-500">Signalements &amp; Litiges</p>
-            <p className="mt-1 text-2xl font-extrabold text-gray-900">42</p>
+            <p className="mt-3 text-xs font-medium text-gray-500">Régions couvertes</p>
+            <p className="mt-1 text-2xl font-extrabold text-gray-900">{regions.length}</p>
           </div>
         </div>
 
-        {/* Middle Section: Split 65% Chart & 35% AI Insights */}
+        {/* Middle Section: répartition réelle des rôles & aperçu de modération */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          {/* Network Activity Bar Chart */}
+          {/* Répartition des utilisateurs par rôle (calculée à partir des vrais comptes) */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-base font-bold text-gray-900">Activité Réseau Nationale</h2>
-              <select className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-700">
-                <option>Aujourd&apos;hui</option>
-                <option>Cette semaine</option>
-              </select>
+              <h2 className="text-base font-bold text-gray-900">Répartition des utilisateurs par rôle</h2>
             </div>
 
-            {/* 7-Bar Chart matching Image 3 */}
             <div className="flex h-52 items-end justify-between gap-3 px-4 pt-4">
-              <div className="w-full rounded-t-lg bg-teal-200 h-[35%]" />
-              <div className="w-full rounded-t-lg bg-teal-300 h-[55%]" />
-              <div className="w-full rounded-t-lg bg-teal-200 h-[28%]" />
-              <div className="w-full rounded-t-lg bg-teal-400 h-[75%]" />
-              <div className="w-full rounded-t-lg bg-teal-200 h-[45%]" />
-              <div className="w-full rounded-t-lg bg-[#0B5D48] h-[92%]" />
-              <div className="w-full rounded-t-lg bg-teal-400 h-[65%]" />
+              {repartitionRoles.map(({ role, libelle, total }) => (
+                <div key={role} className="flex w-full flex-col items-center gap-2">
+                  <div
+                    className="w-full rounded-t-lg bg-[#0B5D48]"
+                    style={{ height: `${Math.max(4, (total / maxParRole) * 100)}%` }}
+                    title={`${libelle} : ${total}`}
+                  />
+                  <span className="text-center text-[10px] font-medium text-gray-500">{libelle}</span>
+                  <span className="text-xs font-bold text-gray-900">{total}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* AI Insights & Regional Map Card */}
+          {/* Aperçu réel : déclarations en attente + régions couvertes */}
           <div className="space-y-6 lg:col-span-4">
-            {/* AI Insights Panel */}
-            <div className="rounded-2xl border border-purple-100 bg-gradient-to-br from-purple-50/60 to-white p-6 shadow-sm relative overflow-hidden">
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-purple-600 text-lg">⚙️</span>
-                <span className="text-xs font-bold text-purple-600">AI Intelligence</span>
+                <span className="text-emerald-600 text-lg">📊</span>
+                <span className="text-xs font-bold text-emerald-700">Aperçu</span>
               </div>
 
               <div className="space-y-4 text-xs">
-                <div className="flex items-start gap-3 rounded-xl bg-white p-3 shadow-sm border border-gray-100">
-                  <span className="text-purple-600 text-base">💡</span>
+                <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 border border-gray-100">
+                  <span className="text-purple-600 text-base">⚖️</span>
                   <div>
-                    <p className="font-bold text-gray-900">Tendance à la hausse détectée</p>
+                    <p className="font-bold text-gray-900">{declarations.length} déclaration(s) en attente</p>
                     <p className="text-gray-500 mt-1 leading-relaxed">
-                      Le prix de l&apos;oignon local augmente de 15% plus vite que la normale dans la région de Thiès. Recommandation: Alerte de surveillance.
+                      À traiter dans l&apos;onglet Validations Prix.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 rounded-xl bg-white p-3 shadow-sm border border-gray-100">
-                  <span className="text-emerald-600 text-base">🛡️</span>
+                <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 border border-gray-100">
+                  <span className="text-emerald-600 text-base">👥</span>
                   <div>
-                    <p className="font-bold text-gray-900">Score de Fiabilité Global</p>
-                    <p className="text-gray-500 mt-1 leading-relaxed">
-                      Le taux de confiance des prix soumis par la communauté est stable à 92% cette semaine.
-                    </p>
+                    <p className="font-bold text-gray-900">{utilisateursActifs} compte(s) actifs</p>
+                    <p className="text-gray-500 mt-1 leading-relaxed">sur {utilisateurs.length} inscrits au total.</p>
                   </div>
                 </div>
               </div>
@@ -300,77 +307,83 @@ function ContenuPageAdmin() {
               </Link>
             </div>
 
-            {/* Regional Activity map preview snippet */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-              <p className="text-xs font-bold text-gray-900 mb-2">Activité Régionale</p>
-              <div className="h-28 w-full rounded-xl bg-emerald-950/10 p-3 flex flex-col justify-end text-[10px] text-gray-600">
-                <p className="font-bold text-emerald-900">MATAM REGION · TAMBACOUNDA REGION</p>
-                <p className="text-gray-500">Boki Sada · Belel Diamala</p>
+            {regions.length > 0 && (
+              <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+                <p className="text-xs font-bold text-gray-900 mb-2">Régions couvertes</p>
+                <p className="text-[11px] text-gray-600 leading-relaxed">{regions.map((r) => r.nom).join(" · ")}</p>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Bottom Section: Community Validations List */}
+        {/* Bottom Section: aperçu réel des déclarations en attente, avec actions fonctionnelles */}
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-base font-bold text-gray-900">
-              Validations Communautaires Récentes
-            </h2>
+            <h2 className="text-base font-bold text-gray-900">Déclarations récentes en attente</h2>
             <button onClick={() => setOngletActif("MODERATION")} className="text-xs font-semibold text-[#00B493] hover:underline">
               Voir tout
             </button>
           </div>
 
-          <div className="space-y-4">
-            {/* Item 1 */}
-            <div className="flex flex-col gap-4 rounded-xl border border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between hover:bg-gray-50/50 transition">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-2xl">
-                  🌾
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-gray-900">Riz Brisé Parfumé (Sac 50kg)</p>
-                  <p className="text-[11px] text-gray-500">Marché Sandaga, Dakar · Soumis il y a 5 min</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-6">
-                <div className="text-right">
-                  <p className="text-xs font-bold text-gray-900">22,500 FCFA</p>
-                  <p className="text-[10px] font-semibold text-emerald-600">12 Confirmations</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-emerald-100 hover:text-emerald-700 transition">✓</button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700 transition">✕</button>
-                </div>
-              </div>
+          {erreurApercu && (
+            <div className="mb-4">
+              <MessageErreur message={erreurApercu} />
             </div>
+          )}
 
-            {/* Item 2 */}
-            <div className="flex flex-col gap-4 rounded-xl border border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between hover:bg-gray-50/50 transition">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-2xl">
-                  🍾
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-gray-900">Huile Végétale (Bidon 20L)</p>
-                  <p className="text-[11px] text-gray-500">Marché Castors, Dakar · Soumis il y a 12 min</p>
-                </div>
-              </div>
+          {declarations.length === 0 ? (
+            <p className="text-xs text-gray-500">Aucune déclaration en attente de validation pour le moment.</p>
+          ) : (
+            <div className="space-y-4">
+              {declarations.slice(0, 3).map((declaration) => (
+                <div
+                  key={declaration.id}
+                  className="flex flex-col gap-4 rounded-xl border border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between hover:bg-gray-50/50 transition"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-2xl">
+                      🌾
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-gray-900">
+                        {declaration.produit.nom} — {declaration.region.nom}
+                      </p>
+                      <p className="text-[11px] text-gray-500">
+                        Déclaré par {declaration.vendeur?.nom ?? "vendeur inconnu"} le{" "}
+                        {new Date(declaration.dateReleve).toLocaleDateString("fr-FR")}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="flex items-center gap-6">
-                <div className="text-right">
-                  <p className="text-xs font-bold text-gray-900">19,000 FCFA</p>
-                  <p className="text-[10px] font-semibold text-red-600 flex items-center gap-1">⚠️ Écart suspect détecté</p>
+                  <div className="flex items-center gap-6">
+                    <div className="text-right">
+                      <p className="text-xs font-bold text-gray-900">
+                        {declaration.prixFcfa.toLocaleString("fr-FR")} FCFA/{declaration.produit.unite}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        disabled={idEnCoursApercu === declaration.id}
+                        onClick={() => traiterDeclarationApercu(declaration.id, "valider")}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-emerald-100 hover:text-emerald-700 transition disabled:opacity-50"
+                        aria-label="Valider"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        disabled={idEnCoursApercu === declaration.id}
+                        onClick={() => traiterDeclarationApercu(declaration.id, "rejeter")}
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700 transition disabled:opacity-50"
+                        aria-label="Rejeter"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-emerald-100 hover:text-emerald-700 transition">✓</button>
-                  <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700 transition">✕</button>
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Tab specific views for User Management, File Moderation, and Config */}
@@ -413,4 +426,3 @@ export default function PageAdmin() {
     </RouteProtegee>
   );
 }
-

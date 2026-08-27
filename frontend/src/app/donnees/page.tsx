@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -8,11 +8,13 @@ import { CarteRegions } from "@/components/donnees/CarteRegions";
 import { CartesSynthese } from "@/components/donnees/CartesSynthese";
 import { GraphiquePrix } from "@/components/donnees/GraphiquePrix";
 import { SelecteurProduitRegion } from "@/components/donnees/SelecteurProduitRegion";
-import { Chargement, MessageErreur } from "@/components/partages/EtatAsync";
+import { Chargement, EtatVide, MessageErreur } from "@/components/partages/EtatAsync";
 import { referentielApi } from "@/lib/api/referentiel";
 import { prixApi } from "@/lib/api/prix";
 import { predictionsApi } from "@/lib/api/predictions";
+import { alertesApi } from "@/lib/api/alertes";
 import type {
+  Alerte,
   PointHistoriquePrix,
   PredictionPublique,
   Produit,
@@ -30,6 +32,7 @@ function ContenuPageDonnees() {
   const [carte, setCarte] = useState<SnapshotRegion[]>([]);
   const [historique, setHistorique] = useState<PointHistoriquePrix[]>([]);
   const [prediction, setPrediction] = useState<PredictionPublique | null>(null);
+  const [alertes, setAlertes] = useState<Alerte[]>([]);
   const [erreur, setErreur] = useState<string | null>(null);
   const [chargementReferentiel, setChargementReferentiel] = useState(true);
   const [chargement, setChargement] = useState(true);
@@ -44,6 +47,11 @@ function ContenuPageDonnees() {
       })
       .catch(() => undefined)
       .finally(() => setChargementReferentiel(false));
+
+    alertesApi
+      .lister()
+      .then(setAlertes)
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -74,47 +82,53 @@ function ContenuPageDonnees() {
   const produitCourant = produits.find((p) => p.id === produitId);
   const regionCourante = regions.find((r) => r.id === regionId);
 
-  const prenomUtilisateur = utilisateur?.nom ? utilisateur.nom.split(" ")[0] : "Aminata";
+  const prenomUtilisateur = utilisateur?.nom ? utilisateur.nom.split(" ")[0] : "";
+
+  // Région où le produit sélectionné a le plus varié ce mois-ci — calculé à partir des vrais relevés (pas de texte inventé).
+  const regionPlusVariable = useMemo(() => {
+    const avecVariation = carte.filter((s) => s.variationMensuellePourcent !== null);
+    if (avecVariation.length === 0) return null;
+    return avecVariation.reduce((max, s) =>
+      Math.abs(s.variationMensuellePourcent as number) > Math.abs(max.variationMensuellePourcent as number) ? s : max
+    );
+  }, [carte]);
+
+  const alertesActives = alertes.filter((a) => a.active);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-8 text-gray-900">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6">
-        {/* Greeting Banner matching Image 5 */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-extrabold text-[#0F172A]">
-              Bonjour, {prenomUtilisateur}
-            </h1>
-            <p className="mt-1 text-sm font-medium text-gray-500">
-              Voici un résumé de vos économies et des tendances du marché ce mois-ci.
-            </p>
-          </div>
-
-          <select className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-sm">
-            <option>📅 Ce Mois</option>
-            <option>📅 Mois Dernier</option>
-          </select>
+        {/* Greeting Banner */}
+        <div>
+          <h1 className="text-3xl font-extrabold text-[#0F172A]">
+            Bonjour{prenomUtilisateur ? `, ${prenomUtilisateur}` : ""}
+          </h1>
+          <p className="mt-1 text-sm font-medium text-gray-500">
+            Voici un résumé des tendances du marché ce mois-ci.
+          </p>
         </div>
 
-        {/* 3 Top Highlight Cards */}
+        {/* 3 Top Highlight Cards — données réelles */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {/* Card 1: Économies Réalisées */}
+          {/* Card 1: Prédiction du jour (réelle, déjà chargée pour le produit/région sélectionnés) */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
-                  🐷
-                </div>
-                <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-600">
-                  +12% vs mois dernier
-                </span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
+                🔮
               </div>
-              <p className="mt-4 text-xs font-medium text-gray-500">Économies Réalisées</p>
-              <p className="mt-1 text-3xl font-extrabold text-gray-900">24,500 FCFA</p>
+              <p className="mt-4 text-xs font-medium text-gray-500">
+                Prédiction — {produitCourant?.nom ?? "…"} à {regionCourante?.nom ?? "…"}
+              </p>
+              <p className="mt-1 text-3xl font-extrabold text-gray-900">
+                {prediction ? `${prediction.prixPredit.toLocaleString("fr-FR")} FCFA` : "Indisponible"}
+              </p>
+              {prediction?.margeErreurFcfa != null && (
+                <p className="mt-1 text-xs text-gray-400">± {Math.round(prediction.margeErreurFcfa)} FCFA</p>
+              )}
             </div>
           </div>
 
-          {/* Card 2: Alertes Inflation (Red accent left border) */}
+          {/* Card 2: Alertes actives (réelles) */}
           <div className="rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-100 bg-white p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
@@ -122,15 +136,22 @@ function ContenuPageDonnees() {
                   ⚠️
                 </div>
                 <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-600">
-                  3 Nouveaux
+                  {alertesActives.length} active{alertesActives.length > 1 ? "s" : ""}
                 </span>
               </div>
-              <p className="mt-4 text-xs font-medium text-gray-500">Alertes Inflation</p>
-              <p className="mt-1 text-3xl font-extrabold text-gray-900">Riz &amp; Huile</p>
+              <p className="mt-4 text-xs font-medium text-gray-500">Alertes de prix</p>
+              <p className="mt-1 text-3xl font-extrabold text-gray-900">
+                {alertesActives[0] ? alertesActives[0].produit.nom : "Aucune"}
+              </p>
+              {alertesActives[0] && (
+                <p className="mt-1 text-xs text-gray-400">
+                  Seuil {alertesActives[0].seuilPourcent}% — {alertesActives[0].region.nom}
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Card 3: AI Insight (Purple gradient background) */}
+          {/* Card 3: constat réel dérivé de la carte régionale du produit sélectionné */}
           <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] p-6 text-white shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
@@ -138,148 +159,74 @@ function ContenuPageDonnees() {
                   💡
                 </div>
                 <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
-                  AI Insight
+                  Constat
                 </span>
               </div>
               <p className="mt-3 text-xs font-semibold text-purple-200 uppercase tracking-wide">
-                Recommandation
+                Variation la plus marquée ce mois-ci
               </p>
               <p className="mt-1 text-xs font-medium leading-relaxed text-purple-50">
-                Achetez l&apos;huile de palme au Marché Kermel aujourd&apos;hui. Les prix sont prévus d&apos;augmenter de 5% ce week-end.
+                {regionPlusVariable
+                  ? `${produitCourant?.nom ?? "Ce produit"} a varié de ${
+                      (regionPlusVariable.variationMensuellePourcent as number) > 0 ? "+" : ""
+                    }${(regionPlusVariable.variationMensuellePourcent as number).toFixed(1)}% à ${regionPlusVariable.region}.`
+                  : "Pas encore assez de relevés pour dégager une tendance régionale."}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Main Content Split: 60% Inter-Market Comparison & 40% Favorites */}
+        {/* Main Content: synthèse régionale + mes alertes (remplace le graphique statique et les "favoris" fictifs) */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          {/* Left Chart Card */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-7">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-bold text-gray-900">Comparaison Inter-Marchés</h2>
+              <h2 className="text-base font-bold text-gray-900">Synthèse par région — {produitCourant?.nom ?? "…"}</h2>
               <Link href="/chercheur" className="text-xs font-semibold text-[#00B493] hover:underline">
                 Voir détails
               </Link>
             </div>
-
-            <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4">
-              <p className="text-xs font-bold text-gray-700 mb-2">
-                Évolution des Prix Moyens du Riz (2023-2024)
-              </p>
-
-              {/* Chart visualization matching Image 5 */}
-              <div className="relative h-56 w-full">
-                <svg className="h-full w-full" viewBox="0 0 500 180" preserveAspectRatio="none">
-                  {/* Grid lines */}
-                  <line x1="40" y1="30" x2="480" y2="30" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="2 2" />
-                  <line x1="40" y1="80" x2="480" y2="80" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="2 2" />
-                  <line x1="40" y1="130" x2="480" y2="130" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="2 2" />
-
-                  {/* Y-axis values */}
-                  <text x="5" y="35" className="fill-gray-400 text-[9px]">20000</text>
-                  <text x="5" y="85" className="fill-gray-400 text-[9px]">15000</text>
-                  <text x="5" y="135" className="fill-gray-400 text-[9px]">10000</text>
-
-                  {/* Actual Teal Line */}
-                  <path
-                    d="M 40 130 Q 100 110, 160 100 T 280 85 T 380 55"
-                    fill="none"
-                    stroke="#0D9488"
-                    strokeWidth="3"
-                  />
-
-                  {/* Forecast Purple Dotted Line */}
-                  <path
-                    d="M 380 55 Q 420 55, 470 50"
-                    fill="none"
-                    stroke="#8B5CF6"
-                    strokeWidth="3"
-                    strokeDasharray="4 4"
-                  />
-
-                  {/* Tooltip Pill */}
-                  <rect x="340" y="30" width="100" height="22" rx="4" fill="#00C49F" />
-                  <text x="350" y="44" className="fill-white text-[9px] font-bold">Sep 2024: 18,450 XOF</text>
-                </svg>
-
-                {/* X-axis months */}
-                <div className="flex justify-between px-6 text-[10px] font-medium text-gray-400">
-                  <span>Jan</span>
-                  <span>Feb</span>
-                  <span>Mar</span>
-                  <span>Apr</span>
-                  <span>May</span>
-                  <span>Jun</span>
-                  <span>Jul</span>
-                  <span>Aug</span>
-                  <span>Nov</span>
-                  <span>Dec</span>
-                </div>
-              </div>
-            </div>
+            <CartesSynthese snapshots={carte} regionSelectionneeId={regionId} onSelectionner={setRegionId} />
           </div>
 
-          {/* Right Favorites List */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-5">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-base font-bold text-gray-900">Favoris</h2>
-              <button className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+              <h2 className="text-base font-bold text-gray-900">Mes alertes</h2>
+              <Link
+                href="/alertes"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition"
+                aria-label="Gérer mes alertes"
+              >
                 +
-              </button>
+              </Link>
             </div>
 
-            <div className="space-y-4">
-              {/* Item 1 */}
-              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-xl">
-                    🌾
+            {alertes.length === 0 ? (
+              <EtatVide
+                icone="🔔"
+                titre="Aucune alerte"
+                description="Créez une alerte pour suivre l'évolution d'un produit dans une région."
+              />
+            ) : (
+              <div className="space-y-4">
+                {alertes.slice(0, 5).map((alerte) => (
+                  <div
+                    key={alerte.id}
+                    className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0 last:pb-0"
+                  >
+                    <div>
+                      <p className="text-xs font-bold text-gray-900">{alerte.produit.nom}</p>
+                      <p className="text-[11px] text-gray-400">{alerte.region.nom}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-bold text-gray-900">Seuil {alerte.seuilPourcent}%</p>
+                      <p className={`text-[10px] font-bold ${alerte.active ? "text-emerald-600" : "text-gray-400"}`}>
+                        {alerte.active ? "Active" : "Inactive"}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-900">Riz Parfumé (50kg)</p>
-                    <p className="text-[11px] text-gray-400">Marché Sandaga</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-gray-900">22,000 F</p>
-                  <p className="text-[10px] font-bold text-emerald-600">↓2%</p>
-                </div>
+                ))}
               </div>
-
-              {/* Item 2 */}
-              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-xl">
-                    🍾
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-900">Huile d&apos;Arachide (5L)</p>
-                    <p className="text-[11px] text-gray-400">Auchan Mermoz</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-gray-900">6,500 F</p>
-                  <p className="text-[10px] font-bold text-red-600">↑1%</p>
-                </div>
-              </div>
-
-              {/* Item 3 */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-xl">
-                    🥛
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-900">Lait Entier (1L)</p>
-                    <p className="text-[11px] text-gray-400">Casino Plateau</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-gray-900">1,200 F</p>
-                  <p className="text-[10px] font-bold text-gray-400">—0%</p>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -334,13 +281,6 @@ function ContenuPageDonnees() {
                   )}
                 </div>
               </div>
-
-              <div>
-                <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">
-                  Synthèse par Région
-                </h3>
-                <CartesSynthese snapshots={carte} regionSelectionneeId={regionId} onSelectionner={setRegionId} />
-              </div>
             </div>
           )}
         </div>
@@ -356,4 +296,3 @@ export default function PageDonnees() {
     </RouteProtegee>
   );
 }
-
