@@ -34,7 +34,25 @@ const config: Config = {
         card: "0 1px 2px 0 rgba(11, 46, 36, 0.06), 0 1px 6px 0 rgba(11, 46, 36, 0.08)",
       },
       borderRadius: {
-        xl2: "1rem",
+        xl2: "1.5rem",
+        xl3: "2rem",
+      },
+      backdropBlur: {
+        xs: "2px",
+      },
+      keyframes: {
+        "lueur-pulse": {
+          "0%, 100%": { opacity: "0.55", transform: "scale(1)" },
+          "50%": { opacity: "1", transform: "scale(1.18)" },
+        },
+        "flotter": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+      },
+      animation: {
+        "lueur-pulse": "lueur-pulse 2.4s ease-in-out infinite",
+        "flotter": "flotter 5s ease-in-out infinite",
       },
     },
   },

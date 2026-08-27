@@ -11,6 +11,7 @@ import adminRoutes from "../modules/admin/admin.routes";
 import ministereRoutes from "../modules/ministere/ministere.routes";
 import exportRoutes from "../modules/export/export.routes";
 import analyseRoutes from "../modules/analyse/analyse.routes";
+import statsRoutes from "../modules/stats/stats.routes";
 
 /**
  * Point d'entrée unique de montage des routes de l'API. Chaque module définit
@@ -34,5 +35,6 @@ router.use("/admin", adminRoutes);
 router.use(ministereRoutes);
 router.use("/export", exportRoutes);
 router.use("/analyse", analyseRoutes);
+router.use("/stats", statsRoutes);
 
 export default router;

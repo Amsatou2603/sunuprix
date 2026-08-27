@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function PageAPropos() {
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-8 px-4">
       <div className="carte">
         <h1 className="text-xl font-bold text-header">À propos de SunuPrix</h1>
         <p className="mt-3 text-sm leading-relaxed text-header/70">

@@ -36,7 +36,7 @@ export default function PageInscription() {
   };
 
   return (
-    <div className="mx-auto max-w-md">
+    <div className="mx-auto max-w-md px-4">
       <div className="carte">
         <h1 className="text-xl font-bold text-header">Créer un compte</h1>
         <p className="mt-1 text-sm text-header/60">
