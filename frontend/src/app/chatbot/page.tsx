@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { chatbotApi } from "@/lib/api/chatbot";
+import { ErreurApi } from "@/lib/api/api-client";
 
 interface MessageChat {
   id: string;
@@ -66,13 +67,16 @@ function ContenuPageChatbot() {
           time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         },
       ]);
-    } catch {
+    } catch (e) {
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           sender: "bot",
-          text: "J'ai analysé les données récentes. Le marché présente une stabilité globale avec des variations modérées sur le riz et l'huile.",
+          text:
+            e instanceof ErreurApi
+              ? e.message
+              : "SunuBot est momentanément indisponible. Réessayez dans un instant.",
           time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         },
       ]);

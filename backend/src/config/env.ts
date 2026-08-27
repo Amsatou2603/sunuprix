@@ -46,7 +46,7 @@ export const env = {
     process.env.GOOGLE_AI_API_KEY ||
     process.env.GOOGLE_API_KEY ||
     undefined,
-  geminiModel: lireVariable("GEMINI_MODEL", "gemini-2.0-flash"),
+  geminiModel: lireVariable("GEMINI_MODEL", "gemini-3.6-flash"),
 } as const;
 
 

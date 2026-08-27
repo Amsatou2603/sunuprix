@@ -51,7 +51,7 @@ async function essayerGemini(message: string, contexte: ContexteChatbot): Promis
  */
 export function genererReponseRepli(contexte: ContexteChatbot): string {
   if (contexte.faits.length === 0) {
-    return "Je n'ai pas de données précises pour répondre à votre question. Essayez de mentionner un produit spécifique (riz, huile, sucre…) et/ou une région (Dakar, Thiès, Saint-Louis…).";
+    return "Je n'ai pas trouvé de données précises pour répondre à votre question. Essayez de mentionner un produit spécifique (riz, huile, sucre…) et/ou une région (Dakar, Thiès, Saint-Louis…).";
   }
 
   const fait = contexte.faits[0];
@@ -62,7 +62,7 @@ export function genererReponseRepli(contexte: ContexteChatbot): string {
         : `en baisse de ${Math.abs(fait.variationPourcent).toFixed(1)}%`
       : "sans variation connue";
 
-  return `D'après nos dernières données, le ${fait.produit} à ${fait.region} est à **${fait.prixActuelFcfa} FCFA/${fait.unite}**, ${variation} par rapport au relevé précédent. Ces informations proviennent de notre base de données SunuPrix.`;
+  return `D'après nos dernières données, le ${fait.produit} à ${fait.region} est à **${fait.prixActuelFcfa} FCFA/${fait.unite}**, ${variation} par rapport au relevé précédent. Ces données sont fictives et générées à des fins pédagogiques.`;
 }
 
 

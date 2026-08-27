@@ -20,7 +20,7 @@
     "prisma:migrate": "npm run prisma:migrate -w @sunuprix/backend",
     "seed": "npm run build:shared && npm run seed -w @sunuprix/backend",
     "render-build": "npm run build:shared && npm run prisma:generate -w @sunuprix/backend && npm run build -w @sunuprix/backend",
-    "render-start": "npm run prisma:deploy -w @sunuprix/backend && (npm run seed -w @sunuprix/backend || true) && npm run start -w @sunuprix/backend"
+    "render-start": "npm run prisma:deploy -w @sunuprix/backend && npm run start -w @sunuprix/backend"
   },
 
   "devDependencies": {
