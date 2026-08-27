@@ -129,7 +129,7 @@ export default function PageAccueil() {
 
             <h1 className="font-serif text-4xl font-extrabold tracking-tight text-header sm:text-5xl lg:text-6xl leading-tight">
               Maîtrisez les prix du marché au Sénégal avec <span className="text-primary">Sunu</span>
-              <span className="text-accent-dark">Prix</span>
+              <span className="text-primary-light">Prix</span>
             </h1>
 
             <p className="max-w-xl text-sm sm:text-base text-header/60 leading-relaxed">

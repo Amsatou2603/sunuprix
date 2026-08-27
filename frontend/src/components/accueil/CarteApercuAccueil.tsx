@@ -55,7 +55,7 @@ interface ProprietesCarteApercuAccueil {
  */
 export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom }: ProprietesCarteApercuAccueil) {
   return (
-    <div className="verre-sombre relative mx-auto flex w-[22rem] max-w-full flex-col overflow-hidden p-5 sm:w-[26rem] sm:p-6">
+    <div className="verre-sombre relative mx-auto flex w-[min(26rem,90vw)] flex-col overflow-hidden p-4 sm:p-6">
       <div className="mb-2 flex items-center justify-between">
         <p className="text-[11px] font-bold uppercase tracking-wider text-white/60">Carte en direct</p>
         {connecte && (
@@ -119,7 +119,7 @@ export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom
               </span>
 
               {connecte && snapshot && (
-                <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-max -translate-x-1/2 rounded-xl border border-white/10 bg-[#041B13]/95 px-3 py-1.5 text-center opacity-0 shadow-lg backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100">
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-max -translate-x-1/2 rounded-xl border border-white/10 bg-primary-dark/95 px-3 py-1.5 text-center opacity-0 shadow-lg backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100">
                   <p className="text-[11px] font-bold text-white">
                     {snapshot.prixActuelFcfa != null ? `${snapshot.prixActuelFcfa.toLocaleString("fr-FR")} FCFA` : "—"}
                   </p>
@@ -137,7 +137,7 @@ export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom
       </div>
 
       {!connecte && !chargement && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-3xl bg-[#041B13]/75 p-6 text-center backdrop-blur-sm">
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-3xl bg-primary-dark/80 p-6 text-center backdrop-blur-sm">
           <span className="text-2xl">🔒</span>
           <p className="text-sm font-semibold text-white">Carte régionale en direct</p>
           <p className="max-w-[17rem] text-xs leading-relaxed text-white/65">

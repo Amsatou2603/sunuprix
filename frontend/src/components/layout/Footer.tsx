@@ -8,8 +8,8 @@ export function Footer() {
         {/* Logo left */}
         <div className="flex items-center gap-3">
           <Image src="/design/icon.svg" alt="SunuPrix Logo" width={32} height={32} />
-          <span className="font-serif text-xl font-bold text-[#0B4736]">
-            Sunu<span className="text-[#04281E]">Prix</span>
+          <span className="font-serif text-xl font-bold text-primary">
+            Sunu<span className="text-primary-light">Prix</span>
           </span>
         </div>
 

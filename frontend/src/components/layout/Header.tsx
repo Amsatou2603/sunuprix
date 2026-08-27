@@ -94,16 +94,16 @@ export function Header() {
       initial={{ y: -32, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="sticky top-3 z-40 px-3 sm:top-4 sm:px-4"
+      className="sticky top-2 z-40 px-2 sm:top-4 sm:px-4"
     >
-      <header className="verre mx-auto flex max-w-6xl items-center justify-between gap-3 !rounded-full px-4 py-2 sm:px-6 sm:py-2.5">
+      <header className="verre mx-auto flex max-w-6xl items-center justify-between gap-1.5 !rounded-full px-3 py-1.5 sm:gap-3 sm:px-6 sm:py-2.5">
         {/* Brand Logo Lockup */}
-        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-          <div className="relative h-9 w-9 transition-transform group-hover:scale-105">
+        <Link href="/" className="flex min-w-0 shrink items-center gap-1.5 group sm:gap-2.5">
+          <div className="relative h-7 w-7 shrink-0 transition-transform group-hover:scale-105 sm:h-9 sm:w-9">
             <Image src="/design/icon.svg" alt="SunuPrix Logo" width={36} height={36} priority className="object-contain" />
           </div>
-          <span className="font-serif text-xl font-bold tracking-tight text-[#0B4736]">
-            Sunu<span className="text-[#04281E]">Prix</span>
+          <span className="truncate font-serif text-base font-bold tracking-tight text-primary sm:text-xl">
+            Sunu<span className="text-primary-light">Prix</span>
           </span>
         </Link>
 
@@ -126,7 +126,7 @@ export function Header() {
         </nav>
 
         {/* Right Action Section */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2.5">
           {chargementInitial ? null : utilisateur ? (
             <>
               <ClocheNotifications />
@@ -141,8 +141,8 @@ export function Header() {
               )}
 
 
-              <div className="flex items-center gap-2 border-l border-header/10 pl-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0B4736] text-xs font-bold text-white shadow-sm">
+              <div className="flex items-center gap-1.5 border-l border-header/10 pl-1.5 sm:gap-2 sm:pl-2.5">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white shadow-sm sm:h-8 sm:w-8">
                   {utilisateur.nom.substring(0, 2).toUpperCase()}
                 </div>
                 <div className="hidden text-left sm:block">
@@ -162,12 +162,15 @@ export function Header() {
             </>
           ) : (
             <>
-              <Link href="/connexion" className="rounded-full px-3.5 py-1.5 text-sm font-medium text-header/70 hover:text-header">
+              <Link
+                href="/connexion"
+                className="rounded-full px-2 py-1.5 text-xs font-medium text-header/70 hover:text-header sm:px-3.5 sm:text-sm"
+              >
                 Connexion
               </Link>
               <Link
                 href="/inscription"
-                className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.03] hover:bg-primary-dark"
+                className="rounded-full bg-primary px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:scale-[1.03] hover:bg-primary-dark sm:px-4 sm:py-2 sm:text-sm"
               >
                 Commencer
               </Link>
