@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import { BellOff } from "lucide-react";
 import { notificationsApi } from "@/lib/api/alertes";
 import { ErreurApi } from "@/lib/api/api-client";
 import { Chargement, EtatVide, MessageErreur } from "@/components/partages/EtatAsync";
@@ -47,7 +48,7 @@ export function CentreNotifications() {
         <Chargement libelle="Chargement des notifications…" />
       ) : notifications.length === 0 ? (
         <EtatVide
-          icone="🔕"
+          icone={<BellOff className="h-7 w-7" strokeWidth={1.75} />}
           titre="Aucune notification"
           description="Vous serez averti ici si un prix suivi dépasse le seuil de l'une de vos alertes."
         />

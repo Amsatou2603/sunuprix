@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BarChart3 } from "lucide-react";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { BoutonExportCsv } from "@/components/chercheur/BoutonExportCsv";
 import { VueComparative } from "@/components/chercheur/VueComparative";
@@ -36,7 +37,7 @@ function ContenuPageChercheur() {
               Dashboard Chercheur
             </h1>
             <p className="mt-1 flex items-center gap-2 text-sm font-medium text-gray-500">
-              <span>📊</span> Analyse comparative des prix au Sénégal
+              <BarChart3 className="h-4 w-4" strokeWidth={1.75} /> Analyse comparative des prix au Sénégal
             </p>
           </div>
 

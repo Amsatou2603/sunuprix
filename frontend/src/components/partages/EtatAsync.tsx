@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Inbox } from "lucide-react";
 
 /**
  * Trio d'états asynchrones réutilisé sur toutes les pages qui chargent des
@@ -44,14 +45,14 @@ export function MessageErreur({ message, action }: ProprietesMessageErreur) {
 interface ProprietesEtatVide {
   titre: string;
   description?: string;
-  icone?: string;
+  icone?: ReactNode;
   action?: ReactNode;
 }
 
-export function EtatVide({ titre, description, icone = "📭", action }: ProprietesEtatVide) {
+export function EtatVide({ titre, description, icone = <Inbox className="h-7 w-7" strokeWidth={1.75} />, action }: ProprietesEtatVide) {
   return (
     <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-black/10 px-4 py-10 text-center">
-      <span className="text-3xl" aria-hidden="true">
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-header/5 text-header/40" aria-hidden="true">
         {icone}
       </span>
       <p className="font-medium text-header">{titre}</p>

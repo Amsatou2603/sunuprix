@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 import { adminApi } from "@/lib/api/admin";
 import { ErreurApi } from "@/lib/api/api-client";
 import { Chargement, EtatVide, MessageErreur } from "@/components/partages/EtatAsync";
@@ -42,7 +43,11 @@ export function FileModeration({ declarations, chargement, onDeclarationTraitee 
       {chargement ? (
         <Chargement libelle="Chargement de la file de modération…" />
       ) : declarations.length === 0 ? (
-        <EtatVide icone="✅" titre="File de modération vide" description="Aucune déclaration vendeur en attente de validation." />
+        <EtatVide
+          icone={<CheckCircle2 className="h-7 w-7" strokeWidth={1.75} />}
+          titre="File de modération vide"
+          description="Aucune déclaration vendeur en attente de validation."
+        />
       ) : (
         <ul className="space-y-3">
           {declarations.map((declaration) => (

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import { LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { LIBELLES_ROLES } from "@sunuprix/shared";
@@ -156,7 +157,7 @@ export function Header() {
                   className="ml-1 flex h-7 w-7 items-center justify-center rounded-full text-header/50 transition hover:bg-header/5 hover:text-header"
                   title="Déconnexion"
                 >
-                  🚪
+                  <LogOut className="h-4 w-4" strokeWidth={1.75} />
                 </button>
               </div>
             </>

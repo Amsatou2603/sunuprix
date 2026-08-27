@@ -1,3 +1,4 @@
+import { Megaphone } from "lucide-react";
 import { Chargement, EtatVide } from "@/components/partages/EtatAsync";
 import type { Annonce } from "@/lib/api/types";
 
@@ -10,7 +11,13 @@ interface ProprietesListeAnnonces {
 export function ListeAnnonces({ annonces, chargement }: ProprietesListeAnnonces) {
   if (chargement) return <Chargement libelle="Chargement des annonces…" />;
   if (annonces.length === 0) {
-    return <EtatVide icone="📣" titre="Aucune annonce publiée" description="Les annonces officielles du Ministère apparaîtront ici." />;
+    return (
+      <EtatVide
+        icone={<Megaphone className="h-7 w-7" strokeWidth={1.75} />}
+        titre="Aucune annonce publiée"
+        description="Les annonces officielles du Ministère apparaîtront ici."
+      />
+    );
   }
 
   return (

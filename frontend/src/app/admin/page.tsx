@@ -3,6 +3,21 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  LayoutDashboard,
+  Users,
+  Scale,
+  Settings,
+  FileDown,
+  ClipboardList,
+  Tag,
+  MapPin,
+  BarChart3,
+  MessageCircle,
+  Wheat,
+  Check,
+  X,
+} from "lucide-react";
 import { ROLES, LIBELLES_ROLES } from "@sunuprix/shared";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { TableauUtilisateurs } from "@/components/admin/TableauUtilisateurs";
@@ -108,7 +123,7 @@ function ContenuPageAdmin() {
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <span className="text-base">📊</span>
+                <LayoutDashboard className="h-4 w-4" strokeWidth={1.75} />
                 Vue d&apos;ensemble
               </div>
             </button>
@@ -122,7 +137,7 @@ function ContenuPageAdmin() {
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <span className="text-base">👥</span>
+                <Users className="h-4 w-4" strokeWidth={1.75} />
                 Utilisateurs ({utilisateurs.length})
               </div>
             </button>
@@ -136,7 +151,7 @@ function ContenuPageAdmin() {
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <span className="text-base">⚖️</span>
+                <Scale className="h-4 w-4" strokeWidth={1.75} />
                 Validations Prix
               </div>
               {declarations.length > 0 && (
@@ -169,7 +184,7 @@ function ContenuPageAdmin() {
                   : "text-gray-600 hover:bg-gray-50"
               }`}
             >
-              <span className="text-base">⚙️</span>
+              <Settings className="h-4 w-4" strokeWidth={1.75} />
               Configuration
             </button>
           </div>
@@ -206,7 +221,7 @@ function ContenuPageAdmin() {
               disabled={enCoursExport}
               className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 transition disabled:opacity-50"
             >
-              <span>📄</span> {enCoursExport ? "Export…" : "Rapport (CSV)"}
+              <FileDown className="h-3.5 w-3.5" strokeWidth={1.75} /> {enCoursExport ? "Export…" : "Rapport (CSV)"}
             </button>
           </div>
         </div>
@@ -214,8 +229,8 @@ function ContenuPageAdmin() {
         {/* 4 Top KPI Cards — données réelles */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
-              👥
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+              <Users className="h-5 w-5" strokeWidth={1.75} />
             </div>
             <p className="mt-3 text-xs font-medium text-gray-500">Utilisateurs Actifs</p>
             <p className="mt-1 text-2xl font-extrabold text-gray-900">
@@ -224,24 +239,24 @@ function ContenuPageAdmin() {
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 text-lg">
-              📋
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+              <ClipboardList className="h-5 w-5" strokeWidth={1.75} />
             </div>
             <p className="mt-3 text-xs font-medium text-gray-500">Déclarations en attente</p>
             <p className="mt-1 text-2xl font-extrabold text-gray-900">{declarations.length}</p>
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600 text-lg">
-              🏷️
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+              <Tag className="h-5 w-5" strokeWidth={1.75} />
             </div>
             <p className="mt-3 text-xs font-medium text-gray-500">Produits suivis</p>
             <p className="mt-1 text-2xl font-extrabold text-gray-900">{produits.length}</p>
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-5 shadow-sm">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 text-lg">
-              🗺️
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <MapPin className="h-5 w-5" strokeWidth={1.75} />
             </div>
             <p className="mt-3 text-xs font-medium text-gray-500">Régions couvertes</p>
             <p className="mt-1 text-2xl font-extrabold text-gray-900">{regions.length}</p>
@@ -275,13 +290,13 @@ function ContenuPageAdmin() {
           <div className="space-y-6 lg:col-span-4">
             <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-emerald-600 text-lg">📊</span>
+                <BarChart3 className="h-5 w-5 text-emerald-600" strokeWidth={1.75} />
                 <span className="text-xs font-bold text-emerald-700">Aperçu</span>
               </div>
 
               <div className="space-y-4 text-xs">
                 <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 border border-gray-100">
-                  <span className="text-purple-600 text-base">⚖️</span>
+                  <Scale className="h-4 w-4 shrink-0 text-purple-600" strokeWidth={1.75} />
                   <div>
                     <p className="font-bold text-gray-900">{declarations.length} déclaration(s) en attente</p>
                     <p className="text-gray-500 mt-1 leading-relaxed">
@@ -291,7 +306,7 @@ function ContenuPageAdmin() {
                 </div>
 
                 <div className="flex items-start gap-3 rounded-xl bg-gray-50 p-3 border border-gray-100">
-                  <span className="text-emerald-600 text-base">👥</span>
+                  <Users className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={1.75} />
                   <div>
                     <p className="font-bold text-gray-900">{utilisateursActifs} compte(s) actifs</p>
                     <p className="text-gray-500 mt-1 leading-relaxed">sur {utilisateurs.length} inscrits au total.</p>
@@ -303,7 +318,7 @@ function ContenuPageAdmin() {
                 href="/chatbot"
                 className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-purple-100/80 py-2.5 text-xs font-bold text-purple-700 hover:bg-purple-200 transition"
               >
-                💬 Interroger SunuBot
+                <MessageCircle className="h-3.5 w-3.5" strokeWidth={1.75} /> Interroger SunuBot
               </Link>
             </div>
 
@@ -341,8 +356,8 @@ function ContenuPageAdmin() {
                   className="flex flex-col gap-4 rounded-xl border border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between hover:bg-gray-50/50 transition"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-2xl">
-                      🌾
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                      <Wheat className="h-6 w-6" strokeWidth={1.75} />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-gray-900">
@@ -368,7 +383,7 @@ function ContenuPageAdmin() {
                         className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-emerald-100 hover:text-emerald-700 transition disabled:opacity-50"
                         aria-label="Valider"
                       >
-                        ✓
+                        <Check className="h-4 w-4" strokeWidth={2} />
                       </button>
                       <button
                         disabled={idEnCoursApercu === declaration.id}
@@ -376,7 +391,7 @@ function ContenuPageAdmin() {
                         className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700 transition disabled:opacity-50"
                         aria-label="Rejeter"
                       >
-                        ✕
+                        <X className="h-4 w-4" strokeWidth={2} />
                       </button>
                     </div>
                   </div>

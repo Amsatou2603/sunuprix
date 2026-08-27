@@ -15,6 +15,7 @@ import { referentielApi } from "@/lib/api/referentiel";
 import { prixApi } from "@/lib/api/prix";
 import { predictionsApi } from "@/lib/api/predictions";
 import { analyseApi } from "@/lib/api/analyse";
+import { Sparkles, TrendingDown } from "lucide-react";
 import { ErreurApi } from "@/lib/api/api-client";
 import { Chargement, EtatVide, MessageErreur } from "@/components/partages/EtatAsync";
 import type { Produit, Region } from "@/lib/api/types";
@@ -248,7 +249,7 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
 
       {!chargement && aLanceUneComparaison && donneesGraphique.length === 0 && !erreur && (
         <EtatVide
-          icone="📉"
+          icone={<TrendingDown className="h-7 w-7" strokeWidth={1.75} />}
           titre="Aucune donnée pour cette sélection"
           description="Essayez une autre combinaison de produit/région : l'historique est peut-être encore vide pour ce couple."
         />
@@ -307,7 +308,9 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
           {/* Diagnostic IA : interprétation en langage naturel de la comparaison ci-dessus. */}
           <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-sm font-semibold text-header/70">✨ Diagnostic IA</h3>
+              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-header/70">
+                <Sparkles className="h-4 w-4 text-primary" strokeWidth={1.75} /> Diagnostic IA
+              </h3>
               <button
                 type="button"
                 onClick={lancerDiagnostic}

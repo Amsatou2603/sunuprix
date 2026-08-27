@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { TrendingDown } from "lucide-react";
 import { ministereApi } from "@/lib/api/ministere";
 import { ErreurApi } from "@/lib/api/api-client";
 import { Chargement, EtatVide, MessageErreur } from "@/components/partages/EtatAsync";
@@ -41,7 +42,7 @@ export function VueInflation({ onCharge }: ProprietesVueInflation) {
       {chargement && <Chargement libelle="Chargement de la vue d'inflation…" />}
       {!chargement && erreur && <MessageErreur message={erreur} />}
       {!chargement && !erreur && inflation.length === 0 && (
-        <EtatVide icone="📉" titre="Aucune donnée d'inflation disponible" />
+        <EtatVide icone={<TrendingDown className="h-7 w-7" strokeWidth={1.75} />} titre="Aucune donnée d'inflation disponible" />
       )}
 
       {!chargement && !erreur && inflation.length > 0 && (

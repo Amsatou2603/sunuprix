@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { Wand2, AlertTriangle, Lightbulb, Bell } from "lucide-react";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { CarteRegions } from "@/components/donnees/CarteRegions";
@@ -113,8 +114,8 @@ function ContenuPageDonnees() {
           {/* Card 1: Prédiction du jour (réelle, déjà chargée pour le produit/région sélectionnés) */}
           <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 text-lg">
-                🔮
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                <Wand2 className="h-5 w-5" strokeWidth={1.75} />
               </div>
               <p className="mt-4 text-xs font-medium text-gray-500">
                 Prédiction — {produitCourant?.nom ?? "…"} à {regionCourante?.nom ?? "…"}
@@ -132,8 +133,8 @@ function ContenuPageDonnees() {
           <div className="rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-100 bg-[#F5F5F7] p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600 text-lg">
-                  ⚠️
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                  <AlertTriangle className="h-5 w-5" strokeWidth={1.75} />
                 </div>
                 <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-600">
                   {alertesActives.length} active{alertesActives.length > 1 ? "s" : ""}
@@ -155,8 +156,8 @@ function ContenuPageDonnees() {
           <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] p-6 text-white shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 text-white text-lg">
-                  💡
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 text-white">
+                  <Lightbulb className="h-5 w-5" strokeWidth={1.75} />
                 </div>
                 <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
                   Constat
@@ -202,7 +203,7 @@ function ContenuPageDonnees() {
 
             {alertes.length === 0 ? (
               <EtatVide
-                icone="🔔"
+                icone={<Bell className="h-7 w-7" strokeWidth={1.75} />}
                 titre="Aucune alerte"
                 description="Créez une alerte pour suivre l'évolution d'un produit dans une région."
               />

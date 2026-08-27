@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
+import { Send, X } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { chatbotApi } from "@/lib/api/chatbot";
 import { ErreurApi } from "@/lib/api/api-client";
@@ -98,7 +99,7 @@ export function ChatbotWidget() {
                 aria-label="Fermer SunuBot"
                 className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition hover:bg-white/10 hover:text-white"
               >
-                ✕
+                <X className="h-4 w-4" strokeWidth={2} />
               </button>
             </div>
 
@@ -111,7 +112,7 @@ export function ChatbotWidget() {
                 </div>
                 <div className="max-w-[85%] rounded-2xl border border-emerald-500/10 bg-[#0F382C]/80 px-4 py-3 text-xs leading-relaxed text-emerald-50 shadow-sm backdrop-blur-sm">
                   <p className="font-medium">
-                    Bonjour ! 👋<br />
+                    Bonjour !<br />
                     Comment puis-je vous aider aujourd&apos;hui concernant les prix, les marchés ou l&apos;inflation ?
                   </p>
                 </div>
@@ -210,7 +211,7 @@ export function ChatbotWidget() {
                 disabled={enCours || !saisie.trim()}
                 className="flex items-center justify-center rounded-xl bg-[#00C49F] px-4 py-2.5 text-xs font-bold text-white shadow-md transition hover:scale-[1.03] hover:bg-[#00a989] disabled:opacity-50 disabled:hover:scale-100"
               >
-                ➢
+                <Send className="h-4 w-4" strokeWidth={2} />
               </button>
             </form>
 

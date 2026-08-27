@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UserX } from "lucide-react";
 import { ROLES, LIBELLES_ROLES } from "@sunuprix/shared";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { adminApi } from "@/lib/api/admin";
@@ -56,7 +57,7 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
       {chargement ? (
         <Chargement libelle="Chargement des utilisateurs…" />
       ) : utilisateurs.length === 0 ? (
-        <EtatVide icone="👤" titre="Aucun utilisateur trouvé" />
+        <EtatVide icone={<UserX className="h-7 w-7" strokeWidth={1.75} />} titre="Aucun utilisateur trouvé" />
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">

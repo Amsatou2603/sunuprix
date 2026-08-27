@@ -1,3 +1,4 @@
+import { Receipt } from "lucide-react";
 import { BadgeStatutDeclaration } from "@/components/partages/BadgeStatutDeclaration";
 import { Chargement, EtatVide } from "@/components/partages/EtatAsync";
 import type { DeclarationPrixPublique } from "@/lib/api/types";
@@ -16,7 +17,7 @@ export function HistoriqueDeclarations({ declarations, chargement }: ProprietesH
   if (declarations.length === 0) {
     return (
       <EtatVide
-        icone="🧾"
+        icone={<Receipt className="h-7 w-7" strokeWidth={1.75} />}
         titre="Aucune déclaration pour le moment"
         description="Utilisez le formulaire ci-dessus pour déclarer votre premier prix constaté."
       />

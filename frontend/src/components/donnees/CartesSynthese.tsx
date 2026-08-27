@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { MapPin } from "lucide-react";
 import { BadgeVariation } from "@/components/partages/BadgeVariation";
 import { EtatVide } from "@/components/partages/EtatAsync";
 import type { SnapshotRegion } from "@/lib/api/types";
@@ -12,7 +13,13 @@ interface ProprietesCartesSynthese {
 /** Cartes de synthèse par région pour le produit sélectionné : dernier prix connu et variation mensuelle. */
 export function CartesSynthese({ snapshots, regionSelectionneeId, onSelectionner }: ProprietesCartesSynthese) {
   if (snapshots.length === 0) {
-    return <EtatVide icone="🗺️" titre="Aucune donnée régionale" description="Aucun relevé validé pour ce produit pour le moment." />;
+    return (
+      <EtatVide
+        icone={<MapPin className="h-7 w-7" strokeWidth={1.75} />}
+        titre="Aucune donnée régionale"
+        description="Aucun relevé validé pour ce produit pour le moment."
+      />
+    );
   }
 
   return (

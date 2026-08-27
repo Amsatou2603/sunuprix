@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
+import { Microscope, TrendingUp, Bell, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { ministereApi } from "@/lib/api/ministere";
 import { referentielApi } from "@/lib/api/referentiel";
@@ -24,25 +26,25 @@ import type {
 const FONCTIONNALITES = [
   {
     href: "/chercheur",
-    icone: "🔬",
+    icone: <Microscope className="h-5 w-5" strokeWidth={1.75} />,
     titre: "Analyse comparative",
     description: "Comparez produits et régions, avec un diagnostic généré par l'IA en quelques lignes claires.",
   },
   {
     href: "/donnees",
-    icone: "📈",
+    icone: <TrendingUp className="h-5 w-5" strokeWidth={1.75} />,
     titre: "Suivi & prédictions",
     description: "Historique des prix et prédiction du mois suivant, région par région.",
   },
   {
     href: "/alertes",
-    icone: "🔔",
+    icone: <Bell className="h-5 w-5" strokeWidth={1.75} />,
     titre: "Alertes personnalisées",
     description: "Soyez notifié dès qu'un produit franchit le seuil de variation que vous avez choisi.",
   },
   {
     href: "/chatbot",
-    icone: "🤖",
+    icone: <Image src="/design/sunubot-icon.svg" alt="SunuBot" width={26} height={26} />,
     titre: "Assistant SunuBot",
     description: "Posez vos questions sur les prix et l'inflation, en français, ancré sur les données réelles.",
   },
@@ -123,8 +125,8 @@ export default function PageAccueil() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="space-y-6 lg:col-span-7"
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1 text-xs font-bold text-primary-dark">
-              ✨ Plateforme nationale de suivi &amp; IA
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1 text-xs font-bold text-primary-dark">
+              <Sparkles className="h-3.5 w-3.5" strokeWidth={2} /> Plateforme nationale de suivi &amp; IA
             </span>
 
             <h1 className="font-serif text-4xl font-extrabold tracking-tight text-header sm:text-5xl lg:text-6xl leading-tight">
@@ -270,7 +272,9 @@ export default function PageAccueil() {
             )
           ) : (
             <div className="flex h-72 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-header/15 text-center">
-              <span className="text-2xl">📈</span>
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-header/5 text-header/40">
+                <TrendingUp className="h-5 w-5" strokeWidth={1.75} />
+              </span>
               <p className="max-w-xs text-xs text-header/50">
                 Connectez-vous pour voir l&apos;historique réel et la prédiction du mois suivant.
               </p>
@@ -286,7 +290,7 @@ export default function PageAccueil() {
           <div className="relative z-10 flex h-full flex-col justify-between gap-6">
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#00C49F]/30 bg-[#00C49F]/10 px-3 py-1 text-[11px] font-bold text-[#00C49F]">
-                🤖 SunuBot
+                <Image src="/design/sunubot-icon.svg" alt="" width={16} height={16} /> SunuBot
               </span>
               <h3 className="mt-4 font-serif text-xl font-bold text-white">Un assistant IA ancré sur vos données</h3>
               <p className="mt-2 text-xs leading-relaxed text-emerald-100/70">

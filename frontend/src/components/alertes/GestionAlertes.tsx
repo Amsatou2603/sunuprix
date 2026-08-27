@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import clsx from "clsx";
+import { Bell } from "lucide-react";
 import { referentielApi } from "@/lib/api/referentiel";
 import { alertesApi } from "@/lib/api/alertes";
 import { ErreurApi } from "@/lib/api/api-client";
@@ -146,7 +147,7 @@ export function GestionAlertes() {
       {alertes.length === 0 ? (
         <div className="mt-5">
           <EtatVide
-            icone="🔔"
+            icone={<Bell className="h-7 w-7" strokeWidth={1.75} />}
             titre="Aucune alerte personnelle"
             description="Ajoutez un produit et une région ci-dessus pour être notifié dès qu'un seuil de variation est dépassé."
           />

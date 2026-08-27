@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Lock } from "lucide-react";
 import type { SnapshotRegion } from "@/lib/api/types";
 
 /**
@@ -138,7 +139,9 @@ export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom
 
       {!connecte && !chargement && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-3xl bg-primary-dark/80 p-6 text-center backdrop-blur-sm">
-          <span className="text-2xl">🔒</span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white">
+            <Lock className="h-5 w-5" strokeWidth={1.75} />
+          </span>
           <p className="text-sm font-semibold text-white">Carte régionale en direct</p>
           <p className="max-w-[17rem] text-xs leading-relaxed text-white/65">
             Connectez-vous pour voir les prix réels par région, mis à jour à partir des relevés du terrain.

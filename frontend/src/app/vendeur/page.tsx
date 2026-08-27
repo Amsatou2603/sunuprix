@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Receipt, Clock, CheckCircle2, Ban } from "lucide-react";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { FormulaireDeclaration } from "@/components/vendeur/FormulaireDeclaration";
 import { HistoriqueDeclarations } from "@/components/vendeur/HistoriqueDeclarations";
@@ -49,10 +50,29 @@ function ContenuPageVendeur() {
 
       {!chargement && declarations.length > 0 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <CarteStat icone="🧾" label="Déclarations envoyées" valeur={statistiques.total} />
-          <CarteStat icone="⏳" label="En attente" valeur={statistiques.enAttente} couleurIcone="bg-accent/15" />
-          <CarteStat icone="✅" label="Validées" valeur={statistiques.validees} couleurIcone="bg-primary/10" />
-          <CarteStat icone="⛔" label="Rejetées" valeur={statistiques.rejetees} couleurIcone="bg-red-100" />
+          <CarteStat
+            icone={<Receipt className="h-[18px] w-[18px]" strokeWidth={1.75} />}
+            label="Déclarations envoyées"
+            valeur={statistiques.total}
+          />
+          <CarteStat
+            icone={<Clock className="h-[18px] w-[18px]" strokeWidth={1.75} />}
+            label="En attente"
+            valeur={statistiques.enAttente}
+            couleurIcone="bg-accent/15 text-accent-dark"
+          />
+          <CarteStat
+            icone={<CheckCircle2 className="h-[18px] w-[18px]" strokeWidth={1.75} />}
+            label="Validées"
+            valeur={statistiques.validees}
+            couleurIcone="bg-primary/10 text-primary"
+          />
+          <CarteStat
+            icone={<Ban className="h-[18px] w-[18px]" strokeWidth={1.75} />}
+            label="Rejetées"
+            valeur={statistiques.rejetees}
+            couleurIcone="bg-red-100 text-red-600"
+          />
         </div>
       )}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { TrendingUp, MapPin, Megaphone } from "lucide-react";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { VueInflation } from "@/components/ministere/VueInflation";
 import { FormulaireAnnonce } from "@/components/ministere/FormulaireAnnonce";
@@ -48,12 +49,21 @@ function ContenuPageMinistere() {
       {inflation && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <CarteStat
-            icone="📈"
+            icone={<TrendingUp className="h-[18px] w-[18px]" strokeWidth={1.75} />}
             label="Inflation nationale moyenne"
             valeur={inflationNationale !== null ? <BadgeVariation valeur={inflationNationale} /> : "—"}
           />
-          <CarteStat icone="🗺️" label="Régions suivies" valeur={inflation.length} couleurIcone="bg-accent/15" />
-          <CarteStat icone="📣" label="Annonces publiées" valeur={annonces.length} />
+          <CarteStat
+            icone={<MapPin className="h-[18px] w-[18px]" strokeWidth={1.75} />}
+            label="Régions suivies"
+            valeur={inflation.length}
+            couleurIcone="bg-accent/15 text-accent-dark"
+          />
+          <CarteStat
+            icone={<Megaphone className="h-[18px] w-[18px]" strokeWidth={1.75} />}
+            label="Annonces publiées"
+            valeur={annonces.length}
+          />
         </div>
       )}
 

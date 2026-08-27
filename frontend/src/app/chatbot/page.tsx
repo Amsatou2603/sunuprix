@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Home, Tag, User, Send } from "lucide-react";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { chatbotApi } from "@/lib/api/chatbot";
 import { ErreurApi } from "@/lib/api/api-client";
@@ -29,7 +30,7 @@ function ContenuPageChatbot() {
     {
       id: "1",
       sender: "bot",
-      text: "Bonjour ! 👋 Je suis SunuBot, l'assistant IA de SunuPrix. Posez-moi une question sur le prix d'un produit dans une région du Sénégal.",
+      text: "Bonjour ! Je suis SunuBot, l'assistant IA de SunuPrix. Posez-moi une question sur le prix d'un produit dans une région du Sénégal.",
       time: heureActuelle(),
     },
   ]);
@@ -98,7 +99,7 @@ function ContenuPageChatbot() {
               href="/"
               className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition"
             >
-              <span>📊</span> Accueil
+              <Home className="h-4 w-4" strokeWidth={1.75} /> Accueil
             </Link>
 
             {/* Active item: SunuBot */}
@@ -106,14 +107,14 @@ function ContenuPageChatbot() {
               href="/chatbot"
               className="flex items-center gap-3 rounded-xl bg-[#00C49F] px-3.5 py-2.5 text-xs font-bold text-white shadow-sm transition"
             >
-              <span>🤖</span> SunuBot IA
+              <Image src="/design/sunubot-icon.svg" alt="" width={16} height={16} /> SunuBot IA
             </Link>
 
             <Link
               href="/donnees"
               className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-medium text-gray-600 hover:bg-gray-50 transition"
             >
-              <span>🏷️</span> Données &amp; Prix
+              <Tag className="h-4 w-4" strokeWidth={1.75} /> Données &amp; Prix
             </Link>
           </nav>
         </div>
@@ -175,7 +176,7 @@ function ContenuPageChatbot() {
                 }`}
               >
                 {msg.sender === "user" ? (
-                  "👤"
+                  <User className="h-4 w-4" strokeWidth={1.75} />
                 ) : (
                   <Image src="/design/sunubot-icon.svg" alt="SunuBot" width={26} height={26} />
                 )}
@@ -250,7 +251,7 @@ function ContenuPageChatbot() {
               disabled={enCours || !saisie.trim()}
               className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#0B5D48] text-white text-xs hover:bg-[#074737] disabled:opacity-50 transition"
             >
-              ➢
+              <Send className="h-3.5 w-3.5" strokeWidth={2} />
             </button>
           </form>
 

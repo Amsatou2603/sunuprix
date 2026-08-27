@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { TrendingUp } from "lucide-react";
 import { EtatVide } from "@/components/partages/EtatAsync";
 import type { PointHistoriquePrix, PredictionPublique } from "@/lib/api/types";
 
@@ -46,7 +47,7 @@ export function GraphiquePrix({ historique, prediction, unite }: ProprietesGraph
   if (points.length === 0) {
     return (
       <EtatVide
-        icone="📈"
+        icone={<TrendingUp className="h-7 w-7" strokeWidth={1.75} />}
         titre="Aucun historique disponible"
         description="Aucun relevé validé pour ce couple produit / région pour le moment."
       />

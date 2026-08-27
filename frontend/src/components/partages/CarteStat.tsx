@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 
 interface ProprietesCarteStat {
-  icone: string;
+  /** Icône (composant Lucide, ex. `<TrendingUp className="h-[18px] w-[18px]" />`). */
+  icone: ReactNode;
   label: string;
   valeur: ReactNode;
   /** Pastille de contexte optionnelle (delta, statut...), affichée en haut à droite de la carte. */
   pastille?: ReactNode;
-  /** Couleur de fond du badge d'icône (classes Tailwind), vert par défaut. */
+  /** Couleur de fond + de trait du badge d'icône (classes Tailwind `bg-*` et `text-*`), vert par défaut. */
   couleurIcone?: string;
 }
 
@@ -16,11 +17,11 @@ interface ProprietesCarteStat {
  * bord par rôle (admin, chercheur, vendeur, ministère) — un seul composant
  * pour ce motif répété plutôt qu'une mise en page recopiée à chaque page.
  */
-export function CarteStat({ icone, label, valeur, pastille, couleurIcone = "bg-primary/10" }: ProprietesCarteStat) {
+export function CarteStat({ icone, label, valeur, pastille, couleurIcone = "bg-primary/10 text-primary" }: ProprietesCarteStat) {
   return (
     <div className="carte">
       <div className="flex items-start justify-between">
-        <span className={`flex h-9 w-9 items-center justify-center rounded-lg text-lg ${couleurIcone}`} aria-hidden="true">
+        <span className={`flex h-9 w-9 items-center justify-center rounded-lg ${couleurIcone}`} aria-hidden="true">
           {icone}
         </span>
         {pastille}
