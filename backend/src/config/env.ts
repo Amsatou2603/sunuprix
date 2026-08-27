@@ -41,8 +41,13 @@ export const env = {
     .split(",")
     .map((origine) => origine.trim())
     .filter(Boolean),
-  geminiApiKey: process.env.GEMINI_API_KEY || undefined,
+  geminiApiKey:
+    process.env.GEMINI_API_KEY ||
+    process.env.GOOGLE_AI_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    undefined,
   geminiModel: lireVariable("GEMINI_MODEL", "gemini-1.5-flash"),
 } as const;
+
 
 export const estProduction = env.nodeEnv === "production";

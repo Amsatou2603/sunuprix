@@ -13,9 +13,9 @@ const LIENS_NAVIGATION = [
   { href: "/", label: "Accueil" },
   { href: "/donnees", label: "Données" },
   { href: "/alertes", label: "Alertes" },
-  { href: "/chercheur", label: "Régions" },
   { href: "/a-propos", label: "À propos" },
 ];
+
 
 const LIEN_ESPACE_PAR_ROLE: Partial<Record<Role, { href: string; label: string }>> = {
   VENDEUR: { href: "/vendeur", label: "Espace Vendeur" },
@@ -128,12 +128,15 @@ export function Header() {
             <>
               <ClocheNotifications />
 
-              <Link
-                href="/chercheur"
-                className="hidden items-center rounded-lg bg-[#00B493] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#009b7e] shadow-sm sm:inline-flex"
-              >
-                Create Report
-              </Link>
+              {lienEspace && (
+                <Link
+                  href={lienEspace.href}
+                  className="hidden items-center rounded-lg bg-[#00B493] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#009b7e] shadow-sm sm:inline-flex"
+                >
+                  {lienEspace.label}
+                </Link>
+              )}
+
 
               <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0B4736] text-xs font-bold text-white shadow-sm">

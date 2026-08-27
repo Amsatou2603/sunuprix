@@ -52,14 +52,13 @@ async function essayerGemini(message: string, contexte: ContexteChatbot): Promis
  * disponibilité d'un service externe.
  */
 export function genererReponseRepli(contexte: ContexteChatbot): string {
-  const prefixe = "🌾 (mode hors-ligne — réponse générée localement à partir de nos données)";
-
   if (contexte.faits.length === 0) {
-    return `${prefixe} Je n'ai pas trouvé de données correspondant précisément à votre question. Essayez par exemple : « Quel est le prix du riz à Dakar ? » ou « Comment évolue le sucre à Thiès ? ».`;
+    return "Je n'ai pas trouvé de données correspondant précisément à votre question. Essayez par exemple : « Quel est le prix du riz à Dakar ? » ou « Comment évolue le sucre à Thiès ? ».";
   }
 
-  return `${prefixe} ${contexte.resume} Ces données sont fictives et générées à des fins pédagogiques.`;
+  return `${contexte.resume} Ces données sont fictives et générées à des fins pédagogiques.`;
 }
+
 
 export async function genererReponseAvecRepli(
   message: string,
