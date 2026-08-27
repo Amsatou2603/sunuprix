@@ -222,16 +222,26 @@ export function ChatbotWidget() {
         )}
       </AnimatePresence>
 
-      {/* Floating Trigger Button with SunuBot Logo */}
-      <motion.button
-        onClick={() => setOuvert((v) => !v)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#E5C158] bg-[#062118]/90 p-1.5 shadow-2xl backdrop-blur-xl transition-colors"
-        aria-label={ouvert ? "Fermer SunuBot" : "Ouvrir l'assistant SunuBot"}
-      >
-        <Image src="/design/sunubot-icon.svg" alt="SunuBot Floating Launcher" width={44} height={44} priority />
-      </motion.button>
+      {/* Floating Trigger Button with SunuBot Logo — flotte doucement et diffuse un halo
+          pulsant tant que la fenêtre est fermée, pour attirer l'œil sans être agressif ;
+          les deux s'arrêtent une fois la conversation ouverte pour ne pas distraire. */}
+      <div className={`relative ${ouvert ? "" : "animate-flotter"}`}>
+        {!ouvert && (
+          <span
+            className="absolute inset-0 -z-10 rounded-full bg-[#E5C158]/50 blur-md animate-lueur-pulse"
+            aria-hidden="true"
+          />
+        )}
+        <motion.button
+          onClick={() => setOuvert((v) => !v)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#E5C158] bg-[#062118]/90 p-1.5 shadow-2xl backdrop-blur-xl transition-colors"
+          aria-label={ouvert ? "Fermer SunuBot" : "Ouvrir l'assistant SunuBot"}
+        >
+          <Image src="/design/sunubot-icon.svg" alt="SunuBot Floating Launcher" width={44} height={44} priority />
+        </motion.button>
+      </div>
     </div>
   );
 }
