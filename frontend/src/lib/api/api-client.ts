@@ -2,20 +2,19 @@
  * Client API centralisé.
  *
  * Toute requête vers le backend passe par ici — jamais un `fetch` direct
- * dispersé dans un composant. Cela garantit une seule base URL, une seule
- * gestion des credentials (cookie httpOnly de session) et une seule
- * normalisation des erreurs pour toute l'application.
+ * dispersé dans un composant. Cela garantit un seul mécanisme de construction
+ * d'URL, une seule gestion des credentials (cookie httpOnly de session) et
+ * une seule normalisation des erreurs pour toute l'application.
+ *
+ * Toutes les requêtes utilisent un chemin RELATIF (ex. "/api/auth/moi"),
+ * jamais l'URL absolue du backend Render : le rewrite serveur défini dans
+ * `next.config.js` relaie chaque appel /api/* vers le vrai backend côté
+ * serveur. Vu du navigateur, tout se passe sur le même domaine que la page
+ * (sunuprix.vercel.app), ce qui rend le cookie de session "de première
+ * partie" plutôt que "tiers" — indispensable pour que Safari/iOS (qui bloque
+ * par défaut les cookies tiers, même avec SameSite=None; Secure) continue
+ * d'envoyer ce cookie. Voir le commentaire dans next.config.js.
  */
-
-const URL_BASE_API = process.env.NEXT_PUBLIC_API_URL;
-
-if (!URL_BASE_API && typeof window !== "undefined") {
-  // Avertissement visible seulement côté client, pour ne pas casser le build.
-  // eslint-disable-next-line no-console
-  console.warn(
-    "[SunuPrix] NEXT_PUBLIC_API_URL n'est pas défini — copiez frontend/.env.example vers .env.local.",
-  );
-}
 
 /** Erreur API normalisée, avec le statut HTTP et le message renvoyé par le backend. */
 export class ErreurApi extends Error {
@@ -38,14 +37,15 @@ interface OptionsRequete {
 }
 
 function construireUrl(chemin: string, parametres?: OptionsRequete["parametres"]): string {
-  const base = URL_BASE_API ?? "";
-  const url = new URL(chemin.replace(/^\//, ""), base.endsWith("/") ? base : `${base}/`);
+  const cheminAbsolu = `/${chemin.replace(/^\//, "")}`;
+  const recherche = new URLSearchParams();
   if (parametres) {
     for (const [cle, valeur] of Object.entries(parametres)) {
-      if (valeur !== undefined) url.searchParams.set(cle, String(valeur));
+      if (valeur !== undefined) recherche.set(cle, String(valeur));
     }
   }
-  return url.toString();
+  const requete = recherche.toString();
+  return requete ? `${cheminAbsolu}?${requete}` : cheminAbsolu;
 }
 
 async function requete<T>(chemin: string, options: OptionsRequete = {}): Promise<T> {
@@ -54,8 +54,10 @@ async function requete<T>(chemin: string, options: OptionsRequete = {}): Promise
   const reponse = await fetch(construireUrl(chemin, parametres), {
     method: methode,
     headers: corps ? { "Content-Type": "application/json" } : undefined,
-    // Indispensable pour transmettre le cookie httpOnly de session au backend,
-    // y compris en cross-origin (Vercel <-> Render) en production.
+    // Transmet le cookie httpOnly de session avec chaque requête. Depuis le
+    // rewrite dans next.config.js, ces appels sont same-origin du point de
+    // vue du navigateur — "include" reste la valeur la plus sûre dans tous
+    // les cas de figure.
     credentials: "include",
     body: corps ? JSON.stringify(corps) : undefined,
     cache: "no-store",
