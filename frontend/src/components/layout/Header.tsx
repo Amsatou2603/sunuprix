@@ -143,15 +143,21 @@ export function Header() {
 
 
               <div className="flex items-center gap-1.5 border-l border-header/10 pl-1.5 sm:gap-2 sm:pl-2.5">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white shadow-sm sm:h-8 sm:w-8">
-                  {utilisateur.nom.substring(0, 2).toUpperCase()}
-                </div>
-                <div className="hidden text-left sm:block">
-                  <p className="text-xs font-semibold leading-none text-header">{utilisateur.nom}</p>
-                  <p className="mt-0.5 text-[10px] font-medium leading-tight text-primary">
-                    {LIBELLES_ROLES[utilisateur.role]}
-                  </p>
-                </div>
+                <Link
+                  href="/profil"
+                  className="flex items-center gap-1.5 rounded-full py-0.5 pr-1 transition hover:bg-header/5 sm:gap-2"
+                  title="Voir mon profil"
+                >
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white shadow-sm sm:h-8 sm:w-8">
+                    {utilisateur.nom.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div className="hidden text-left sm:block">
+                    <p className="text-xs font-semibold leading-none text-header">{utilisateur.nom}</p>
+                    <p className="mt-0.5 text-[10px] font-medium leading-tight text-primary">
+                      {LIBELLES_ROLES[utilisateur.role]}
+                    </p>
+                  </div>
+                </Link>
                 <button
                   onClick={gererDeconnexion}
                   className="ml-1 flex h-7 w-7 items-center justify-center rounded-full text-header/50 transition hover:bg-header/5 hover:text-header"
