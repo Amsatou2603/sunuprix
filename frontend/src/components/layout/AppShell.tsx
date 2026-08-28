@@ -7,13 +7,13 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ChatbotWidget } from "@/components/chatbot/ChatbotWidget";
 
-/** Durée plancher d'affichage du splashscreen, pour éviter un flash trop
- *  bref et déstabilisant quand la vérification de session est quasi
- *  instantanée (ex. cache navigateur chaud) — sur un cold start Render
- *  (plan gratuit), la vérification peut prendre plusieurs secondes : dans ce
- *  cas ce délai plancher n'a aucun effet, l'écran reste déjà affiché plus
- *  longtemps que lui. */
-const DELAI_MINIMUM_MS = 500;
+/** Durée plancher d'affichage du splashscreen, pour qu'il reste bien visible
+ *  (le temps que le logo et l'animation se remarquent) même quand la
+ *  vérification de session est quasi instantanée (ex. cache navigateur
+ *  chaud) — sur un cold start Render (plan gratuit), la vérification peut
+ *  prendre plusieurs secondes : dans ce cas ce délai plancher n'a aucun
+ *  effet, l'écran reste déjà affiché plus longtemps que lui. */
+const DELAI_MINIMUM_MS = 2200;
 
 /**
  * Point d'entrée unique du contenu applicatif, à l'intérieur de
