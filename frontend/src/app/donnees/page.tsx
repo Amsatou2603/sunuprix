@@ -255,7 +255,7 @@ function ContenuPageDonnees() {
                 />
               </div>
 
-              <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+              <div className="grid gap-6 lg:grid-cols-[400px_1fr]">
                 <div className="carte">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
                     Carte Régionale — {produitCourant?.nom ?? "…"}
