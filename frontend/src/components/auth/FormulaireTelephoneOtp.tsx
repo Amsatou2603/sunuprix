@@ -9,7 +9,6 @@ import { ChampTelephoneSenegal, formaterAffichage } from "./ChampTelephoneSenega
 import { SaisieCodeOtp } from "./SaisieCodeOtp";
 
 interface ProprietesFormulaireTelephoneOtp {
-  /** "inscription" demande le nom (nécessaire seulement si ce numéro n'a pas encore de compte). */
   mode: "connexion" | "inscription";
   onSucces: () => void;
 }
@@ -63,11 +62,12 @@ export function FormulaireTelephoneOtp({ mode, onSucces }: ProprietesFormulaireT
     setErreur(null);
     setEnCours(true);
     try {
-      await verifierOtp({
-        telephone,
-        code,
-        ...(mode === "inscription" ? { nom, role: "CONSOMMATEUR" } : {}),
-      });
+      // Toujours transmis : si ce numéro a déjà un compte, le backend ignore
+      // simplement nom/role et connecte l'utilisateur existant. S'il s'agit
+      // d'un nouveau numéro (y compris depuis la page Connexion — rien
+      // n'empêche quelqu'un de tenter de "se connecter" avec un numéro
+      // jamais utilisé), le compte est créé avec ce nom.
+      await verifierOtp({ telephone, code, nom, role: "CONSOMMATEUR" });
       onSucces();
     } catch (e) {
       setErreur(e instanceof ErreurApi ? e.message : "Une erreur inattendue est survenue.");
@@ -122,23 +122,26 @@ export function FormulaireTelephoneOtp({ mode, onSucces }: ProprietesFormulaireT
 
   return (
     <form onSubmit={envoyerCode} className="space-y-4">
-      {mode === "inscription" && (
-        <div>
-          <label htmlFor="nom-telephone" className="etiquette-champ">
-            Nom complet
-          </label>
-          <input
-            id="nom-telephone"
-            type="text"
-            required
-            minLength={2}
-            className="champ-formulaire"
-            value={nom}
-            onChange={(e) => setNom(e.target.value)}
-            placeholder="Aminata Diop"
-          />
-        </div>
-      )}
+      <div>
+        <label htmlFor="nom-telephone" className="etiquette-champ">
+          Nom complet
+        </label>
+        <input
+          id="nom-telephone"
+          type="text"
+          required
+          minLength={2}
+          className="champ-formulaire"
+          value={nom}
+          onChange={(e) => setNom(e.target.value)}
+          placeholder="Aminata Diop"
+        />
+        {mode === "connexion" && (
+          <p className="mt-1 text-xs text-header/40">
+            Utilisé uniquement si ce numéro n&apos;a pas encore de compte.
+          </p>
+        )}
+      </div>
 
       <div>
         <label htmlFor="telephone" className="etiquette-champ">
