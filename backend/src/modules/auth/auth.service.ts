@@ -3,9 +3,19 @@ import { ApiError } from "../../utils/ApiError";
 import { hacherMotDePasse, verifierMotDePasse } from "../../utils/motDePasse";
 import { signerToken } from "../../utils/jwt";
 import * as authRepository from "./auth.repository";
-import type { EntreeConnexion, EntreeInscription } from "./auth.schema";
+import * as googleService from "./google.service";
+import * as otpService from "./otp.service";
+import type { EntreeConnexion, EntreeInscription, EntreeVerifierOtp } from "./auth.schema";
 import type { ResultatAuthentification, UtilisateurPublic } from "./auth.types";
 import { ROLES, type Role } from "../../config/constants";
+
+/**
+ * Rôle attribué par défaut aux comptes créés via un flux "un clic" (Google
+ * ou téléphone/OTP) : ces flux n'affichent volontairement pas de sélecteur
+ * de rôle pour rester frictionless, contrairement au formulaire d'inscription
+ * e-mail/mot de passe. `CONSOMMATEUR` est le rôle grand public de la plateforme.
+ */
+const ROLE_PAR_DEFAUT_INSCRIPTION_RAPIDE: Role = "CONSOMMATEUR";
 
 /** Retire les champs sensibles avant tout envoi au client. */
 function versUtilisateurPublic(utilisateur: Utilisateur): UtilisateurPublic {
@@ -13,6 +23,7 @@ function versUtilisateurPublic(utilisateur: Utilisateur): UtilisateurPublic {
     id: utilisateur.id,
     nom: utilisateur.nom,
     email: utilisateur.email,
+    telephone: utilisateur.telephone,
     role: utilisateur.role as Role,
     actif: utilisateur.actif,
     creeLe: utilisateur.creeLe.toISOString(),
@@ -62,6 +73,80 @@ export async function obtenirProfilCourant(id: string): Promise<UtilisateurPubli
     throw ApiError.introuvable("Utilisateur introuvable.");
   }
   return versUtilisateurPublic(utilisateur);
+}
+
+// --------------------------------------------------------------------------
+// Connexion avec Google
+// --------------------------------------------------------------------------
+
+export async function connecterAvecGoogle(idToken: string): Promise<ResultatAuthentification> {
+  const profil = await googleService.verifierJetonGoogle(idToken);
+
+  let utilisateur = await authRepository.trouverParGoogleId(profil.googleId);
+
+  if (!utilisateur) {
+    // Un compte existe peut-être déjà avec cet e-mail (inscrit au préalable
+    // via e-mail/mot de passe) : on relie le compte Google à ce compte
+    // existant plutôt que de créer un doublon en conflit sur l'e-mail unique.
+    const existantParEmail = await authRepository.trouverParEmail(profil.email);
+    utilisateur = existantParEmail
+      ? await authRepository.lierGoogleId(existantParEmail.id, profil.googleId)
+      : await authRepository.creerUtilisateurGoogle({
+          nom: profil.nom,
+          email: profil.email,
+          googleId: profil.googleId,
+          role: ROLE_PAR_DEFAUT_INSCRIPTION_RAPIDE,
+        });
+  }
+
+  if (!utilisateur.actif) {
+    throw ApiError.acceIntedit("Ce compte a été désactivé. Contactez un administrateur.");
+  }
+
+  const token = signerToken({ sub: utilisateur.id, role: utilisateur.role as Role, email: utilisateur.email });
+  return { utilisateur: versUtilisateurPublic(utilisateur), token };
+}
+
+// --------------------------------------------------------------------------
+// Vérification par SMS (Twilio Verify)
+// --------------------------------------------------------------------------
+
+export async function envoyerOtp(telephone: string): Promise<void> {
+  await otpService.envoyerCodeOtp(telephone);
+}
+
+export async function verifierOtp(entree: EntreeVerifierOtp): Promise<ResultatAuthentification> {
+  const codeValide = await otpService.verifierCodeOtp(entree.telephone, entree.code);
+  if (!codeValide) {
+    throw ApiError.mauvaiseRequete("Code de vérification incorrect ou expiré.");
+  }
+
+  let utilisateur = await authRepository.trouverParTelephone(entree.telephone);
+
+  if (!utilisateur) {
+    // Première connexion avec ce numéro : création du compte. Le nom est
+    // fourni par le formulaire d'inscription téléphone à ce stade.
+    if (!entree.nom) {
+      throw ApiError.mauvaiseRequete("Votre nom est requis pour créer un compte.");
+    }
+    const role =
+      entree.role && (ROLES as readonly string[]).includes(entree.role)
+        ? (entree.role as Role)
+        : ROLE_PAR_DEFAUT_INSCRIPTION_RAPIDE;
+
+    utilisateur = await authRepository.creerUtilisateurTelephone({
+      nom: entree.nom,
+      telephone: entree.telephone,
+      role,
+    });
+  }
+
+  if (!utilisateur.actif) {
+    throw ApiError.acceIntedit("Ce compte a été désactivé. Contactez un administrateur.");
+  }
+
+  const token = signerToken({ sub: utilisateur.id, role: utilisateur.role as Role, email: utilisateur.email });
+  return { utilisateur: versUtilisateurPublic(utilisateur), token };
 }
 
 // --------------------------------------------------------------------------

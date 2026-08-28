@@ -6,7 +6,9 @@ import type { Role } from "../config/constants";
 export interface PayloadJwt {
   sub: string; // id utilisateur
   role: Role;
-  email: string;
+  // Null pour un compte créé exclusivement via téléphone/OTP (aucune adresse
+  // e-mail renseignée).
+  email: string | null;
 }
 
 export function signerToken(payload: PayloadJwt): string {

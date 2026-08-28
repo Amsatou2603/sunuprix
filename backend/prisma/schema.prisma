@@ -61,8 +61,18 @@ enum RoleMessage {
 
 model Utilisateur {
   id             String          @id @default(cuid())
-  email          String          @unique
-  motDePasseHash String
+  // Optionnel : un compte créé via Google ou via téléphone/OTP peut n'avoir
+  // ni l'un ni l'autre au départ (au moins un identifiant — email, téléphone
+  // ou googleId — est garanti par la couche service, pas par une contrainte
+  // SQL, pour rester compatible avec la validation Zod déjà en place).
+  email          String?         @unique
+  motDePasseHash String?
+  // Numéro complet au format E.164 (ex. "+221771234567"), rempli uniquement
+  // pour les comptes créés ou vérifiés via l'OTP SMS Twilio.
+  telephone      String?         @unique
+  // Identifiant Google ("sub" du token OIDC), rempli uniquement pour les
+  // comptes créés via "Continuer avec Google".
+  googleId       String?         @unique
   nom            String
   role           RoleUtilisateur
   actif          Boolean         @default(true)

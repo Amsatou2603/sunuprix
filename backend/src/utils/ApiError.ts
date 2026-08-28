@@ -39,4 +39,9 @@ export class ApiError extends Error {
   static interne(message = "Erreur interne du serveur.") {
     return new ApiError(500, message);
   }
+
+  /** Intégration tierce non configurée côté serveur (variables d'environnement manquantes). */
+  static nonConfigure(message: string) {
+    return new ApiError(503, message);
+  }
 }

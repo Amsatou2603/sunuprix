@@ -47,6 +47,19 @@ export const env = {
     process.env.GOOGLE_API_KEY ||
     undefined,
   geminiModel: lireVariable("GEMINI_MODEL", "gemini-3.6-flash"),
+
+  // --- Connexion avec Google (Google Identity Services) -------------------
+  // Optionnelle : en son absence, l'endpoint /api/auth/google répond 501 et
+  // le bouton "Continuer avec Google" reste affiché mais informe l'utilisateur
+  // que la fonctionnalité n'est pas encore configurée — jamais d'erreur 500.
+  googleClientId: process.env.GOOGLE_CLIENT_ID || undefined,
+
+  // --- Vérification par SMS (Twilio Verify) --------------------------------
+  // Optionnelles pour la même raison : sans ces trois variables, /api/auth/otp/*
+  // répond 501 plutôt que de planter.
+  twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || undefined,
+  twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || undefined,
+  twilioVerifyServiceSid: process.env.TWILIO_VERIFY_SERVICE_SID || undefined,
 } as const;
 
 

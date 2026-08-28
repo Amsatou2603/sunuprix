@@ -64,7 +64,7 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
             <thead>
               <tr className="border-b border-black/10 text-xs uppercase tracking-wide text-header/50">
                 <th className="py-2 pr-4">Nom</th>
-                <th className="py-2 pr-4">E-mail</th>
+                <th className="py-2 pr-4">Contact</th>
                 <th className="py-2 pr-4">Rôle</th>
                 <th className="py-2 pr-4">Statut</th>
                 <th className="py-2 pr-4">Action</th>
@@ -79,7 +79,11 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
                       {utilisateur.nom}
                       {estSoiMeme && <span className="ml-1.5 text-xs text-header/40">(vous)</span>}
                     </td>
-                    <td className="py-2 pr-4">{utilisateur.email}</td>
+                    <td className="py-2 pr-4">
+                      {utilisateur.email ?? utilisateur.telephone ?? (
+                        <span className="text-header/30">—</span>
+                      )}
+                    </td>
                     <td className="py-2 pr-4">
                       <select
                         className="champ-formulaire !py-1.5 !text-xs"

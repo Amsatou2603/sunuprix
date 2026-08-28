@@ -27,11 +27,22 @@ interface EntreeConnexion {
   motDePasse: string;
 }
 
+interface EntreeVerifierOtp {
+  telephone: string;
+  code: string;
+  /** Renseignés uniquement lors de la création d'un nouveau compte (formulaire d'inscription téléphone). */
+  nom?: string;
+  role?: string;
+}
+
 interface ValeurContexteAuth {
   utilisateur: UtilisateurPublic | null;
   chargementInitial: boolean;
   connecter: (entree: EntreeConnexion) => Promise<void>;
   inscrire: (entree: EntreeInscription) => Promise<void>;
+  connecterAvecGoogle: (idToken: string) => Promise<void>;
+  envoyerOtp: (telephone: string) => Promise<void>;
+  verifierOtp: (entree: EntreeVerifierOtp) => Promise<void>;
   deconnecter: () => Promise<void>;
 }
 
@@ -68,14 +79,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUtilisateur(reponse.utilisateur);
   }, []);
 
+  const connecterAvecGoogle = useCallback(async (idToken: string) => {
+    const reponse = await apiClient.post<ReponseAuthentification>("/api/auth/google", { idToken });
+    setUtilisateur(reponse.utilisateur);
+  }, []);
+
+  const envoyerOtp = useCallback(async (telephone: string) => {
+    await apiClient.post("/api/auth/otp/envoyer", { telephone });
+  }, []);
+
+  const verifierOtp = useCallback(async (entree: EntreeVerifierOtp) => {
+    const reponse = await apiClient.post<ReponseAuthentification>("/api/auth/otp/verifier", entree);
+    setUtilisateur(reponse.utilisateur);
+  }, []);
+
   const deconnecter = useCallback(async () => {
     await apiClient.post("/api/auth/deconnexion");
     setUtilisateur(null);
   }, []);
 
   const valeur = useMemo<ValeurContexteAuth>(
-    () => ({ utilisateur, chargementInitial, connecter, inscrire, deconnecter }),
-    [utilisateur, chargementInitial, connecter, inscrire, deconnecter],
+    () => ({
+      utilisateur,
+      chargementInitial,
+      connecter,
+      inscrire,
+      connecterAvecGoogle,
+      envoyerOtp,
+      verifierOtp,
+      deconnecter,
+    }),
+    [utilisateur, chargementInitial, connecter, inscrire, connecterAvecGoogle, envoyerOtp, verifierOtp, deconnecter],
   );
 
   return <ContexteAuth.Provider value={valeur}>{children}</ContexteAuth.Provider>;

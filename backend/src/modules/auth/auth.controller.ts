@@ -4,7 +4,13 @@ import { NOM_COOKIE_SESSION, ROLES_INSCRIPTIBLES, LIBELLES_ROLES } from "../../c
 import { asyncHandler } from "../../utils/asyncHandler";
 import { ApiError } from "../../utils/ApiError";
 import * as authService from "./auth.service";
-import { schemaConnexion, schemaInscription } from "./auth.schema";
+import {
+  schemaConnexion,
+  schemaEnvoyerOtp,
+  schemaGoogleConnexion,
+  schemaInscription,
+  schemaVerifierOtp,
+} from "./auth.schema";
 
 /**
  * Durée de vie du cookie de session, dérivée de JWT_EXPIRES_IN pour rester
@@ -42,6 +48,38 @@ export const connexion = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const { utilisateur, token } = await authService.connecter(analyse.data);
+  poserCookieSession(res, token);
+  res.status(200).json({ utilisateur });
+});
+
+export const connexionGoogle = asyncHandler(async (req: Request, res: Response) => {
+  const analyse = schemaGoogleConnexion.safeParse(req.body);
+  if (!analyse.success) {
+    throw ApiError.mauvaiseRequete("Jeton Google manquant ou invalide.", analyse.error.flatten());
+  }
+
+  const { utilisateur, token } = await authService.connecterAvecGoogle(analyse.data.idToken);
+  poserCookieSession(res, token);
+  res.status(200).json({ utilisateur });
+});
+
+export const envoyerCodeOtp = asyncHandler(async (req: Request, res: Response) => {
+  const analyse = schemaEnvoyerOtp.safeParse(req.body);
+  if (!analyse.success) {
+    throw ApiError.mauvaiseRequete("Numéro de téléphone invalide.", analyse.error.flatten());
+  }
+
+  await authService.envoyerOtp(analyse.data.telephone);
+  res.status(200).json({ message: "Code de vérification envoyé par SMS." });
+});
+
+export const verifierCodeOtp = asyncHandler(async (req: Request, res: Response) => {
+  const analyse = schemaVerifierOtp.safeParse(req.body);
+  if (!analyse.success) {
+    throw ApiError.mauvaiseRequete("Code de vérification invalide.", analyse.error.flatten());
+  }
+
+  const { utilisateur, token } = await authService.verifierOtp(analyse.data);
   poserCookieSession(res, token);
   res.status(200).json({ utilisateur });
 });
