@@ -50,10 +50,16 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-6px)" },
         },
+        "barre-chargement": {
+          "0%": { transform: "translateX(-110%)" },
+          "50%": { transform: "translateX(60%)" },
+          "100%": { transform: "translateX(220%)" },
+        },
       },
       animation: {
         "lueur-pulse": "lueur-pulse 2.4s ease-in-out infinite",
         "flotter": "flotter 5s ease-in-out infinite",
+        "barre-chargement": "barre-chargement 1.6s ease-in-out infinite",
       },
     },
   },

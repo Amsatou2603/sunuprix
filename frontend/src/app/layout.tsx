@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth/AuthContext";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { AppShell } from "@/components/layout/AppShell";
 import { EnregistreurServiceWorker } from "@/components/pwa/EnregistreurServiceWorker";
-import { ChatbotWidget } from "@/components/chatbot/ChatbotWidget";
 
 export const metadata: Metadata = {
   title: {
@@ -41,14 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr">
       <body className="flex min-h-screen flex-col font-sans">
         <AuthProvider>
-          <Header />
-          {/* La barre de nav est en position sticky avec un décalage (top-2 sm:top-4) :
-              elle réserve sa hauteur "statique" (sans ce décalage) dans le flux normal,
-              mais s'affiche décalée vers le bas de ce même décalage au premier rendu —
-              sans ce padding, elle chevauche les ~8-16px du haut de chaque page. */}
-          <main className="w-full flex-1 pt-2 sm:pt-4">{children}</main>
-          <Footer />
-          <ChatbotWidget />
+          <AppShell>{children}</AppShell>
         </AuthProvider>
 
         <EnregistreurServiceWorker />
