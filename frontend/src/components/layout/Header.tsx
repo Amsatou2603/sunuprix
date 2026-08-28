@@ -81,7 +81,10 @@ export function Header() {
   };
 
   const lienEspace = utilisateur ? LIEN_ESPACE_PAR_ROLE[utilisateur.role] : undefined;
-  const liensNavigation = lienEspace ? [...LIENS_NAVIGATION, lienEspace] : LIENS_NAVIGATION;
+  // L'espace dédié au rôle (Vendeur/Chercheur/Ministère/Admin) a déjà son
+  // propre bouton vert à droite, à côté du pseudo (cf. plus bas) — inutile de
+  // le dupliquer ici dans la nav centrale.
+  const liensNavigation = LIENS_NAVIGATION;
 
   // Render minimal bar for admin dedicated layout to match Image 3, or clean white bar for others
   const isAdminView = pathname.startsWith("/admin");
