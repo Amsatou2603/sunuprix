@@ -22,6 +22,20 @@ function obtenirClient() {
   return client;
 }
 
+/**
+ * Extrait un résumé lisible d'une erreur Twilio pour les logs serveur —
+ * jamais renvoyé tel quel au client (le SDK Twilio expose `code`/`status`
+ * en plus du message, bien plus utile pour diagnostiquer que le message
+ * générique affiché à l'utilisateur).
+ */
+function resumerErreurTwilio(erreur: unknown): string {
+  if (erreur && typeof erreur === "object") {
+    const { code, status, message } = erreur as { code?: unknown; status?: unknown; message?: unknown };
+    return `code=${code ?? "?"} status=${status ?? "?"} message=${message ?? String(erreur)}`;
+  }
+  return String(erreur);
+}
+
 /** Déclenche l'envoi d'un code de vérification par SMS au numéro donné (E.164). */
 export async function envoyerCodeOtp(telephone: string): Promise<void> {
   const twilioClient = obtenirClient();
@@ -29,7 +43,9 @@ export async function envoyerCodeOtp(telephone: string): Promise<void> {
     await twilioClient.verify.v2
       .services(env.twilioVerifyServiceSid as string)
       .verifications.create({ to: telephone, channel: "sms" });
-  } catch {
+  } catch (erreur) {
+    // eslint-disable-next-line no-console
+    console.error("[SunuPrix][otp] Échec envoi Twilio Verify —", resumerErreurTwilio(erreur));
     throw ApiError.mauvaiseRequete(
       "Impossible d'envoyer le code de vérification. Vérifiez le numéro saisi et réessayez.",
     );
@@ -44,10 +60,14 @@ export async function verifierCodeOtp(telephone: string, code: string): Promise<
       .services(env.twilioVerifyServiceSid as string)
       .verificationChecks.create({ to: telephone, code });
     return verification.status === "approved";
-  } catch {
+  } catch (erreur) {
     // Un code déjà expiré, déjà utilisé, ou un numéro sans vérification en
     // cours : dans tous les cas Twilio répond par une erreur ou un statut
-    // différent de "approved" — on retombe simplement sur "invalide".
+    // différent de "approved" — on retombe simplement sur "invalide", mais
+    // on garde une trace serveur pour ne pas repartir à l'aveugle si ça
+    // cache en fait un vrai problème de configuration.
+    // eslint-disable-next-line no-console
+    console.error("[SunuPrix][otp] Échec vérification Twilio Verify —", resumerErreurTwilio(erreur));
     return false;
   }
 }
