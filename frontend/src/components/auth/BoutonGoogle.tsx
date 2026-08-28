@@ -53,12 +53,22 @@ export function BoutonGoogle({ onJeton, texte = "continue_with" }: ProprietesBou
   const conteneurRef = useRef<HTMLDivElement>(null);
   const [scriptCharge, setScriptCharge] = useState(false);
 
+  // `onJeton` est en général une fonction en ligne recréée à chaque rendu du
+  // parent (ex. la page Connexion se re-rend à chaque frappe dans le champ
+  // e-mail) — la garder dans une ref évite de la mettre dans les dépendances
+  // de l'effet ci-dessous, qui sinon rappellerait `initialize()` à chaque
+  // rendu (avertissement Google "initialize() is called multiple times").
+  const onJetonRef = useRef(onJeton);
+  useEffect(() => {
+    onJetonRef.current = onJeton;
+  }, [onJeton]);
+
   useEffect(() => {
     if (!scriptCharge || !ID_CLIENT_GOOGLE || !conteneurRef.current || !window.google) return;
 
     window.google.accounts.id.initialize({
       client_id: ID_CLIENT_GOOGLE,
-      callback: (reponse) => onJeton(reponse.credential),
+      callback: (reponse) => onJetonRef.current(reponse.credential),
     });
 
     conteneurRef.current.innerHTML = "";
@@ -72,7 +82,7 @@ export function BoutonGoogle({ onJeton, texte = "continue_with" }: ProprietesBou
       locale: "fr",
       width: 320,
     });
-  }, [scriptCharge, texte, onJeton]);
+  }, [scriptCharge, texte]);
 
   if (!ID_CLIENT_GOOGLE) {
     return (

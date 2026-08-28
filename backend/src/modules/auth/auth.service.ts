@@ -58,6 +58,14 @@ export async function connecter(entree: EntreeConnexion): Promise<ResultatAuthen
     throw ApiError.acceIntedit("Ce compte a été désactivé. Contactez un administrateur.");
   }
 
+  // Un compte créé uniquement via Google ou téléphone/OTP n'a pas de mot de
+  // passe : on refuse proprement plutôt que de planter sur un hash absent.
+  if (!utilisateur.motDePasseHash) {
+    throw ApiError.mauvaiseRequete(
+      "Ce compte n'a pas de mot de passe. Connectez-vous avec Google ou par téléphone.",
+    );
+  }
+
   const motDePasseValide = await verifierMotDePasse(entree.motDePasse, utilisateur.motDePasseHash);
   if (!motDePasseValide) {
     throw ApiError.mauvaiseRequete("Identifiants incorrects.");
