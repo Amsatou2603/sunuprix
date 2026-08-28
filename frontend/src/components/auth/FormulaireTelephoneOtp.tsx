@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { ROLES_INSCRIPTIBLES, LIBELLES_ROLES } from "@sunuprix/shared";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { ErreurApi } from "@/lib/api/api-client";
 import { MessageErreur } from "@/components/partages/EtatAsync";
@@ -25,6 +26,11 @@ export function FormulaireTelephoneOtp({ mode, onSucces }: ProprietesFormulaireT
   const [etape, setEtape] = useState<Etape>("numero");
   const [chiffres, setChiffres] = useState("");
   const [nom, setNom] = useState("");
+  // Consommateur par défaut (cas le plus fréquent), mais un numéro jamais
+  // utilisé peut tout autant appartenir à un vendeur ou un chercheur — rien
+  // n'oblige l'inscription par téléphone à créer systématiquement un compte
+  // Consommateur.
+  const [role, setRole] = useState<string>("CONSOMMATEUR");
   const [code, setCode] = useState("");
   const [enCours, setEnCours] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -66,8 +72,8 @@ export function FormulaireTelephoneOtp({ mode, onSucces }: ProprietesFormulaireT
       // simplement nom/role et connecte l'utilisateur existant. S'il s'agit
       // d'un nouveau numéro (y compris depuis la page Connexion — rien
       // n'empêche quelqu'un de tenter de "se connecter" avec un numéro
-      // jamais utilisé), le compte est créé avec ce nom.
-      await verifierOtp({ telephone, code, nom, role: "CONSOMMATEUR" });
+      // jamais utilisé), le compte est créé avec ce nom et ce rôle.
+      await verifierOtp({ telephone, code, nom, role });
       onSucces();
     } catch (e) {
       setErreur(e instanceof ErreurApi ? e.message : "Une erreur inattendue est survenue.");
@@ -122,6 +128,12 @@ export function FormulaireTelephoneOtp({ mode, onSucces }: ProprietesFormulaireT
 
   return (
     <form onSubmit={envoyerCode} className="space-y-4">
+      {mode === "connexion" && (
+        <p className="text-xs text-header/40">
+          Le nom et le rôle ne sont utilisés que si ce numéro n&apos;a pas encore de compte.
+        </p>
+      )}
+
       <div>
         <label htmlFor="nom-telephone" className="etiquette-champ">
           Nom complet
@@ -136,11 +148,25 @@ export function FormulaireTelephoneOtp({ mode, onSucces }: ProprietesFormulaireT
           onChange={(e) => setNom(e.target.value)}
           placeholder="Aminata Diop"
         />
-        {mode === "connexion" && (
-          <p className="mt-1 text-xs text-header/40">
-            Utilisé uniquement si ce numéro n&apos;a pas encore de compte.
-          </p>
-        )}
+      </div>
+
+      <div>
+        <label htmlFor="role-telephone" className="etiquette-champ">
+          Rôle
+        </label>
+        <select
+          id="role-telephone"
+          required
+          className="champ-formulaire"
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        >
+          {ROLES_INSCRIPTIBLES.map((valeurRole) => (
+            <option key={valeurRole} value={valeurRole}>
+              {LIBELLES_ROLES[valeurRole]}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

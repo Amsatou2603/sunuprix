@@ -178,13 +178,7 @@ export default function PageInscription() {
             </button>
           </form>
         ) : (
-          <div className="space-y-4">
-            <p className="text-xs text-header/50">
-              L&apos;inscription par téléphone crée un compte Consommateur. Pour un profil Vendeur, Chercheur ou
-              Ministère, utilisez plutôt l&apos;inscription par e-mail ci-dessus.
-            </p>
-            <FormulaireTelephoneOtp mode="inscription" onSucces={versAccueil} />
-          </div>
+          <FormulaireTelephoneOtp mode="inscription" onSucces={versAccueil} />
         )}
 
         <p className="mt-6 text-center text-sm text-header/60">
