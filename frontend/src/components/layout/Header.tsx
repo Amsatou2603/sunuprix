@@ -26,6 +26,16 @@ const LIEN_ESPACE_PAR_ROLE: Partial<Record<Role, { href: string; label: string }
   ADMIN: { href: "/admin", label: "Centre de Contrôle" },
 };
 
+// Libellés longs ("Dashboard Chercheur", "Centre de Contrôle"...) trop larges
+// à côté du logo sur petit écran, une fois pliés avec la cloche + l'avatar —
+// on raccourcit juste pour la variante mobile.
+const LIBELLE_COURT_PAR_ROLE: Partial<Record<Role, string>> = {
+  VENDEUR: "Vendeur",
+  CHERCHEUR: "Chercheur",
+  MINISTERE: "Ministère",
+  ADMIN: "Admin",
+};
+
 function ClocheNotifications() {
   const [compte, setCompte] = useState(0);
 
@@ -81,9 +91,10 @@ export function Header() {
   };
 
   const lienEspace = utilisateur ? LIEN_ESPACE_PAR_ROLE[utilisateur.role] : undefined;
-  // L'espace dédié au rôle (Vendeur/Chercheur/Ministère/Admin) a déjà son
-  // propre bouton vert à droite, à côté du pseudo (cf. plus bas) — inutile de
-  // le dupliquer ici dans la nav centrale.
+  const libelleCourtEspace = utilisateur ? LIBELLE_COURT_PAR_ROLE[utilisateur.role] : undefined;
+  // L'espace dédié au rôle (Vendeur/Chercheur/Ministère/Admin) a son propre
+  // bouton vert (à côté du logo sur mobile, à côté du pseudo sur sm+, cf. plus
+  // bas) — inutile de le dupliquer ici dans la nav centrale.
   const liensNavigation = LIENS_NAVIGATION;
 
   // Render minimal bar for admin dedicated layout to match Image 3, or clean white bar for others
@@ -101,15 +112,26 @@ export function Header() {
       className="sticky top-2 z-40 px-2 sm:top-4 sm:px-4"
     >
       <header className="verre mx-auto flex max-w-6xl items-center justify-between gap-1.5 !rounded-full px-3 py-1.5 sm:gap-3 sm:px-6 sm:py-2.5">
-        {/* Brand Logo Lockup */}
-        <Link href="/" className="flex min-w-0 shrink items-center gap-1.5 group sm:gap-2.5">
-          <div className="relative h-7 w-7 shrink-0 transition-transform group-hover:scale-105 sm:h-9 sm:w-9">
-            <Image src="/design/icon.svg" alt="SunuPrix Logo" width={36} height={36} priority className="object-contain" />
-          </div>
-          <span className="truncate font-serif text-base font-bold tracking-tight text-primary sm:text-xl">
-            Sunu<span className="text-primary-light">Prix</span>
-          </span>
-        </Link>
+        {/* Brand Logo Lockup + raccourci Espace (variante compacte, mobile uniquement) */}
+        <div className="flex min-w-0 shrink items-center gap-1.5">
+          <Link href="/" className="flex min-w-0 shrink items-center gap-1.5 group sm:gap-2.5">
+            <div className="relative h-7 w-7 shrink-0 transition-transform group-hover:scale-105 sm:h-9 sm:w-9">
+              <Image src="/design/icon.svg" alt="SunuPrix Logo" width={36} height={36} priority className="object-contain" />
+            </div>
+            <span className="truncate font-serif text-base font-bold tracking-tight text-primary sm:text-xl">
+              Sunu<span className="text-primary-light">Prix</span>
+            </span>
+          </Link>
+
+          {lienEspace && (
+            <Link
+              href={lienEspace.href}
+              className="inline-flex shrink-0 items-center rounded-full bg-primary px-2.5 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:scale-[1.03] hover:bg-primary-dark sm:hidden"
+            >
+              {libelleCourtEspace ?? lienEspace.label}
+            </Link>
+          )}
+        </div>
 
         {/* Center Nav Items */}
         <nav className="hidden items-center gap-1 md:flex">
