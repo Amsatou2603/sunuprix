@@ -1,8 +1,8 @@
 # Scénario de démonstration — SunuPrix
 
 Ce document propose un déroulé chronométré pour la soutenance, couvrant
-successivement les 5 rôles, le chatbot, la prédiction, les notifications et
-l'installation mobile de la PWA. Durée indicative totale : **12–15 minutes**.
+successivement les 4 rôles, le chatbot, la prédiction, les notifications et
+l'installation mobile de la PWA. Durée indicative totale : **10–12 minutes**.
 
 > Rappel à formuler en ouverture : toutes les données (prix, historiques,
 > comptes, annonces) sont **fictives**, générées pour la démonstration ; le
@@ -15,8 +15,7 @@ Comptes de démonstration (mot de passe identique : `SunuPrix2026!`) :
 | --- | --- |
 | Administrateur | `admin@sunuprix.sn` |
 | Chercheur | `chercheur@sunuprix.sn` |
-| Ministère | `ministere@sunuprix.sn` |
-| Vendeur | `vendeur@sunuprix.sn` |
+| Contributeur | `contributeur@sunuprix.sn` |
 | Consommateur | `consommateur@sunuprix.sn` |
 
 URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix).
@@ -26,26 +25,26 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
 ## 0. Introduction (30 s)
 
 - Ouvrir l'URL Vercel de production sur ordinateur.
-- Montrer la page d'accueil non connectée : logo, annonces officielles du
-  Ministère affichées publiquement, boutons **Connexion** / **Inscription**.
+- Montrer la page d'accueil non connectée : logo, chiffres publics agrégés,
+  boutons **Connexion** / **Inscription**.
 - Une phrase de contexte : plateforme multi-rôles de suivi et de prédiction
   des prix, 5 régions, 12 produits, 24 mois d'historique simulé à partir de
   tendances et prix de référence recherchés (ANSD, relevés de marché).
 
-## 1. Rôle Vendeur — déclarer un prix (2 min)
+## 1. Rôle Contributeur — signaler un prix (2 min)
 
-1. Se connecter avec `vendeur@sunuprix.sn`.
-2. Aller dans **Espace vendeur** (lien de navigation propre à ce rôle).
-3. Montrer l'historique des déclarations déjà faites, avec leur statut
+1. Se connecter avec `contributeur@sunuprix.sn`.
+2. Aller dans **Espace contributeur** (lien de navigation propre à ce rôle).
+3. Montrer l'historique des signalements déjà faits, avec leur statut
    (`EN_ATTENTE`, `VALIDEE`, `REJETEE`) et les cartes de synthèse en tête de
    page (total, en attente, validées, rejetées — toutes calculées en direct
    depuis les données chargées, jamais codées en dur).
-4. Remplir le formulaire de déclaration (produit, région, prix constaté) et
-   soumettre : la nouvelle déclaration apparaît dans l'historique avec le
-   statut `EN_ATTENTE`.
-5. Point à souligner : un vendeur ne peut déclarer que ses propres prix, et
-   ne voit que son propre historique (contrôle d'accès par rôle, vérifié par
-   un test d'intégration — voir [Tests](README.md#tests)).
+4. Remplir le formulaire (produit, région, prix constaté) et soumettre : le
+   nouveau signalement apparaît dans l'historique avec le statut
+   `EN_ATTENTE`.
+5. Point à souligner : un contributeur ne peut signaler que ses propres
+   prix, et ne voit que son propre historique (contrôle d'accès par rôle,
+   vérifié par un test d'intégration — voir [Tests](README.md#tests)).
 
 ## 2. Rôle Administrateur — modération (2 min)
 
@@ -60,8 +59,8 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
 5. Montrer brièvement la configuration des seuils d'alerte par défaut du
    système.
 6. Point à souligner : tenter d'ouvrir directement une URL d'un autre espace
-   (ex. `/vendeur` ou `/chercheur`) avec ce compte pour illustrer que la
-   garde de route (`RouteProtegee`) et le contrôle d'accès côté API
+   (ex. `/contributeur` ou `/chercheur`) avec ce compte pour illustrer que
+   la garde de route (`RouteProtegee`) et le contrôle d'accès côté API
    refusent l'accès à un rôle non autorisé.
 
 ## 3. Rôle Chercheur — analyse et export (2 min)
@@ -75,18 +74,7 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
 5. Lancer l'export CSV et ouvrir le fichier téléchargé : relevés de prix
    validés + prédictions.
 
-## 4. Rôle Ministère — vue macro et annonce (2 min)
-
-1. Se reconnecter avec `ministere@sunuprix.sn`.
-2. Aller dans **Espace Ministère**.
-3. Montrer le graphique d'inflation moyenne par région et les cartes de
-   synthèse (inflation nationale avec badge de variation doré/rouge, régions
-   suivies, annonces publiées).
-4. Publier une nouvelle annonce officielle via le formulaire.
-5. Revenir sur la page d'accueil (ou se déconnecter) pour montrer que
-   l'annonce apparaît immédiatement, y compris pour un visiteur non connecté.
-
-## 5. Rôle Consommateur — alertes et notifications (2 min)
+## 4. Rôle Consommateur — alertes et notifications (2 min)
 
 1. Se reconnecter avec `consommateur@sunuprix.sn`.
 2. Aller sur **Alertes**.
@@ -99,7 +87,7 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
    seuil volontairement bas.
 5. Marquer une notification comme lue.
 
-## 6. Chatbot (1 min 30)
+## 5. Chatbot (1 min 30)
 
 1. Depuis n'importe quelle page, ouvrir le widget flottant (icône en bas à
    droite).
@@ -113,7 +101,7 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
    d'erreur visible pour l'utilisateur. Le disclaimer sous le champ de saisie
    rappelle la nature pédagogique des données.
 
-## 7. Prédiction (déjà entrevue, à formaliser — 1 min)
+## 6. Prédiction (déjà entrevue, à formaliser — 1 min)
 
 1. Retourner sur **Données** (accessible à tous les rôles).
 2. Sélectionner un produit et une région, montrer le graphique avec la ligne
@@ -122,7 +110,7 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
    récence sur l'historique **validé**, recalculée et persistée (upsert)
    plutôt que recalculée à chaque affichage.
 
-## 8. Installation mobile de la PWA (2 min)
+## 7. Installation mobile de la PWA (2 min)
 
 Sur un téléphone (ou l'outil d'inspection mobile du navigateur) :
 

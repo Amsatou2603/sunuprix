@@ -12,16 +12,16 @@ export type RelevePrixAvecRelations = RelevePrix & {
   region: { id: string; nom: string };
 };
 
-export type RelevePrixAvecVendeur = RelevePrixAvecRelations & {
-  vendeur: { id: string; nom: string; email: string } | null;
+export type RelevePrixAvecContributeur = RelevePrixAvecRelations & {
+  contributeur: { id: string; nom: string; email: string } | null;
 };
 
 /**
  * Seul point d'accès Prisma pour les relevés de prix (`RelevePrix`). Toute
  * requête impliquant ce modèle — historique pour un graphique, snapshot pour
- * la carte, déclaration vendeur, file de modération, export CSV — passe par
+ * la carte, déclaration contributeur, file de modération, export CSV — passe par
  * ces fonctions, réutilisées à travers les modules `prix`, `predictions`,
- * `admin`, `ministere` et `export` plutôt que dupliquées.
+ * `admin` et `export` plutôt que dupliquées.
  */
 
 const INCLUSION_PRODUIT_REGION = {
@@ -45,12 +45,12 @@ export async function trouverDeuxDerniersReleves(produitId: string, regionId: st
   });
 }
 
-export async function creerDeclarationVendeur(donnees: {
+export async function creerDeclarationContributeur(donnees: {
   produitId: string;
   regionId: string;
   prixFcfa: number;
   dateReleve: Date;
-  vendeurId: string;
+  contributeurId: string;
 }): Promise<RelevePrixAvecRelations> {
   const releve = await prisma.relevePrix.create({
     data: {
@@ -58,8 +58,8 @@ export async function creerDeclarationVendeur(donnees: {
       regionId: donnees.regionId,
       prixFcfa: donnees.prixFcfa,
       dateReleve: donnees.dateReleve,
-      vendeurId: donnees.vendeurId,
-      source: "VENDEUR" as SourcePrix,
+      contributeurId: donnees.contributeurId,
+      source: "CONTRIBUTEUR" as SourcePrix,
       statut: "EN_ATTENTE" as StatutPrix,
     },
     include: INCLUSION_PRODUIT_REGION,
@@ -67,25 +67,25 @@ export async function creerDeclarationVendeur(donnees: {
   return releve as unknown as RelevePrixAvecRelations;
 }
 
-export async function listerDeclarationsVendeur(vendeurId: string): Promise<RelevePrixAvecRelations[]> {
+export async function listerDeclarationsContributeur(contributeurId: string): Promise<RelevePrixAvecRelations[]> {
   const releves = await prisma.relevePrix.findMany({
-    where: { vendeurId },
+    where: { contributeurId },
     orderBy: { creeLe: "desc" },
     include: INCLUSION_PRODUIT_REGION,
   });
   return releves as unknown as RelevePrixAvecRelations[];
 }
 
-export async function listerEnAttente(): Promise<RelevePrixAvecVendeur[]> {
+export async function listerEnAttente(): Promise<RelevePrixAvecContributeur[]> {
   const releves = await prisma.relevePrix.findMany({
     where: { statut: "EN_ATTENTE" as StatutPrix },
     orderBy: { creeLe: "asc" },
     include: {
       ...INCLUSION_PRODUIT_REGION,
-      vendeur: { select: { id: true, nom: true, email: true } },
+      contributeur: { select: { id: true, nom: true, email: true } },
     },
   });
-  return releves as unknown as RelevePrixAvecVendeur[];
+  return releves as unknown as RelevePrixAvecContributeur[];
 }
 
 export function trouverDeclarationParId(id: string) {

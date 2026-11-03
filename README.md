@@ -84,9 +84,17 @@ via [Prisma](https://www.prisma.io/).
 | --- | --- | --- |
 | `ADMIN` | Administration de la plateforme | Non — créé par le seed ou par un autre administrateur |
 | `CHERCHEUR` | Analyse avancée, exports | Oui |
-| `MINISTERE` | Vue macro, annonces officielles | Oui |
-| `VENDEUR` | Déclaration de prix | Oui |
+| `CONTRIBUTEUR` | Signalement de prix constatés sur le terrain | Oui |
 | `CONSOMMATEUR` | Suivi et alertes personnelles | Oui |
+
+Le rôle `MINISTERE` (vue macro d'inflation + annonces officielles) a été
+retiré de l'application : les données qu'il aurait publiées n'étaient pas
+vérifiables sur une source officielle, ce qui ne permettait pas d'en garantir
+la fiabilité en production. Il reste envisagé en perspective (voir le
+mémoire de PFE, chapitre Données) si une source officielle vérifiable devient
+exploitable. Le rôle `VENDEUR` a été renommé `CONTRIBUTEUR` : le mécanisme
+(déclaration -> file d'attente -> validation par un administrateur) est
+inchangé, seul le cadrage change.
 
 L'authentification par JWT est posée dans cette phase : inscription (mot de
 passe haché avec bcrypt), connexion, et un middleware de contrôle d'accès par
@@ -116,8 +124,7 @@ identique pour tous, à changer avant toute mise en production réelle :
 | --- | --- | --- |
 | Administrateur | `admin@sunuprix.sn` | `SunuPrix2026!` |
 | Chercheur | `chercheur@sunuprix.sn` | `SunuPrix2026!` |
-| Ministère | `ministere@sunuprix.sn` | `SunuPrix2026!` |
-| Vendeur | `vendeur@sunuprix.sn` | `SunuPrix2026!` |
+| Contributeur | `contributeur@sunuprix.sn` | `SunuPrix2026!` |
 | Consommateur | `consommateur@sunuprix.sn` | `SunuPrix2026!` |
 
 Le seed génère également 24 mois d'historique de prix pour chacun des 12
@@ -185,26 +192,22 @@ les nouvelles cartes statistiques ajoutées en phase 3 (calculées côté client
   chatbot flottant sur toutes les pages (questions suggérées, indicateur de
   frappe, avertissement sur la nature pédagogique des réponses), page
   `/alertes` (alertes de prix personnelles + centre de notifications),
-  annonces officielles du Ministère affichées sur l'accueil. Chaque page
-  gère explicitement son état de chargement, son état d'erreur (avec message
-  clair) et son état vide (aucune donnée disponible).
-- **Vendeur** (`/vendeur`) : formulaire de déclaration d'un prix constaté
-  (statut initial toujours `EN_ATTENTE`) et historique de ses propres
-  déclarations avec leur statut de modération, plus des cartes de synthèse
-  (total, en attente, validées, rejetées).
+  chatbot flottant, page `/alertes`. Chaque page gère explicitement son
+  état de chargement, son état d'erreur (avec message clair) et son état
+  vide (aucune donnée disponible).
+- **Contributeur** (`/contributeur`) : formulaire de signalement d'un prix
+  constaté (statut initial toujours `EN_ATTENTE`) et historique de ses
+  propres signalements avec leur statut de modération, plus des cartes de
+  synthèse (total, en attente, validées, rejetées).
 - **Chercheur** (`/chercheur`) : export CSV (relevés de prix validés +
   prédictions) et vue analytique comparant plusieurs régions pour un produit,
   ou plusieurs produits pour une région, avec la marge d'erreur de chaque
   prédiction.
-- **Ministère** (`/ministere`) : vue agrégée d'inflation moyenne par région
-  (graphique en barres) et formulaire de publication d'annonces officielles,
-  avec cartes de synthèse (inflation nationale, régions suivies, annonces
-  publiées).
 - **Administrateur** (`/admin`) : tableau de gestion des utilisateurs
   (changement de rôle, activation/désactivation), file de modération des
-  déclarations de prix vendeur (valider/rejeter), configuration des seuils
-  d'alerte par défaut du système, avec cartes de synthèse (utilisateurs
-  actifs/désactivés, déclarations en attente).
+  déclarations de prix contributeur (valider/rejeter), configuration des
+  seuils d'alerte par défaut du système, avec cartes de synthèse
+  (utilisateurs actifs/désactivés, déclarations en attente).
 
 ## API — modules et endpoints
 
@@ -217,13 +220,12 @@ architecture en couches (`routes` → `controllers` → `services` →
 | --- | --- | --- |
 | Référentiel | `GET /api/regions`, `GET /api/produits` | Tout rôle authentifié |
 | Prix | `GET /api/prix/historique`, `GET /api/prix/carte` | Tout rôle authentifié |
-| Prix (vendeur) | `POST /api/prix/declarations`, `GET /api/prix/declarations/mes` | `VENDEUR` |
+| Prix (contributeur) | `POST /api/prix/declarations`, `GET /api/prix/declarations/mes` | `CONTRIBUTEUR` |
 | Prédictions | `GET /api/predictions/:productId/:regionId` | Tout rôle authentifié |
 | Chatbot | `POST /api/chatbot` | Tout rôle authentifié |
 | Alertes | `GET/POST /api/alertes`, `PATCH/DELETE /api/alertes/:id` | Tout rôle authentifié (alertes personnelles) |
 | Notifications | `GET /api/notifications`, `GET /api/notifications/non-lues/compte`, `PATCH /api/notifications/:id/lue` | Tout rôle authentifié |
 | Administration | `GET /api/admin/utilisateurs`, `PATCH /api/admin/utilisateurs/:id/{role,statut}`, `GET /api/admin/declarations-prix`, `PATCH /api/admin/declarations-prix/:id/{valider,rejeter}`, `GET/PUT /api/admin/seuils` | `ADMIN` |
-| Ministère | `GET/POST /api/annonces` (lecture ouverte, publication réservée), `GET /api/inflation` | `MINISTERE` (publication + inflation) |
 | Export | `GET /api/export/csv` | `CHERCHEUR` |
 | Santé | `GET /api/health` | Public (utilisé comme *health check* Render) |
 
@@ -269,8 +271,8 @@ cd backend && npm test
 - **`rbac.integration.test.ts`** — contrôle d'accès par rôle de bout en bout :
   monte l'application Express réelle (`creerApp()`) avec un client Prisma
   simulé, signe de vrais JWT pour chaque rôle, et vérifie pour chaque route
-  protégée (admin, export, inflation, déclarations vendeur, annonces,
-  référentiel) qu'un rôle non autorisé reçoit `403`, qu'une requête sans
+  protégée (admin, export, déclarations contributeur, référentiel) qu'un
+  rôle non autorisé reçoit `403`, qu'une requête sans
   jeton reçoit `401`, et que le rôle légitime n'est jamais bloqué.
 
 ## PWA
@@ -368,12 +370,11 @@ backend/
       auth/                routes / contrôleur / service / repository / schéma Zod
       health/               GET /api/health
       referentiel/          Régions / produits (lecture seule)
-      prix/                 Relevés de prix : historique, carte, déclarations vendeur
+      prix/                 Relevés de prix : historique, carte, déclarations contributeur
       predictions/           regression.service.ts (régression linéaire pondérée) + endpoint
       chatbot/               Contexte factuel + appel Gemini + repli local
       alertes/               Alertes personnelles, notifications, configuration des seuils
       admin/                 Gestion utilisateurs, modération, seuils par défaut
-      ministere/             Annonces + vue macro d'inflation
       export/                Export CSV (relevés + prédictions)
     routes/index.ts        Point de montage unique des routes de l'API
     utils/                 ApiError, asyncHandler, jwt.ts, motDePasse.ts (bcrypt), csv.ts
@@ -384,20 +385,20 @@ backend/
 frontend/
   src/
     app/                   Pages App Router : / , /connexion, /inscription,
-                            /donnees, /alertes, /a-propos, /vendeur, /chercheur,
-                            /ministere, /admin
+                            /donnees, /alertes, /a-propos, /contributeur,
+                            /chercheur, /admin
     components/
       layout/               Header (navigation par rôle, cloche de notifications), Footer
       auth/                 RouteProtegee (garde de route par rôle)
       pwa/                  Enregistrement du service worker
       chatbot/               Widget flottant connecté à /api/chatbot
       donnees/               Carte SVG des régions, cartes de synthèse, sélecteurs, graphique Recharts
-      vendeur/, chercheur/, ministere/, admin/, alertes/    Composants propres à chaque espace
+      contributeur/, chercheur/, admin/, alertes/    Composants propres à chaque espace
       partages/              EtatAsync (Chargement/MessageErreur/EtatVide), BadgeVariation,
-                            CarteStat, ListeAnnonces — réutilisés entre espaces
+                            CarteStat — réutilisés entre espaces
     lib/
       api/                  Client API centralisé + un module par domaine (prix, predictions,
-                            chatbot, alertes, admin, ministere, export) + types
+                            chatbot, alertes, admin, export) + types
       auth/                 Contexte d'authentification React
   public/
     design/                 Logo, icônes, maquettes de référence (voir son README)

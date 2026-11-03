@@ -13,7 +13,7 @@ interface ProprietesFileModeration {
   onDeclarationTraitee: (id: string) => void;
 }
 
-/** File de modération des déclarations de prix vendeur en attente de validation. */
+/** File de modération des déclarations de prix contributeur en attente de validation. */
 export function FileModeration({ declarations, chargement, onDeclarationTraitee }: ProprietesFileModeration) {
   const [erreur, setErreur] = useState<string | null>(null);
   const [idEnCours, setIdEnCours] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export function FileModeration({ declarations, chargement, onDeclarationTraitee 
 
   return (
     <div className="carte">
-      <h2 className="mb-4 text-sm font-semibold text-header/70">Déclarations vendeur en attente</h2>
+      <h2 className="mb-4 text-sm font-semibold text-header/70">Déclarations contributeur en attente</h2>
       {erreur && (
         <div className="mb-3">
           <MessageErreur message={erreur} />
@@ -46,7 +46,7 @@ export function FileModeration({ declarations, chargement, onDeclarationTraitee 
         <EtatVide
           icone={<CheckCircle2 className="h-7 w-7" strokeWidth={1.75} />}
           titre="File de modération vide"
-          description="Aucune déclaration vendeur en attente de validation."
+          description="Aucune déclaration contributeur en attente de validation."
         />
       ) : (
         <ul className="space-y-3">
@@ -61,7 +61,7 @@ export function FileModeration({ declarations, chargement, onDeclarationTraitee 
                   {declaration.produit.unite}
                 </p>
                 <p className="text-header/50">
-                  Déclaré par {declaration.vendeur?.nom ?? "vendeur inconnu"} le{" "}
+                  Déclaré par {declaration.contributeur?.nom ?? "contributeur inconnu"} le{" "}
                   {new Date(declaration.dateReleve).toLocaleDateString("fr-FR")}
                 </p>
               </div>

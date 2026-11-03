@@ -3,15 +3,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Receipt, Clock, CheckCircle2, Ban } from "lucide-react";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
-import { FormulaireDeclaration } from "@/components/vendeur/FormulaireDeclaration";
-import { HistoriqueDeclarations } from "@/components/vendeur/HistoriqueDeclarations";
+import { FormulaireDeclaration } from "@/components/contributeur/FormulaireDeclaration";
+import { HistoriqueDeclarations } from "@/components/contributeur/HistoriqueDeclarations";
 import { CarteStat } from "@/components/partages/CarteStat";
 import { MessageErreur } from "@/components/partages/EtatAsync";
 import { prixApi } from "@/lib/api/prix";
 import { ErreurApi } from "@/lib/api/api-client";
 import type { DeclarationPrixPublique } from "@/lib/api/types";
 
-function ContenuPageVendeur() {
+function ContenuPageContributeur() {
   const [declarations, setDeclarations] = useState<DeclarationPrixPublique[]>([]);
   const [chargement, setChargement] = useState(true);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -39,10 +39,10 @@ function ContenuPageVendeur() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 sm:px-6">
       <div>
-        <h1 className="text-xl font-bold text-header sm:text-2xl">Espace vendeur</h1>
+        <h1 className="text-xl font-bold text-header sm:text-2xl">Espace contributeur</h1>
         <p className="mt-1 text-sm text-header/60">
-          Déclarez les prix que vous constatez sur le terrain ; chaque déclaration est vérifiée par un administrateur
-          avant d&apos;être prise en compte dans les statistiques publiques.
+          Signalez une hausse (ou une baisse) de prix que vous constatez sur le terrain ; chaque signalement est
+          vérifié par un administrateur avant d&apos;être pris en compte dans les statistiques publiques.
         </p>
       </div>
 
@@ -86,10 +86,10 @@ function ContenuPageVendeur() {
   );
 }
 
-export default function PageVendeur() {
+export default function PageContributeur() {
   return (
-    <RouteProtegee rolesAutorises={["VENDEUR"]}>
-      <ContenuPageVendeur />
+    <RouteProtegee rolesAutorises={["CONTRIBUTEUR"]}>
+      <ContenuPageContributeur />
     </RouteProtegee>
   );
 }

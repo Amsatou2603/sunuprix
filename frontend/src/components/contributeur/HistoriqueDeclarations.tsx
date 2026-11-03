@@ -8,7 +8,7 @@ interface ProprietesHistorique {
   chargement: boolean;
 }
 
-/** Historique des déclarations de prix soumises par le vendeur connecté, avec leur statut de modération. */
+/** Historique des déclarations de prix soumises par le contributeur connecté, avec leur statut de modération. */
 export function HistoriqueDeclarations({ declarations, chargement }: ProprietesHistorique) {
   if (chargement) {
     return <Chargement libelle="Chargement de votre historique…" />;

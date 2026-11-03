@@ -5,7 +5,7 @@ import * as referentielRepository from "./referentiel.repository";
 /**
  * Endpoints de lecture seule exposant les listes fermées régions/produits
  * telles que peuplées en base — utilisés par le frontend pour construire les
- * sélecteurs de /donnees, le formulaire vendeur, les filtres chercheur, etc.
+ * sélecteurs de /donnees, le formulaire contributeur, les filtres chercheur, etc.
  * Jamais de valeur recopiée en dur côté frontend : tout vient d'ici.
  */
 

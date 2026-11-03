@@ -35,7 +35,7 @@ export const changerStatutUtilisateur = asyncHandler(async (req: Request, res: R
 });
 
 // ---------------------------------------------------------------------------
-// Modération des déclarations de prix vendeur
+// Modération des déclarations de prix contributeur
 // ---------------------------------------------------------------------------
 
 export const listerDeclarationsEnAttente = asyncHandler(async (_req: Request, res: Response) => {

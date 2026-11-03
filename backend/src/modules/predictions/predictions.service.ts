@@ -13,7 +13,7 @@ const METHODE_PREDICTION = "regression_lineaire_ponderee";
  * chaque appel de l'endpoint : bon marché (une régression sur au plus
  * quelques dizaines de points) et garantit une prédiction toujours à jour
  * par rapport aux derniers relevés validés (y compris des déclarations
- * vendeur récemment approuvées).
+ * contributeur récemment approuvées).
  */
 export async function calculerEtPersisterPrediction(produitId: string, regionId: string): Promise<PredictionPublique> {
   await verifierProduitEtRegion(produitId, regionId);

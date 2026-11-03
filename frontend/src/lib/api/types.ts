@@ -45,7 +45,7 @@ export interface Produit {
 export interface PointHistoriquePrix {
   date: string;
   prixFcfa: number;
-  source: "SYSTEME" | "VENDEUR";
+  source: "SYSTEME" | "CONTRIBUTEUR";
 }
 
 export interface SnapshotRegion {
@@ -67,7 +67,7 @@ export interface DeclarationPrixPublique {
   dateReleve: string;
   creeLe: string;
   modereLe: string | null;
-  vendeur?: { id: string; nom: string; email: string } | null;
+  contributeur?: { id: string; nom: string; email: string } | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -134,23 +134,4 @@ export interface ConfigurationSeuils {
   seuilAttentionPourcent: number;
   seuilCritiquePourcent: number;
   misAJourLe: string;
-}
-
-// ---------------------------------------------------------------------------
-// Ministère
-// ---------------------------------------------------------------------------
-
-export interface Annonce {
-  id: string;
-  titre: string;
-  contenu: string;
-  publieeLe: string;
-  auteur: { id: string; nom: string; role: string };
-}
-
-export interface InflationRegion {
-  regionId: string;
-  region: string;
-  inflationMoyennePourcent: number | null;
-  nombreProduitsPrisEnCompte: number;
 }

@@ -6,16 +6,13 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Microscope, TrendingUp, Bell, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { ministereApi } from "@/lib/api/ministere";
 import { referentielApi } from "@/lib/api/referentiel";
 import { prixApi } from "@/lib/api/prix";
 import { predictionsApi } from "@/lib/api/predictions";
 import { statsApi, type StatsPubliques } from "@/lib/api/stats";
-import { ListeAnnonces } from "@/components/partages/ListeAnnonces";
 import { GraphiquePrix } from "@/components/donnees/GraphiquePrix";
 import { CarteApercuAccueil } from "@/components/accueil/CarteApercuAccueil";
 import type {
-  Annonce,
   PointHistoriquePrix,
   PredictionPublique,
   Produit,
@@ -60,9 +57,6 @@ export default function PageAccueil() {
 
   const [stats, setStats] = useState<StatsPubliques | null>(null);
 
-  const [annonces, setAnnonces] = useState<Annonce[]>([]);
-  const [chargementAnnonces, setChargementAnnonces] = useState(true);
-
   const [produits, setProduits] = useState<Produit[]>([]);
   const [regions, setRegions] = useState<Region[]>([]);
   const [carte, setCarte] = useState<SnapshotRegion[]>([]);
@@ -77,16 +71,9 @@ export default function PageAccueil() {
 
   useEffect(() => {
     if (!utilisateur) {
-      setChargementAnnonces(false);
       setChargementApercu(false);
       return;
     }
-
-    ministereApi
-      .annonces()
-      .then(setAnnonces)
-      .catch(() => setAnnonces([]))
-      .finally(() => setChargementAnnonces(false));
 
     Promise.all([referentielApi.produits(), referentielApi.regions()])
       .then(async ([listeProduits, listeRegions]) => {
@@ -310,21 +297,6 @@ export default function PageAccueil() {
           </div>
         </div>
       </motion.section>
-
-      {/* ==================== ANNONCES OFFICIELLES ==================== */}
-      {utilisateur && (
-        <motion.div
-          initial="cache"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={variantsSection}
-          transition={{ duration: 0.5 }}
-          className="verre rounded-3xl p-6 text-header"
-        >
-          <h2 className="mb-4 text-lg font-bold text-header">Annonces officielles du Ministère</h2>
-          <ListeAnnonces annonces={annonces} chargement={chargementAnnonces} />
-        </motion.div>
-      )}
     </div>
   );
 }

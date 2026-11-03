@@ -12,7 +12,7 @@ const CLASSES: Record<StatutDeclaration, string> = {
   REJETE: "bg-red-100 text-red-700",
 };
 
-/** Badge de statut réutilisé partout où une déclaration de prix est affichée (espace vendeur, modération admin). */
+/** Badge de statut réutilisé partout où une déclaration de prix est affichée (espace contributeur, modération admin). */
 export function BadgeStatutDeclaration({ statut }: { statut: StatutDeclaration }) {
   return (
     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${CLASSES[statut]}`}>

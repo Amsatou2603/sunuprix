@@ -42,7 +42,6 @@ vi.mock("../config/prisma", () => ({
     prediction: delegueFactice(),
     alerte: delegueFactice(),
     notification: delegueFactice(),
-    annonce: delegueFactice(),
     conversationChatbot: delegueFactice(),
     configurationSeuils: delegueFactice(),
     $queryRaw: async () => [],
@@ -50,7 +49,7 @@ vi.mock("../config/prisma", () => ({
   },
 }));
 
-const TOUS_LES_ROLES = ["ADMIN", "CHERCHEUR", "MINISTERE", "VENDEUR", "CONSOMMATEUR"] as const;
+const TOUS_LES_ROLES = ["ADMIN", "CHERCHEUR", "CONTRIBUTEUR", "CONSOMMATEUR"] as const;
 type RoleTest = (typeof TOUS_LES_ROLES)[number];
 
 let app: Application;
@@ -79,8 +78,7 @@ const ENDPOINTS_PROTEGES: EndpointProtege[] = [
   { methode: "get", chemin: "/api/admin/declarations-prix", roleAutorise: "ADMIN" },
   { methode: "get", chemin: "/api/admin/seuils", roleAutorise: "ADMIN" },
   { methode: "get", chemin: "/api/export/csv", roleAutorise: "CHERCHEUR" },
-  { methode: "get", chemin: "/api/inflation", roleAutorise: "MINISTERE" },
-  { methode: "get", chemin: "/api/prix/declarations/mes", roleAutorise: "VENDEUR" },
+  { methode: "get", chemin: "/api/prix/declarations/mes", roleAutorise: "CONTRIBUTEUR" },
 ];
 
 describe("Contrôle d'accès par rôle (RBAC) — de bout en bout via la vraie app Express", () => {
@@ -113,26 +111,6 @@ describe("Contrôle d'accès par rôle (RBAC) — de bout en bout via la vraie a
     },
   );
 
-  it("un rôle non-Ministère ne peut pas publier d'annonce, mais tout rôle authentifié peut les lire", async () => {
-    for (const role of TOUS_LES_ROLES.filter((r) => r !== "MINISTERE")) {
-      const refus = await request(app)
-        .post("/api/annonces")
-        .set("Authorization", `Bearer ${tokenPour(role)}`)
-        .send({ titre: "Titre suffisamment long", contenu: "Contenu suffisamment long pour passer la validation." });
-      expect(refus.status).toBe(403);
-    }
-
-    const publication = await request(app)
-      .post("/api/annonces")
-      .set("Authorization", `Bearer ${tokenPour("MINISTERE")}`)
-      .send({ titre: "Titre suffisamment long", contenu: "Contenu suffisamment long pour passer la validation." });
-    expect(publication.status).not.toBe(403);
-
-    for (const role of TOUS_LES_ROLES) {
-      const lecture = await request(app).get("/api/annonces").set("Authorization", `Bearer ${tokenPour(role)}`);
-      expect(lecture.status).not.toBe(403);
-    }
-  });
 
   it("une route de référentiel commune reste accessible à tout rôle authentifié, mais pas sans token", async () => {
     for (const role of TOUS_LES_ROLES) {

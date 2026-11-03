@@ -14,7 +14,7 @@ interface ProprietesCarteStat {
 /**
  * Carte de statistique compacte (icône dans un badge coloré + libellé +
  * valeur en gros + pastille de contexte), utilisée en tête des tableaux de
- * bord par rôle (admin, chercheur, vendeur, ministère) — un seul composant
+ * bord par rôle (admin, chercheur, contributeur) — un seul composant
  * pour ce motif répété plutôt qu'une mise en page recopiée à chaque page.
  */
 export function CarteStat({ icone, label, valeur, pastille, couleurIcone = "bg-primary/10 text-primary" }: ProprietesCarteStat) {

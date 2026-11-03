@@ -364,7 +364,7 @@ function ContenuPageAdmin() {
                         {declaration.produit.nom} — {declaration.region.nom}
                       </p>
                       <p className="text-[11px] text-gray-500">
-                        Déclaré par {declaration.vendeur?.nom ?? "vendeur inconnu"} le{" "}
+                        Déclaré par {declaration.contributeur?.nom ?? "contributeur inconnu"} le{" "}
                         {new Date(declaration.dateReleve).toLocaleDateString("fr-FR")}
                       </p>
                     </div>

@@ -14,7 +14,7 @@ interface ProprietesFormulaireDeclaration {
 
 const AUJOURDHUI = () => new Date().toISOString().slice(0, 10);
 
-/** Formulaire de déclaration de prix par un vendeur — statut initial toujours `EN_ATTENTE` côté backend. */
+/** Formulaire de signalement de prix par un contributeur — statut initial toujours `EN_ATTENTE` côté backend. */
 export function FormulaireDeclaration({ onDeclaree }: ProprietesFormulaireDeclaration) {
   const [produits, setProduits] = useState<Produit[]>([]);
   const [regions, setRegions] = useState<Region[]>([]);
@@ -71,15 +71,15 @@ export function FormulaireDeclaration({ onDeclaree }: ProprietesFormulaireDeclar
 
   return (
     <form onSubmit={soumettre} className="carte space-y-4">
-      <h2 className="text-sm font-semibold text-header/70">Déclarer un prix constaté</h2>
+      <h2 className="text-sm font-semibold text-header/70">Signaler un prix constaté</h2>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="vendeur-produit" className="etiquette-champ">
+          <label htmlFor="contributeur-produit" className="etiquette-champ">
             Produit
           </label>
           <select
-            id="vendeur-produit"
+            id="contributeur-produit"
             className="champ-formulaire"
             value={produitId}
             onChange={(e) => setProduitId(e.target.value)}
@@ -93,11 +93,11 @@ export function FormulaireDeclaration({ onDeclaree }: ProprietesFormulaireDeclar
         </div>
 
         <div>
-          <label htmlFor="vendeur-region" className="etiquette-champ">
+          <label htmlFor="contributeur-region" className="etiquette-champ">
             Région
           </label>
           <select
-            id="vendeur-region"
+            id="contributeur-region"
             className="champ-formulaire"
             value={regionId}
             onChange={(e) => setRegionId(e.target.value)}
@@ -111,11 +111,11 @@ export function FormulaireDeclaration({ onDeclaree }: ProprietesFormulaireDeclar
         </div>
 
         <div>
-          <label htmlFor="vendeur-prix" className="etiquette-champ">
+          <label htmlFor="contributeur-prix" className="etiquette-champ">
             Prix constaté (FCFA)
           </label>
           <input
-            id="vendeur-prix"
+            id="contributeur-prix"
             type="number"
             min={1}
             step={1}
@@ -128,11 +128,11 @@ export function FormulaireDeclaration({ onDeclaree }: ProprietesFormulaireDeclar
         </div>
 
         <div>
-          <label htmlFor="vendeur-date" className="etiquette-champ">
+          <label htmlFor="contributeur-date" className="etiquette-champ">
             Date du relevé
           </label>
           <input
-            id="vendeur-date"
+            id="contributeur-date"
             type="date"
             required
             max={AUJOURDHUI()}
@@ -151,7 +151,7 @@ export function FormulaireDeclaration({ onDeclaree }: ProprietesFormulaireDeclar
         disabled={enCours || chargementReferentiel || !produitId || !regionId}
         className="bouton-primaire w-full sm:w-auto"
       >
-        {enCours ? "Envoi en cours…" : "Déclarer ce prix"}
+        {enCours ? "Envoi en cours…" : "Signaler ce prix"}
       </button>
     </form>
   );

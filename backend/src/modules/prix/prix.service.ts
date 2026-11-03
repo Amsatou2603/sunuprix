@@ -1,6 +1,6 @@
 import { ApiError } from "../../utils/ApiError";
 import * as prixRepository from "./prix.repository";
-import type { RelevePrixAvecRelations, RelevePrixAvecVendeur } from "./prix.repository";
+import type { RelevePrixAvecRelations, RelevePrixAvecContributeur } from "./prix.repository";
 import * as referentielRepository from "../referentiel/referentiel.repository";
 import type { DeclarationPrixPublique, PointHistoriquePrix, SnapshotRegion } from "./prix.types";
 
@@ -50,7 +50,7 @@ export async function obtenirCarteParProduit(produitId: string): Promise<Snapsho
   );
 }
 
-function versDeclarationPublique(d: RelevePrixAvecRelations | RelevePrixAvecVendeur): DeclarationPrixPublique {
+function versDeclarationPublique(d: RelevePrixAvecRelations | RelevePrixAvecContributeur): DeclarationPrixPublique {
   return {
     id: d.id,
     produit: d.produit,
@@ -60,12 +60,12 @@ function versDeclarationPublique(d: RelevePrixAvecRelations | RelevePrixAvecVend
     dateReleve: d.dateReleve.toISOString(),
     creeLe: d.creeLe.toISOString(),
     modereLe: d.modereLe?.toISOString() ?? null,
-    vendeur: "vendeur" in d ? (d.vendeur ?? undefined) : undefined,
+    contributeur: "contributeur" in d ? (d.contributeur ?? undefined) : undefined,
   };
 }
 
 export async function declarerPrix(
-  vendeurId: string,
+  contributeurId: string,
   donnees: { produitId: string; regionId: string; prixFcfa: number; dateReleve: Date },
 ): Promise<DeclarationPrixPublique> {
   await verifierProduitEtRegion(donnees.produitId, donnees.regionId);
@@ -73,18 +73,18 @@ export async function declarerPrix(
     throw ApiError.mauvaiseRequete("Le prix déclaré doit être strictement positif.");
   }
 
-  const declaration = await prixRepository.creerDeclarationVendeur({
+  const declaration = await prixRepository.creerDeclarationContributeur({
     produitId: donnees.produitId,
     regionId: donnees.regionId,
     prixFcfa: donnees.prixFcfa,
     dateReleve: donnees.dateReleve,
-    vendeurId,
+    contributeurId,
   });
   return versDeclarationPublique(declaration);
 }
 
-export async function listerMesDeclarations(vendeurId: string): Promise<DeclarationPrixPublique[]> {
-  const declarations = await prixRepository.listerDeclarationsVendeur(vendeurId);
+export async function listerMesDeclarations(contributeurId: string): Promise<DeclarationPrixPublique[]> {
+  const declarations = await prixRepository.listerDeclarationsContributeur(contributeurId);
   return declarations.map(versDeclarationPublique);
 }
 

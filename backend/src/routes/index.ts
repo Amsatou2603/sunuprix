@@ -8,7 +8,6 @@ import chatbotRoutes from "../modules/chatbot/chatbot.routes";
 import alertesRoutes from "../modules/alertes/alertes.routes";
 import notificationsRoutes from "../modules/alertes/notifications.routes";
 import adminRoutes from "../modules/admin/admin.routes";
-import ministereRoutes from "../modules/ministere/ministere.routes";
 import exportRoutes from "../modules/export/export.routes";
 import analyseRoutes from "../modules/analyse/analyse.routes";
 import statsRoutes from "../modules/stats/stats.routes";
@@ -31,8 +30,6 @@ router.use("/chatbot", chatbotRoutes);
 router.use("/alertes", alertesRoutes);
 router.use("/notifications", notificationsRoutes);
 router.use("/admin", adminRoutes);
-// Ministère : chemins /annonces et /inflation définis dans le module lui-même.
-router.use(ministereRoutes);
 router.use("/export", exportRoutes);
 router.use("/analyse", analyseRoutes);
 router.use("/stats", statsRoutes);

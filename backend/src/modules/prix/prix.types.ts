@@ -2,7 +2,7 @@
 export interface PointHistoriquePrix {
   date: string;
   prixFcfa: number;
-  source: "SYSTEME" | "VENDEUR";
+  source: "SYSTEME" | "CONTRIBUTEUR";
 }
 
 /** Snapshot d'une région pour un produit donné (carte + cartes de synthèse). */
@@ -14,7 +14,7 @@ export interface SnapshotRegion {
   dateDernierReleve: string | null;
 }
 
-/** Déclaration de prix vue par un vendeur ou un modérateur. */
+/** Déclaration de prix vue par un contributeur ou un modérateur. */
 export interface DeclarationPrixPublique {
   id: string;
   produit: { id: string; nom: string; unite: string };
@@ -24,5 +24,5 @@ export interface DeclarationPrixPublique {
   dateReleve: string;
   creeLe: string;
   modereLe: string | null;
-  vendeur?: { id: string; nom: string; email: string } | null;
+  contributeur?: { id: string; nom: string; email: string } | null;
 }

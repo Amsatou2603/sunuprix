@@ -9,8 +9,16 @@
  * ADMIN n'est volontairement pas proposé à l'inscription publique : un compte
  * administrateur ne peut être créé que par le script de seed ou par un autre
  * administrateur (voir `ROLES_INSCRIPTIBLES`).
+ *
+ * Historique : le rôle MINISTERE a été retiré (voir mémoire de PFE, chapitre
+ * Données) — présenté en perspective plutôt que livré, faute de source de
+ * données officielle vérifiable. Le rôle VENDEUR a été renommé CONTRIBUTEUR :
+ * le mécanisme sous-jacent (déclaration -> file d'attente -> validation par
+ * un administrateur) est inchangé, seul le cadrage change — un contributeur
+ * signale un prix constaté sur le terrain, il ne "vend" rien sur la
+ * plateforme.
  */
-export const ROLES = ["ADMIN", "CHERCHEUR", "MINISTERE", "VENDEUR", "CONSOMMATEUR"] as const;
+export const ROLES = ["ADMIN", "CHERCHEUR", "CONTRIBUTEUR", "CONSOMMATEUR"] as const;
 
 export type Role = (typeof ROLES)[number];
 
@@ -21,8 +29,7 @@ export const ROLES_INSCRIPTIBLES = ROLES.filter((role) => role !== "ADMIN") as E
 export const LIBELLES_ROLES: Record<Role, string> = {
   ADMIN: "Administrateur",
   CHERCHEUR: "Chercheur",
-  MINISTERE: "Ministère",
-  VENDEUR: "Vendeur",
+  CONTRIBUTEUR: "Contributeur",
   CONSOMMATEUR: "Consommateur",
 };
 

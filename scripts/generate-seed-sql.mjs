@@ -31,12 +31,11 @@ const PRODUITS = [
   { nom: "Savon", unite: "unité", prixBaseFcfa: 500 },
 ];
 
-const ROLES = ["ADMIN", "CHERCHEUR", "MINISTERE", "VENDEUR", "CONSOMMATEUR"];
+const ROLES = ["ADMIN", "CHERCHEUR", "CONTRIBUTEUR", "CONSOMMATEUR"];
 const LIBELLES_ROLES = {
   ADMIN: "Administrateur",
   CHERCHEUR: "Chercheur",
-  MINISTERE: "Ministère",
-  VENDEUR: "Vendeur",
+  CONTRIBUTEUR: "Contributeur",
   CONSOMMATEUR: "Consommateur",
 };
 

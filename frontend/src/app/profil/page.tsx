@@ -11,9 +11,8 @@ import type { Role } from "@sunuprix/shared";
 
 /** Même mapping que la navbar (`Header.tsx`) — espace dédié propre à chaque rôle. */
 const LIEN_ESPACE_PAR_ROLE: Partial<Record<Role, { href: string; label: string }>> = {
-  VENDEUR: { href: "/vendeur", label: "Espace Vendeur" },
+  CONTRIBUTEUR: { href: "/contributeur", label: "Espace Contributeur" },
   CHERCHEUR: { href: "/chercheur", label: "Dashboard Chercheur" },
-  MINISTERE: { href: "/ministere", label: "Espace Ministère" },
   ADMIN: { href: "/admin", label: "Centre de Contrôle" },
 };
 
