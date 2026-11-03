@@ -17,7 +17,10 @@ import {
   Wheat,
   Check,
   X,
+  LogOut,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { ROLES, LIBELLES_ROLES } from "@sunuprix/shared";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { TableauUtilisateurs } from "@/components/admin/TableauUtilisateurs";
@@ -40,6 +43,22 @@ function ContenuPageAdmin() {
   const [enCoursExport, setEnCoursExport] = useState(false);
   const [idEnCoursApercu, setIdEnCoursApercu] = useState<string | null>(null);
   const [erreurApercu, setErreurApercu] = useState<string | null>(null);
+  const { deconnecter } = useAuth();
+  const router = useRouter();
+
+  const gererDeconnexion = async () => {
+    await deconnecter();
+    router.push("/");
+  };
+
+  // Onglets du Centre de Contrôle, réutilisés par la barre de navigation mobile
+  // (la barre latérale n'est affichée qu'à partir de md).
+  const ONGLETS_MOBILE = [
+    { cle: "VUE_DENSEMBLE" as const, libelle: "Vue d'ensemble" },
+    { cle: "UTILISATEURS" as const, libelle: "Utilisateurs" },
+    { cle: "MODERATION" as const, libelle: "Validations" },
+    { cle: "CONFIG" as const, libelle: "Configuration" },
+  ];
 
   useEffect(() => {
     Promise.all([adminApi.utilisateurs(), adminApi.declarationsEnAttente()])
@@ -86,6 +105,7 @@ function ContenuPageAdmin() {
   const repartitionRoles = ROLES.map((role) => ({
     role,
     libelle: LIBELLES_ROLES[role],
+    libelleCourt: { ADMIN: "Admin", ANALYSTE: "Analyste", CONTRIBUTEUR: "Contrib.", CONSOMMATEUR: "Conso." }[role],
     total: utilisateurs.filter((u) => u.role === role).length,
   }));
   const maxParRole = Math.max(1, ...repartitionRoles.map((r) => r.total));
@@ -203,7 +223,68 @@ function ContenuPageAdmin() {
       </aside>
 
       {/* ==================== MAIN CONTENT AREA ==================== */}
-      <main className="flex-1 p-6 sm:p-8 space-y-8 overflow-y-auto">
+      <main className="min-w-0 flex-1 space-y-8 overflow-y-auto p-4 sm:p-8">
+        {/* Barre de navigation mobile : sans elle, la barre latérale étant masquée
+            sous md et l'en-tête global absent de /admin, l'administrateur
+            n'avait sur téléphone aucun moyen de changer d'onglet ni de quitter la page. */}
+        <div className="-mx-4 -mt-4 space-y-3 border-b border-gray-100 bg-white px-4 pb-3 pt-4 sm:-mx-8 sm:-mt-8 sm:px-8 md:hidden">
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/" className="flex min-w-0 items-center gap-2">
+              <Image src="/design/icon.svg" alt="SunuPrix Logo" width={28} height={28} />
+              <span className="truncate font-serif text-lg font-bold text-[#0B4736]">
+                Sunu<span className="text-[#04281E]">Prix</span>
+              </span>
+              <span className="shrink-0 rounded-full bg-purple-100 px-2 py-0.5 text-[10px] font-bold text-purple-700">Admin</span>
+            </Link>
+            <div className="flex shrink-0 items-center gap-1">
+              <Link href="/donnees" className="rounded-full px-2.5 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50">
+                Données
+              </Link>
+              <button
+                type="button"
+                onClick={gererDeconnexion}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 hover:bg-gray-50"
+                title="Déconnexion"
+                aria-label="Déconnexion"
+              >
+                <LogOut className="h-4 w-4" strokeWidth={1.75} />
+              </button>
+            </div>
+          </div>
+          <nav className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:-mx-8 sm:px-8" aria-label="Onglets du Centre de Contrôle">
+            {ONGLETS_MOBILE.map((onglet) => (
+              <button
+                key={onglet.cle}
+                type="button"
+                onClick={() => {
+                  setOngletActif(onglet.cle);
+                  // Sur mobile, le contenu de l'onglet s'affiche sous la vue d'ensemble :
+                  // on y amène directement l'utilisateur plutôt que de le laisser chercher.
+                  if (onglet.cle !== "VUE_DENSEMBLE") {
+                    setTimeout(() => document.getElementById("contenu-onglet-admin")?.scrollIntoView({ behavior: "smooth" }), 60);
+                  } else {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }
+                }}
+                className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-semibold transition ${
+                  ongletActif === onglet.cle ? "bg-[#0B4736] text-white" : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                {onglet.libelle}
+                {onglet.cle === "MODERATION" && declarations.length > 0 && (
+                  <span className="rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">{declarations.length}</span>
+                )}
+              </button>
+            ))}
+            <Link
+              href="/chatbot"
+              className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gray-100 px-3.5 py-2 text-xs font-semibold text-gray-600"
+            >
+              <Image src="/design/sunubot-icon.svg" alt="" width={16} height={16} /> SunuBot
+            </Link>
+          </nav>
+        </div>
+
         {/* Header Bar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -266,20 +347,26 @@ function ContenuPageAdmin() {
         {/* Middle Section: répartition réelle des rôles & aperçu de modération */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Répartition des utilisateurs par rôle (calculée à partir des vrais comptes) */}
-          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm lg:col-span-8">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-4 shadow-sm sm:p-6 lg:col-span-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-base font-bold text-gray-900">Répartition des utilisateurs par rôle</h2>
             </div>
 
-            <div className="flex h-52 items-end justify-between gap-3 px-4 pt-4">
-              {repartitionRoles.map(({ role, libelle, total }) => (
-                <div key={role} className="flex w-full flex-col items-center gap-2">
-                  <div
-                    className="w-full rounded-t-lg bg-[#0B5D48]"
-                    style={{ height: `${Math.max(4, (total / maxParRole) * 100)}%` }}
-                    title={`${libelle} : ${total}`}
-                  />
-                  <span className="text-center text-[10px] font-medium text-gray-500">{libelle}</span>
+            <div className="flex h-52 items-stretch justify-between gap-2 pt-4 sm:gap-3 sm:px-4">
+              {repartitionRoles.map(({ role, libelle, libelleCourt, total }) => (
+                <div key={role} className="flex min-w-0 flex-1 flex-col items-center gap-2">
+                  {/* Conteneur à hauteur définie : sans lui, la hauteur en % de la barre ne se résout pas. */}
+                  <div className="relative w-full flex-1">
+                    <div
+                      className="absolute inset-x-0 bottom-0 rounded-t-lg bg-[#0B5D48]"
+                      style={{ height: `${Math.max(4, (total / maxParRole) * 100)}%` }}
+                      title={`${libelle} : ${total}`}
+                    />
+                  </div>
+                  <span className="text-center text-[10px] font-medium text-gray-500" title={libelle}>
+                    <span className="sm:hidden">{libelleCourt}</span>
+                    <span className="hidden sm:inline">{libelle}</span>
+                  </span>
                   <span className="text-xs font-bold text-gray-900">{total}</span>
                 </div>
               ))}
@@ -288,7 +375,7 @@ function ContenuPageAdmin() {
 
           {/* Aperçu réel : déclarations en attente + régions couvertes */}
           <div className="space-y-6 lg:col-span-4">
-            <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm">
+            <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-4 shadow-sm sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <BarChart3 className="h-5 w-5 text-emerald-600" strokeWidth={1.75} />
                 <span className="text-xs font-bold text-emerald-700">Aperçu</span>
@@ -332,10 +419,10 @@ function ContenuPageAdmin() {
         </div>
 
         {/* Bottom Section: aperçu réel des déclarations en attente, avec actions fonctionnelles */}
-        <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+        <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-4 shadow-sm sm:p-6">
+          <div className="mb-6 flex items-baseline justify-between gap-3">
             <h2 className="text-base font-bold text-gray-900">Déclarations récentes en attente</h2>
-            <button onClick={() => setOngletActif("MODERATION")} className="text-xs font-semibold text-[#00B493] hover:underline">
+            <button onClick={() => setOngletActif("MODERATION")} className="shrink-0 whitespace-nowrap text-xs font-semibold text-[#00B493] hover:underline">
               Voir tout
             </button>
           </div>
@@ -402,6 +489,7 @@ function ContenuPageAdmin() {
         </div>
 
         {/* Tab specific views for User Management, File Moderation, and Config */}
+        <div id="contenu-onglet-admin" className="scroll-mt-4" />
         {ongletActif === "UTILISATEURS" && (
           <div className="mt-8">
             <TableauUtilisateurs

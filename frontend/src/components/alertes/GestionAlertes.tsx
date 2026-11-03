@@ -93,7 +93,7 @@ export function GestionAlertes() {
         Soyez notifié dès qu&apos;un produit dépasse, dans une région donnée, le seuil de variation que vous fixez.
       </p>
 
-      <form onSubmit={creer} className="mt-4 grid gap-3 sm:grid-cols-2 sm:items-end lg:grid-cols-[1fr_1fr_120px_auto]">
+      <form onSubmit={creer} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:items-end lg:grid-cols-[1fr_1fr_120px_auto]">
         <div>
           <label htmlFor="alerte-produit" className="etiquette-champ">
             Produit
@@ -168,7 +168,7 @@ export function GestionAlertes() {
               </p>
               <p className="text-header/50">Seuil : {alerte.seuilPourcent}%</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className={clsx("rounded-full px-2.5 py-0.5 text-xs font-semibold", CLASSES_SEVERITE[alerte.severite])}>
                 {alerte.severite}
               </span>

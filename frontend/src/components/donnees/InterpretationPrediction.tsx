@@ -9,12 +9,10 @@ interface ProprietesInterpretationPrediction {
 }
 
 /**
- * Traduit la prédiction brute (un prix + une marge d'erreur) en une
- * interprétation lisible, honnête quant à ce qu'elle permet réellement de
- * dire — dans le prolongement direct du chapitre Données du mémoire
- * ("Évaluation du modèle et limites assumées") : jamais de certitude
- * affichée là où il n'y en a pas, et la méthode utilisée reste visible
- * plutôt que cachée derrière un simple chiffre.
+ * Traduit la prédiction brute (un prix + une marge d'erreur) en une phrase
+ * lisible : direction, variation attendue, prix cible et marge d'erreur.
+ * Volontairement limitée à la prédiction elle-même (ni méthode ni mises en
+ * garde techniques), pour rester immédiatement compréhensible.
  */
 export function InterpretationPrediction({ produit, region, historique, prediction }: ProprietesInterpretationPrediction) {
   if (!prediction || historique.length === 0) {
@@ -39,16 +37,6 @@ export function InterpretationPrediction({ produit, region, historique, predicti
   let direction: "hausse" | "baisse" | "stable" = "stable";
   if (variationPourcent > SEUIL_STABLE_POURCENT) direction = "hausse";
   else if (variationPourcent < -SEUIL_STABLE_POURCENT) direction = "baisse";
-
-  const nbSysteme = historique.filter((p) => p.source === "SYSTEME").length;
-  const nbContributeur = historique.filter((p) => p.source === "CONTRIBUTEUR").length;
-
-  const libelleMethode =
-    prediction.methode === "lissage_exponentiel_holt_winters"
-      ? "lissage exponentiel de Holt-Winters (niveau, tendance et saisonnalité mensuelle)"
-      : prediction.methode === "lissage_exponentiel_double"
-        ? "lissage exponentiel double (niveau et tendance, historique encore trop court pour estimer une saisonnalité fiable)"
-        : "une méthode statistique sur l'historique validé";
 
   const dateCibleLisible = new Date(prediction.dateCible).toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 
@@ -89,21 +77,6 @@ export function InterpretationPrediction({ produit, region, historique, predicti
         )}
         .
       </p>
-
-      <div className="rounded-xl bg-[#F5F5F7] p-3 text-xs leading-relaxed text-header/60">
-        <p>
-          <strong className="text-header/80">Méthode :</strong> {libelleMethode}, calculée sur{" "}
-          {historique.length} relevé{historique.length > 1 ? "s" : ""} validé
-          {historique.length > 1 ? "s" : ""} ({nbSysteme} de calibrage simulé, {nbContributeur} réellement
-          déclaré{nbContributeur > 1 ? "s" : ""} par un contributeur).
-        </p>
-        <p className="mt-1">
-          <strong className="text-header/80">Ce que cela ne dit pas :</strong> la marge d&apos;erreur
-          mesure la dispersion des relevés passés autour de la tendance apprise par le modèle, pas
-          l&apos;exactitude garantie du prix réellement observé le mois prochain — voir le chapitre
-          Données du mémoire pour le détail de cette limite.
-        </p>
-      </div>
     </div>
   );
 }

@@ -11,6 +11,10 @@ function formaterDateComplete(date: string): string {
   return new Date(date).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
 }
 
+function formaterDateCourte(date: string): string {
+  return new Date(date).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+}
+
 /**
  * Détail ligne par ligne de l'historique validé (le plus récent en haut),
  * avec un badge d'origine par relevé — c'est ici, contrairement au
@@ -33,7 +37,7 @@ export function TableauHistorique({ historique, unite }: ProprietesTableauHistor
 
   return (
     <div className="max-h-80 overflow-y-auto">
-      <table className="w-full text-left text-sm">
+      <table className="w-full text-left text-xs sm:text-sm">
         <thead className="sticky top-0 bg-white">
           <tr className="border-b border-gray-100 text-xs font-bold uppercase tracking-wide text-header/40">
             <th className="py-2 pr-3">Date</th>
@@ -44,18 +48,23 @@ export function TableauHistorique({ historique, unite }: ProprietesTableauHistor
         <tbody>
           {lignes.map((point, indice) => (
             <tr key={`${point.date}-${indice}`} className="border-b border-gray-50 last:border-0">
-              <td className="py-2 pr-3 text-header/70">{formaterDateComplete(point.date)}</td>
+              <td className="whitespace-nowrap py-2 pr-3 text-header/70">
+                <span className="sm:hidden">{formaterDateCourte(point.date)}</span>
+                <span className="hidden sm:inline">{formaterDateComplete(point.date)}</span>
+              </td>
               <td className="py-2 pr-3 font-semibold text-header">
                 {point.prixFcfa.toLocaleString("fr-FR")} FCFA/{unite}
               </td>
               <td className="py-2">
                 {point.source === "CONTRIBUTEUR" ? (
-                  <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                    Contributeur (réel)
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 whitespace-nowrap px-2 py-0.5 text-[11px] font-semibold sm:px-2.5 sm:text-xs text-emerald-700">
+                    <span className="sm:hidden">Réel</span>
+                    <span className="hidden sm:inline">Contributeur (réel)</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500">
-                    Calibrage (simulé)
+                  <span className="inline-flex items-center rounded-full bg-gray-100 whitespace-nowrap px-2 py-0.5 text-[11px] font-semibold sm:px-2.5 sm:text-xs text-gray-500">
+                    <span className="sm:hidden">Simulé</span>
+                    <span className="hidden sm:inline">Calibrage (simulé)</span>
                   </span>
                 )}
               </td>

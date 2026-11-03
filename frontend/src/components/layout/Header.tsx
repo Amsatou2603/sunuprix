@@ -116,7 +116,13 @@ export function Header() {
             <div className="relative h-7 w-7 shrink-0 transition-transform group-hover:scale-105 sm:h-9 sm:w-9">
               <Image src="/design/icon.svg" alt="SunuPrix Logo" width={36} height={36} priority className="object-contain" />
             </div>
-            <span className="truncate font-serif text-base font-bold tracking-tight text-primary sm:text-xl">
+            <span
+              className={`truncate font-serif text-base font-bold tracking-tight text-primary sm:text-xl ${
+                // Très petits écrans (< 360px) avec le bouton d'espace à côté : le logo seul suffit,
+                // plutôt qu'un nom tronqué en « S… ».
+                lienEspace ? "max-[359px]:hidden" : ""
+              }`}
+            >
               Sunu<span className="text-primary-light">Prix</span>
             </span>
           </Link>

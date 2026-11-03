@@ -159,7 +159,7 @@ function ContenuPageChatbot() {
         </div>
 
         {/* Chat Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
+        <div className="flex-1 space-y-6 overflow-y-auto bg-white p-4 sm:p-6">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -243,7 +243,7 @@ function ContenuPageChatbot() {
               value={saisie}
               onChange={(e) => setSaisie(e.target.value)}
               placeholder="Posez une question sur les prix, comparez des données ou analysez des tendances..."
-              className="flex-1 bg-transparent text-xs text-gray-900 placeholder-gray-400 focus:outline-none"
+              className="min-w-0 flex-1 bg-transparent text-base text-gray-900 sm:text-xs placeholder-gray-400 focus:outline-none"
               disabled={enCours}
             />
             <button

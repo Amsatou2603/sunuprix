@@ -23,7 +23,7 @@ export function CartesSynthese({ snapshots, regionSelectionneeId, onSelectionner
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-1 gap-3 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
       {snapshots.map((snapshot) => {
         const selectionnee = snapshot.regionId === regionSelectionneeId;
         return (
@@ -32,7 +32,7 @@ export function CartesSynthese({ snapshots, regionSelectionneeId, onSelectionner
             type="button"
             onClick={() => onSelectionner(snapshot.regionId)}
             className={clsx(
-              "carte text-left transition-shadow hover:shadow-md",
+              "carte min-w-0 text-left transition-shadow hover:shadow-md !p-3 sm:!p-6",
               selectionnee && "ring-2 ring-primary",
             )}
           >

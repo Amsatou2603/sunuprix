@@ -55,17 +55,17 @@ export function GraphiquePrix({ historique, prediction, unite }: ProprietesGraph
   }
 
   return (
-    <div className="h-72 w-full overflow-x-auto">
-      <div className="h-full min-w-[420px]">
+    <div className="h-64 w-full min-w-0 sm:h-72">
+      <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={points} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+        <LineChart data={points} margin={{ top: 10, right: 8, left: -8, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(11,46,36,0.08)" />
-          <XAxis dataKey="date" fontSize={12} stroke="#0B2E24" tickLine={false} />
+          <XAxis dataKey="date" fontSize={11} stroke="#0B2E24" tickLine={false} minTickGap={18} />
           <YAxis
-            fontSize={12}
+            fontSize={11}
             stroke="#0B2E24"
             tickLine={false}
-            width={64}
+            width={52}
             tickFormatter={(valeur: number) => valeur.toLocaleString("fr-FR")}
           />
           <Tooltip
@@ -75,6 +75,7 @@ export function GraphiquePrix({ historique, prediction, unite }: ProprietesGraph
             ]}
           />
           <Legend
+            wrapperStyle={{ fontSize: 12 }}
             formatter={(valeur) => (valeur === "prixFcfa" ? "Prix relevé" : "Prédiction (mois suivant)")}
           />
           <Line type="monotone" dataKey="prixFcfa" name="prixFcfa" stroke="#0F6E56" strokeWidth={2} dot={{ r: 3 }} connectNulls />

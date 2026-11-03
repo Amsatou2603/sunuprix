@@ -25,7 +25,28 @@ export function HistoriqueDeclarations({ declarations, chargement }: ProprietesH
   }
 
   return (
-    <div className="overflow-x-auto">
+    <>
+    {/* Mobile : une carte par déclaration plutôt qu'un tableau à faire défiler horizontalement. */}
+    <ul className="space-y-3 sm:hidden">
+      {declarations.map((declaration) => (
+        <li key={declaration.id} className="rounded-2xl border border-black/10 p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-medium text-header">{declaration.produit.nom}</p>
+              <p className="text-xs text-header/50">
+                {declaration.region.nom} · {new Date(declaration.dateReleve).toLocaleDateString("fr-FR")}
+              </p>
+            </div>
+            <BadgeStatutDeclaration statut={declaration.statut} />
+          </div>
+          <p className="mt-2 text-sm font-semibold text-header">
+            {declaration.prixFcfa.toLocaleString("fr-FR")} FCFA/{declaration.produit.unite}
+          </p>
+        </li>
+      ))}
+    </ul>
+
+    <div className="hidden overflow-x-auto sm:block">
       <table className="w-full min-w-[560px] text-left text-sm">
         <thead>
           <tr className="border-b border-black/10 text-xs uppercase tracking-wide text-header/50">
@@ -53,5 +74,6 @@ export function HistoriqueDeclarations({ declarations, chargement }: ProprietesH
         </tbody>
       </table>
     </div>
+    </>
   );
 }

@@ -45,6 +45,33 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
     }
   };
 
+  const rendreSelecteurRole = (utilisateur: (typeof utilisateurs)[number], estSoiMeme: boolean, classe = "") => (
+    <select
+      className={`champ-formulaire !py-1.5 !text-xs ${classe}`}
+      value={utilisateur.role}
+      aria-label={`Rôle de ${utilisateur.nom}`}
+      disabled={idEnCours === utilisateur.id || (estSoiMeme && utilisateur.role === "ADMIN")}
+      onChange={(e) => changerRole(utilisateur.id, e.target.value)}
+    >
+      {ROLES.map((role) => (
+        <option key={role} value={role}>
+          {LIBELLES_ROLES[role]}
+        </option>
+      ))}
+    </select>
+  );
+
+  const rendreBoutonStatut = (utilisateur: (typeof utilisateurs)[number], estSoiMeme: boolean) => (
+    <button
+      type="button"
+      disabled={idEnCours === utilisateur.id || (estSoiMeme && utilisateur.actif)}
+      onClick={() => changerStatut(utilisateur.id, !utilisateur.actif)}
+      className="bouton-secondaire shrink-0 !px-3 !py-1.5 !text-xs"
+    >
+      {utilisateur.actif ? "Désactiver" : "Réactiver"}
+    </button>
+  );
+
   return (
     <div className="carte">
       <h2 className="mb-4 text-sm font-semibold text-header/70">Gestion des utilisateurs</h2>
@@ -59,7 +86,37 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
       ) : utilisateurs.length === 0 ? (
         <EtatVide icone={<UserX className="h-7 w-7" strokeWidth={1.75} />} titre="Aucun utilisateur trouvé" />
       ) : (
-        <div className="overflow-x-auto">
+        <>
+        {/* Mobile : une carte par utilisateur plutôt qu'un tableau à faire défiler horizontalement. */}
+        <ul className="space-y-3 sm:hidden">
+          {utilisateurs.map((utilisateur) => {
+            const estSoiMeme = utilisateur.id === utilisateurCourant?.id;
+            return (
+              <li key={utilisateur.id} className="rounded-2xl border border-black/10 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium text-header">
+                      {utilisateur.nom}
+                      {estSoiMeme && <span className="ml-1.5 text-xs text-header/40">(vous)</span>}
+                    </p>
+                    <p className="mt-0.5 break-all text-xs text-header/60">
+                      {utilisateur.email ?? utilisateur.telephone ?? "—"}
+                    </p>
+                  </div>
+                  <span className={`shrink-0 ${utilisateur.actif ? "badge-hausse" : "badge-baisse"}`}>
+                    {utilisateur.actif ? "Actif" : "Désactivé"}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {rendreSelecteurRole(utilisateur, estSoiMeme, "min-w-[9.5rem] flex-1")}
+                  {rendreBoutonStatut(utilisateur, estSoiMeme)}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="hidden overflow-x-auto sm:block">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-black/10 text-xs uppercase tracking-wide text-header/50">
@@ -85,18 +142,7 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
                       )}
                     </td>
                     <td className="py-2 pr-4">
-                      <select
-                        className="champ-formulaire !py-1.5 !text-xs"
-                        value={utilisateur.role}
-                        disabled={idEnCours === utilisateur.id || (estSoiMeme && utilisateur.role === "ADMIN")}
-                        onChange={(e) => changerRole(utilisateur.id, e.target.value)}
-                      >
-                        {ROLES.map((role) => (
-                          <option key={role} value={role}>
-                            {LIBELLES_ROLES[role]}
-                          </option>
-                        ))}
-                      </select>
+                      {rendreSelecteurRole(utilisateur, estSoiMeme)}
                     </td>
                     <td className="py-2 pr-4">
                       <span className={utilisateur.actif ? "badge-hausse" : "badge-baisse"}>
@@ -104,14 +150,7 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
                       </span>
                     </td>
                     <td className="py-2 pr-4">
-                      <button
-                        type="button"
-                        disabled={idEnCours === utilisateur.id || (estSoiMeme && utilisateur.actif)}
-                        onClick={() => changerStatut(utilisateur.id, !utilisateur.actif)}
-                        className="bouton-secondaire !px-3 !py-1.5 !text-xs"
-                      >
-                        {utilisateur.actif ? "Désactiver" : "Réactiver"}
-                      </button>
+                      {rendreBoutonStatut(utilisateur, estSoiMeme)}
                     </td>
                   </tr>
                 );
@@ -119,6 +158,7 @@ export function TableauUtilisateurs({ utilisateurs, chargement, onUtilisateurMis
             </tbody>
           </table>
         </div>
+        </>
       )}
     </div>
   );

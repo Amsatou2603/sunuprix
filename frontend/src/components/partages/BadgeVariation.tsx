@@ -23,7 +23,7 @@ export function BadgeVariation({ valeur, suffixe }: ProprietesBadgeVariation) {
   const hausse = valeur >= 0;
   const fleche = valeur === 0 ? "→" : hausse ? "↑" : "↓";
   return (
-    <span className={hausse ? "badge-hausse" : "badge-baisse"}>
+    <span className={`whitespace-nowrap !px-2 !text-[11px] sm:!px-2.5 sm:!text-xs ${hausse ? "badge-hausse" : "badge-baisse"}`}>
       {fleche} {hausse && valeur > 0 ? "+" : ""}
       {valeur}%{suffixe ? ` ${suffixe}` : ""}
     </span>

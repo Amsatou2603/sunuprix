@@ -257,15 +257,15 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
 
       {!chargement && donneesGraphique.length > 0 && (
         <>
-          <div className="h-72 w-full overflow-x-auto">
-            <div className="h-full min-w-[480px]">
+          <div className="h-72 w-full min-w-0 sm:h-80">
+            <div className="h-full w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={donneesGraphique} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+                <LineChart data={donneesGraphique} margin={{ top: 10, right: 8, left: -8, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(11,46,36,0.08)" />
-                  <XAxis dataKey="date" fontSize={12} stroke="#0B2E24" />
-                  <YAxis fontSize={12} stroke="#0B2E24" width={64} />
+                  <XAxis dataKey="date" fontSize={11} stroke="#0B2E24" minTickGap={18} />
+                  <YAxis fontSize={11} stroke="#0B2E24" width={52} />
                   <Tooltip />
-                  <Legend />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
                   {entites.map((entite, indice) => (
                     <Line
                       key={entite.id}
@@ -283,12 +283,14 @@ export function VueComparative({ onResultat }: ProprietesVueComparative) {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[420px] text-left text-sm">
+            <table className="w-full text-left text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-black/10 text-xs uppercase tracking-wide text-header/50">
                   <th className="py-2 pr-4">{mode === "REGIONS" ? "Région" : "Produit"}</th>
-                  <th className="py-2 pr-4">Prédiction (mois suivant)</th>
-                  <th className="py-2 pr-4">Marge d&apos;erreur</th>
+                  <th className="py-2 pr-4">
+                    Prédiction<span className="hidden sm:inline"> (mois suivant)</span>
+                  </th>
+                  <th className="py-2 pr-4">Marge<span className="hidden sm:inline"> d&apos;erreur</span></th>
                 </tr>
               </thead>
               <tbody>

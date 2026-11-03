@@ -115,8 +115,6 @@ export function CarteRegions({ snapshots, regionSelectionneeId, onSelectionner }
           const couleur = couleurVariation(snapshot?.variationMensuellePourcent ?? null);
           const prixTexte = snapshot?.prixActuelFcfa != null ? `${snapshot.prixActuelFcfa.toLocaleString("fr-FR")} FCFA` : null;
 
-          const decalage = DECALAGES_ETIQUETTE[position.nom] ?? { x: 0, y: 0 };
-
           return (
             <button
               key={position.nom}
@@ -126,7 +124,7 @@ export function CarteRegions({ snapshots, regionSelectionneeId, onSelectionner }
               aria-pressed={selectionnee}
               aria-label={`${position.nom}${prixTexte ? ` — ${prixTexte}` : ""}`}
               className={clsx(
-                "group absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                "group absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-1 transition hover:z-30 focus:outline-none focus-visible:z-30 focus-visible:ring-2 focus-visible:ring-primary/40",
                 snapshot ? "cursor-pointer" : "cursor-default opacity-40",
               )}
               style={{
@@ -146,24 +144,6 @@ export function CarteRegions({ snapshots, regionSelectionneeId, onSelectionner }
                 }}
               />
 
-              {/* Nom de région : ancré sous le repère mais légèrement décalé pour
-                  les régions trop rapprochées (voir DECALAGES_ETIQUETTE), sans
-                  déplacer le repère lui-même. Le prix de la sélection est
-                  affiché à part, dans le bandeau au-dessus de la carte. */}
-              <span
-                className="absolute left-1/2 top-full pt-1"
-                style={{ transform: `translate(calc(-50% + ${decalage.x}px), ${decalage.y}px)` }}
-              >
-                <span
-                  className={clsx(
-                    "whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-bold leading-tight shadow-sm transition-colors",
-                    selectionnee ? "bg-header text-white" : "bg-white text-header/70 group-hover:bg-header/5",
-                  )}
-                >
-                  {position.nom}
-                </span>
-              </span>
-
               {snapshot && (
                 <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-max -translate-x-1/2 rounded-lg bg-header px-2.5 py-1.5 text-center opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100">
                   <span className="block text-[11px] font-bold text-white">{prixTexte ?? "—"}</span>
@@ -181,6 +161,44 @@ export function CarteRegions({ snapshots, regionSelectionneeId, onSelectionner }
                 </span>
               )}
               </button>
+            );
+          })}
+
+          {/* Noms de région dans un calque à part, posé au-dessus de tous les
+              repères : chaque bouton formant son propre contexte d'empilement
+              (transform), une étiquette rendue dans un bouton pouvait sinon être
+              masquée par le repère d'une région voisine sur petit écran (Dakar
+              sur Louga, Thiès…). Légèrement décalés pour les régions trop
+              rapprochées (voir DECALAGES_ETIQUETTE), sans déplacer les repères. */}
+          {POSITIONS_REGIONS.map((position) => {
+            const snapshot = snapshots.find((s) => s.region === position.nom);
+            const selectionnee = !!snapshot && snapshot.regionId === regionSelectionneeId;
+            const decalage = DECALAGES_ETIQUETTE[position.nom] ?? { x: 0, y: 0 };
+            return (
+              <span
+                key={`etiquette-${position.nom}`}
+                className="pointer-events-none absolute z-10"
+                style={{
+                  left: `${(position.x / LARGEUR_VUE_SENEGAL) * 100}%`,
+                  top: `${(position.y / HAUTEUR_VUE_SENEGAL) * 100}%`,
+                  transform: `translate(calc(-50% + ${decalage.x}px), ${14 + decalage.y}px)`,
+                }}
+              >
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  disabled={!snapshot}
+                  onClick={() => snapshot && onSelectionner(snapshot.regionId)}
+                  className={clsx(
+                    "pointer-events-auto whitespace-nowrap rounded-md px-1.5 py-0.5 text-[10px] font-bold leading-tight shadow-sm transition-colors",
+                    selectionnee ? "bg-header text-white" : "bg-white text-header/70 hover:bg-header/5",
+                    !snapshot && "opacity-40",
+                  )}
+                >
+                  {position.nom}
+                </button>
+              </span>
             );
           })}
         </div>

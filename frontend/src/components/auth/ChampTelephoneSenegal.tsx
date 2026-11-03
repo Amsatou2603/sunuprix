@@ -51,7 +51,7 @@ export function ChampTelephoneSenegal({
         placeholder="77 123 45 67"
         value={formaterAffichage(valeur)}
         onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, 9))}
-        className="w-full bg-transparent px-3.5 py-2.5 text-sm text-header placeholder:text-header/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full min-w-0 bg-transparent px-3.5 py-2.5 text-base text-header sm:text-sm placeholder:text-header/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
       />
     </div>
   );

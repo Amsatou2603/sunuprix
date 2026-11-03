@@ -203,7 +203,7 @@ export function ChatbotWidget() {
                 value={saisie}
                 onChange={(e) => setSaisie(e.target.value)}
                 placeholder="Posez votre question à SunuBot…"
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs text-white placeholder-emerald-100/40 backdrop-blur-sm focus:border-[#00C49F] focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-base text-white sm:text-xs placeholder-emerald-100/40 backdrop-blur-sm focus:border-[#00C49F] focus:outline-none"
                 disabled={enCours}
               />
               <button

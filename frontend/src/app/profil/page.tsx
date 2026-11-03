@@ -30,7 +30,7 @@ function LigneInfo({ icone, label, valeur }: ProprietesLigneInfo) {
       </span>
       <div className="min-w-0">
         <p className="text-xs font-medium text-header/50">{label}</p>
-        <p className="truncate text-sm font-semibold text-header">{valeur}</p>
+        <p className="text-sm font-semibold text-header [overflow-wrap:anywhere]">{valeur}</p>
       </div>
     </div>
   );
@@ -55,7 +55,7 @@ function ContenuPageProfil() {
   });
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 sm:px-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:px-6 sm:py-8">
       <div>
         <h1 className="text-xl font-bold text-header sm:text-2xl">Mon profil</h1>
         <p className="mt-1 text-sm text-header/60">Vos informations de compte SunuPrix.</p>

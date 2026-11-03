@@ -71,6 +71,9 @@ export function BoutonGoogle({ onJeton, texte = "continue_with" }: ProprietesBou
       callback: (reponse) => onJetonRef.current(reponse.credential),
     });
 
+    // Largeur adaptée au conteneur (écrans étroits) : Google impose 200 à 400px.
+    const largeurDisponible = Math.floor(conteneurRef.current.getBoundingClientRect().width) || 320;
+    const largeurBouton = Math.max(200, Math.min(320, largeurDisponible));
     conteneurRef.current.innerHTML = "";
     window.google.accounts.id.renderButton(conteneurRef.current, {
       type: "standard",
@@ -80,7 +83,7 @@ export function BoutonGoogle({ onJeton, texte = "continue_with" }: ProprietesBou
       text: texte,
       logo_alignment: "left",
       locale: "fr",
-      width: 320,
+      width: largeurBouton,
     });
   }, [scriptCharge, texte]);
 

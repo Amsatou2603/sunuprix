@@ -112,7 +112,7 @@ function ContenuPageDonnees() {
         {/* 3 Top Highlight Cards — données réelles */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Card 1: Prédiction du jour (réelle, déjà chargée pour le produit/région sélectionnés) */}
-          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm flex flex-col justify-between">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-4 shadow-sm sm:p-6 flex flex-col justify-between">
             <div>
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
                 <Wand2 className="h-5 w-5" strokeWidth={1.75} />
@@ -130,7 +130,7 @@ function ContenuPageDonnees() {
           </div>
 
           {/* Card 2: Alertes actives (réelles) */}
-          <div className="rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-100 bg-[#F5F5F7] p-6 shadow-sm flex flex-col justify-between">
+          <div className="rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-100 bg-[#F5F5F7] p-4 shadow-sm sm:p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600">
@@ -153,7 +153,7 @@ function ContenuPageDonnees() {
           </div>
 
           {/* Card 3: constat réel dérivé de la carte régionale du produit sélectionné */}
-          <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] p-6 text-white shadow-sm flex flex-col justify-between">
+          <div className="rounded-2xl border border-purple-200 bg-gradient-to-br from-[#8B5CF6] to-[#7C3AED] p-4 text-white sm:p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 text-white">
@@ -179,12 +179,12 @@ function ContenuPageDonnees() {
 
         {/* Main Content: synthèse régionale + mes alertes (remplace le graphique statique et les "favoris" fictifs) */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm lg:col-span-7">
-            <div className="flex items-center justify-between mb-4">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-4 shadow-sm sm:p-6 lg:col-span-7">
+            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
               <h2 className="text-base font-bold text-gray-900">Synthèse par région — {produitCourant?.nom ?? "…"}</h2>
               <Link
                 href={`/donnees/details?produit=${produitId}&region=${regionId}`}
-                className="text-xs font-semibold text-[#00B493] hover:underline"
+                className="whitespace-nowrap text-xs font-semibold text-[#00B493] hover:underline"
               >
                 Voir détails
               </Link>
@@ -192,7 +192,7 @@ function ContenuPageDonnees() {
             <CartesSynthese snapshots={carte} regionSelectionneeId={regionId} onSelectionner={setRegionId} />
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm lg:col-span-5">
+          <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-4 shadow-sm sm:p-6 lg:col-span-5">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-base font-bold text-gray-900">Mes alertes</h2>
               <Link
@@ -258,7 +258,7 @@ function ContenuPageDonnees() {
                 />
               </div>
 
-              <div className="grid gap-6 lg:grid-cols-[400px_1fr]">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr]">
                 <div className="carte">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
                     Carte Régionale — {produitCourant?.nom ?? "…"}

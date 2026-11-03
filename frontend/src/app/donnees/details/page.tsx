@@ -130,7 +130,7 @@ function ContenuDetailsDonnees() {
               <CartesSynthese snapshots={carte} regionSelectionneeId={regionId} onSelectionner={setRegionId} />
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[380px_1fr]">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_1fr]">
               <div className="carte">
                 <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">Carte régionale</h2>
                 <CarteRegions snapshots={carte} regionSelectionneeId={regionId} onSelectionner={setRegionId} />
@@ -148,7 +148,7 @@ function ContenuDetailsDonnees() {
               </div>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {chargement ? (
                 <div className="carte">
                   <Chargement libelle="Calcul de la prédiction…" />
