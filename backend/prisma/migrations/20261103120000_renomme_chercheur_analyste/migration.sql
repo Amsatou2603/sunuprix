@@ -1,0 +1,14 @@
+-- Renomme le role CHERCHEUR en ANALYSTE (retour du formateur referent :
+-- fonction inchangee, "Analyste" decrit plus precisement ce que fait ce
+-- role -- analyser des donnees deja collectees -- que "Chercheur", qui
+-- evoque une activite de recherche scientifique).
+--
+-- RENAME VALUE est non destructif : les lignes existantes dont le role
+-- valait CHERCHEUR sont automatiquement relabelisees ANALYSTE, aucune
+-- donnee n'est perdue. Deja applique manuellement en production via le
+-- connecteur Neon (meme methode que pour le retrait du role MINISTERE et
+-- le renommage VENDEUR -> CONTRIBUTEUR, voir mémoire de PFE chapitre
+-- Donnees) ; ce fichier documente le changement pour que
+-- `prisma migrate deploy` reconnaisse le schema courant sur un
+-- environnement reparti de zero.
+ALTER TYPE "RoleUtilisateur" RENAME VALUE 'CHERCHEUR' TO 'ANALYSTE';
