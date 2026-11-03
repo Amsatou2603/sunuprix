@@ -5,6 +5,6 @@ import * as exportController from "./export.controller";
 
 const router = Router();
 
-router.get("/csv", authentifier, autoriserRoles("CHERCHEUR"), exportController.exporterCsv);
+router.get("/csv", authentifier, autoriserRoles("ANALYSTE"), exportController.exporterCsv);
 
 export default router;

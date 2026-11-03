@@ -27,7 +27,7 @@ export function FormulaireTelephoneOtp({ mode, onSucces }: ProprietesFormulaireT
   const [chiffres, setChiffres] = useState("");
   const [nom, setNom] = useState("");
   // Consommateur par défaut (cas le plus fréquent), mais un numéro jamais
-  // utilisé peut tout autant appartenir à un contributeur ou un chercheur — rien
+  // utilisé peut tout autant appartenir à un contributeur ou un analyste — rien
   // n'oblige l'inscription par téléphone à créer systématiquement un compte
   // Consommateur.
   const [role, setRole] = useState<string>("CONSOMMATEUR");

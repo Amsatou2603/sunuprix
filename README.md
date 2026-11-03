@@ -83,7 +83,7 @@ via [Prisma](https://www.prisma.io/).
 | Rôle | Description | Inscriptible librement |
 | --- | --- | --- |
 | `ADMIN` | Administration de la plateforme | Non — créé par le seed ou par un autre administrateur |
-| `CHERCHEUR` | Analyse avancée, exports | Oui |
+| `ANALYSTE` | Analyse avancée, exports | Oui |
 | `CONTRIBUTEUR` | Signalement de prix constatés sur le terrain | Oui |
 | `CONSOMMATEUR` | Suivi et alertes personnelles | Oui |
 
@@ -94,7 +94,9 @@ la fiabilité en production. Il reste envisagé en perspective (voir le
 mémoire de PFE, chapitre Données) si une source officielle vérifiable devient
 exploitable. Le rôle `VENDEUR` a été renommé `CONTRIBUTEUR` : le mécanisme
 (déclaration -> file d'attente -> validation par un administrateur) est
-inchangé, seul le cadrage change.
+inchangé, seul le cadrage change. Le rôle `CHERCHEUR` a ensuite été renommé
+`ANALYSTE` à la demande du formateur référent : fonction inchangée, nom plus
+précis.
 
 L'authentification par JWT est posée dans cette phase : inscription (mot de
 passe haché avec bcrypt), connexion, et un middleware de contrôle d'accès par
@@ -123,7 +125,7 @@ identique pour tous, à changer avant toute mise en production réelle :
 | Rôle | E-mail | Mot de passe |
 | --- | --- | --- |
 | Administrateur | `admin@sunuprix.sn` | `SunuPrix2026!` |
-| Chercheur | `chercheur@sunuprix.sn` | `SunuPrix2026!` |
+| Analyste | `analyste@sunuprix.sn` | `SunuPrix2026!` |
 | Contributeur | `contributeur@sunuprix.sn` | `SunuPrix2026!` |
 | Consommateur | `consommateur@sunuprix.sn` | `SunuPrix2026!` |
 
@@ -199,7 +201,7 @@ les nouvelles cartes statistiques ajoutées en phase 3 (calculées côté client
   constaté (statut initial toujours `EN_ATTENTE`) et historique de ses
   propres signalements avec leur statut de modération, plus des cartes de
   synthèse (total, en attente, validées, rejetées).
-- **Chercheur** (`/chercheur`) : export CSV (relevés de prix validés +
+- **Analyste** (`/analyste`) : export CSV (relevés de prix validés +
   prédictions) et vue analytique comparant plusieurs régions pour un produit,
   ou plusieurs produits pour une région, avec la marge d'erreur de chaque
   prédiction.
@@ -226,13 +228,18 @@ architecture en couches (`routes` → `controllers` → `services` →
 | Alertes | `GET/POST /api/alertes`, `PATCH/DELETE /api/alertes/:id` | Tout rôle authentifié (alertes personnelles) |
 | Notifications | `GET /api/notifications`, `GET /api/notifications/non-lues/compte`, `PATCH /api/notifications/:id/lue` | Tout rôle authentifié |
 | Administration | `GET /api/admin/utilisateurs`, `PATCH /api/admin/utilisateurs/:id/{role,statut}`, `GET /api/admin/declarations-prix`, `PATCH /api/admin/declarations-prix/:id/{valider,rejeter}`, `GET/PUT /api/admin/seuils` | `ADMIN` |
-| Export | `GET /api/export/csv` | `CHERCHEUR` |
+| Export | `GET /api/export/csv` | `ANALYSTE` |
 | Santé | `GET /api/health` | Public (utilisé comme *health check* Render) |
 
-Le service de prédiction (`regression.service.ts`) applique une régression
-linéaire pondérée (poids croissant avec la récence) sur l'historique validé
-d'un couple produit/région, et persiste le résultat dans `Prediction` (upsert
-sur `[produitId, regionId, dateCible]`). Le service de chatbot
+Le service de prédiction (`lissage-exponentiel.service.ts`) applique un
+lissage exponentiel de Holt-Winters (niveau + tendance + saisonnalité
+mensuelle) sur l'historique validé d'un couple produit/région dès que deux
+cycles complets de 12 mois sont disponibles, avec secours automatique vers
+un lissage exponentiel double (sans saisonnalité) sinon ; le résultat est
+persisté dans `Prediction` (upsert sur `[produitId, regionId, dateCible]`).
+Ce modèle remplace l'ancienne régression linéaire pondérée (voir le mémoire
+de PFE, chapitre Données, pour la justification du changement). Le service
+de chatbot
 (`chatbot.service.ts`) construit d'abord un contexte factuel depuis la base
 (prix récents, tendance, produit/région mentionnés dans le message), puis
 appelle l'API Gemini (`@google/generative-ai`, clé `GEMINI_API_KEY`) avec ce
@@ -257,10 +264,12 @@ réelle.
 cd backend && npm test
 ```
 
-- **`regression.service.test.ts`** — service de prédiction : exactitude sur
-  une droite parfaite, pondération par récence comparée à une régression
-  classique, marge d'erreur positive sur données bruitées, rejet si moins de
-  2 points.
+- **`lissage-exponentiel.service.test.ts`** — service de prédiction :
+  secours sans saisonnalité sur un historique court avec tendance exacte,
+  bascule automatique sur Holt-Winters dès 24 points, prédiction plus
+  précise qu'une simple extrapolation de tendance sur une série saisonnière
+  marquée, marge d'erreur faible sur série saisonnière sans bruit, rejet si
+  moins de 2 points.
 - **`alerts.service.test.ts`** — service de détection de seuils : bornes
   INFO/ATTENTION/CRITIQUE, création de notification en cas de dépassement,
   absence de notification sous le seuil personnel, idempotence sur relevés
@@ -385,15 +394,15 @@ backend/
 frontend/
   src/
     app/                   Pages App Router : / , /connexion, /inscription,
-                            /donnees, /alertes, /a-propos, /contributeur,
-                            /chercheur, /admin
+                            /donnees, /donnees/details, /alertes, /a-propos,
+                            /contributeur, /analyste, /admin
     components/
       layout/               Header (navigation par rôle, cloche de notifications), Footer
       auth/                 RouteProtegee (garde de route par rôle)
       pwa/                  Enregistrement du service worker
       chatbot/               Widget flottant connecté à /api/chatbot
       donnees/               Carte SVG des régions, cartes de synthèse, sélecteurs, graphique Recharts
-      contributeur/, chercheur/, admin/, alertes/    Composants propres à chaque espace
+      contributeur/, analyste/, admin/, alertes/    Composants propres à chaque espace
       partages/              EtatAsync (Chargement/MessageErreur/EtatVide), BadgeVariation,
                             CarteStat — réutilisés entre espaces
     lib/

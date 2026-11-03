@@ -3,7 +3,7 @@ import { env } from "../../config/env";
 import type { EntreeDiagnostic } from "./analyse.schema";
 
 /**
- * Diagnostic IA d'une comparaison de prix (page Chercheur : plusieurs régions
+ * Diagnostic IA d'une comparaison de prix (page Analyste : plusieurs régions
  * pour un même produit, ou plusieurs produits pour une même région).
  *
  * Même philosophie que le chatbot (`chatbot.service.ts`) : on calcule d'abord
@@ -70,7 +70,7 @@ function construireResume(mode: EntreeDiagnostic["mode"], axeFixeLabel: string, 
 function construirePrompt(resume: string): string {
   return [
     "Tu es l'assistant d'analyse de SunuPrix, une plateforme pédagogique de suivi des prix au Sénégal.",
-    "Interprète la comparaison ci-dessous en 2 à 4 phrases claires, précises et utiles pour un chercheur.",
+    "Interprète la comparaison ci-dessous en 2 à 4 phrases claires, précises et utiles pour un analyste.",
     "Base-toi UNIQUEMENT sur les chiffres fournis : ne cite aucun chiffre absent de ces données et n'invente aucune cause.",
     "Mets en avant l'écart ou la tendance la plus notable, en termes simples.",
     "Termine par une courte phrase rappelant que ces données sont fictives, à but pédagogique.",

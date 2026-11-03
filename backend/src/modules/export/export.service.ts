@@ -19,7 +19,7 @@ interface FiltresExport {
 }
 
 /**
- * Génère l'export CSV réservé aux chercheurs : relevés de prix validés et
+ * Génère l'export CSV réservé aux analystes : relevés de prix validés et
  * prédictions, réunis dans un seul fichier (colonne `Type` pour les
  * distinguer) et triés par produit / région / date pour rester facilement
  * exploitables dans un tableur.

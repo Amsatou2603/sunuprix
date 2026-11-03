@@ -16,9 +16,14 @@
  * le mécanisme sous-jacent (déclaration -> file d'attente -> validation par
  * un administrateur) est inchangé, seul le cadrage change — un contributeur
  * signale un prix constaté sur le terrain, il ne "vend" rien sur la
- * plateforme.
+ * plateforme. Le rôle CHERCHEUR a ensuite été renommé ANALYSTE, à la
+ * demande du formateur référent : la fonction (comparaison multi-régions/
+ * produits avec diagnostic généré par IA) est inchangée, seul le nom du
+ * rôle change — "Analyste" désigne plus précisément ce que fait ce rôle
+ * dans l'application (analyser des données déjà collectées) que
+ * "Chercheur", qui évoque plutôt une activité de recherche scientifique.
  */
-export const ROLES = ["ADMIN", "CHERCHEUR", "CONTRIBUTEUR", "CONSOMMATEUR"] as const;
+export const ROLES = ["ADMIN", "ANALYSTE", "CONTRIBUTEUR", "CONSOMMATEUR"] as const;
 
 export type Role = (typeof ROLES)[number];
 
@@ -28,7 +33,7 @@ export const ROLES_INSCRIPTIBLES = ROLES.filter((role) => role !== "ADMIN") as E
 /** Libellés lisibles (français) pour l'affichage dans l'interface. */
 export const LIBELLES_ROLES: Record<Role, string> = {
   ADMIN: "Administrateur",
-  CHERCHEUR: "Chercheur",
+  ANALYSTE: "Analyste",
   CONTRIBUTEUR: "Contributeur",
   CONSOMMATEUR: "Consommateur",
 };

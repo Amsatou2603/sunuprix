@@ -266,7 +266,7 @@ function ContenuPageChatbot() {
 
 export default function PageChatbot() {
   return (
-    <RouteProtegee rolesAutorises={["ADMIN", "CHERCHEUR", "CONTRIBUTEUR", "CONSOMMATEUR"]}>
+    <RouteProtegee rolesAutorises={["ADMIN", "ANALYSTE", "CONTRIBUTEUR", "CONSOMMATEUR"]}>
       <ContenuPageChatbot />
     </RouteProtegee>
   );

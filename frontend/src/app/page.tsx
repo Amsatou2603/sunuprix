@@ -22,7 +22,7 @@ import type {
 
 const FONCTIONNALITES = [
   {
-    href: "/chercheur",
+    href: "/analyste",
     icone: <Microscope className="h-5 w-5" strokeWidth={1.75} />,
     titre: "Analyse comparative",
     description: "Comparez produits et régions, avec un diagnostic généré par l'IA en quelques lignes claires.",

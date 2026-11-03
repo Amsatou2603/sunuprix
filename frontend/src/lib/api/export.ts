@@ -7,7 +7,7 @@ export interface FiltresExport {
 }
 
 /**
- * Déclenche le téléchargement du CSV réservé aux chercheurs. Le nom du
+ * Déclenche le téléchargement du CSV réservé aux analystes. Le nom du
  * fichier est repris de l'en-tête `Content-Disposition` renvoyé par le
  * backend lorsque disponible, sinon un nom de repli daté est utilisé.
  */

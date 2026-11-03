@@ -39,7 +39,7 @@ interface ProprietesVueComparative {
 }
 
 /**
- * Vue analytique réservée aux chercheurs : compare l'évolution de plusieurs
+ * Vue analytique réservée aux analystes : compare l'évolution de plusieurs
  * régions pour un même produit, ou de plusieurs produits pour une même
  * région, avec la marge d'erreur de prédiction associée à chaque série.
  */

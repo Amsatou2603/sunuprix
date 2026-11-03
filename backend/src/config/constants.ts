@@ -26,8 +26,11 @@ export const SEUIL_CRITIQUE_POURCENT_DEFAUT = 10;
 /**
  * Nombre de mois d'historique généré par le seed pour chaque couple
  * produit/région (voir `backend/prisma/seed.ts`). Documentaire : le moteur
- * de régression (`predictions/regression.service.ts`) utilise en réalité
- * tout l'historique validé disponible pour un couple donné, sans fenêtre
- * fixe — cette constante ne le limite pas.
+ * de prédiction (`predictions/lissage-exponentiel.service.ts`) utilise en
+ * réalité tout l'historique validé disponible pour un couple donné, sans
+ * fenêtre fixe — cette constante ne le limite pas. Elle correspond
+ * précisément à deux cycles saisonniers complets (2 x 12 mois), le seuil à
+ * partir duquel le moteur bascule sur le modèle Holt-Winters avec
+ * saisonnalité plutôt que sur son secours sans saisonnalité.
  */
-export const NB_MOIS_REGRESSION = 24;
+export const NB_MOIS_HISTORIQUE_SEED = 24;

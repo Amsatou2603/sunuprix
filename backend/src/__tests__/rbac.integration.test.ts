@@ -49,7 +49,7 @@ vi.mock("../config/prisma", () => ({
   },
 }));
 
-const TOUS_LES_ROLES = ["ADMIN", "CHERCHEUR", "CONTRIBUTEUR", "CONSOMMATEUR"] as const;
+const TOUS_LES_ROLES = ["ADMIN", "ANALYSTE", "CONTRIBUTEUR", "CONSOMMATEUR"] as const;
 type RoleTest = (typeof TOUS_LES_ROLES)[number];
 
 let app: Application;
@@ -77,7 +77,7 @@ const ENDPOINTS_PROTEGES: EndpointProtege[] = [
   { methode: "get", chemin: "/api/admin/utilisateurs", roleAutorise: "ADMIN" },
   { methode: "get", chemin: "/api/admin/declarations-prix", roleAutorise: "ADMIN" },
   { methode: "get", chemin: "/api/admin/seuils", roleAutorise: "ADMIN" },
-  { methode: "get", chemin: "/api/export/csv", roleAutorise: "CHERCHEUR" },
+  { methode: "get", chemin: "/api/export/csv", roleAutorise: "ANALYSTE" },
   { methode: "get", chemin: "/api/prix/declarations/mes", roleAutorise: "CONTRIBUTEUR" },
 ];
 

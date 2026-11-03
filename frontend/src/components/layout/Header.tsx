@@ -21,16 +21,16 @@ const LIENS_NAVIGATION = [
 
 const LIEN_ESPACE_PAR_ROLE: Partial<Record<Role, { href: string; label: string }>> = {
   CONTRIBUTEUR: { href: "/contributeur", label: "Espace Contributeur" },
-  CHERCHEUR: { href: "/chercheur", label: "Dashboard Chercheur" },
+  ANALYSTE: { href: "/analyste", label: "Dashboard Analyste" },
   ADMIN: { href: "/admin", label: "Centre de Contrôle" },
 };
 
-// Libellés longs ("Dashboard Chercheur", "Centre de Contrôle"...) trop larges
+// Libellés longs ("Dashboard Analyste", "Centre de Contrôle"...) trop larges
 // à côté du logo sur petit écran, une fois pliés avec la cloche + l'avatar —
 // on raccourcit juste pour la variante mobile.
 const LIBELLE_COURT_PAR_ROLE: Partial<Record<Role, string>> = {
   CONTRIBUTEUR: "Contributeur",
-  CHERCHEUR: "Chercheur",
+  ANALYSTE: "Analyste",
   ADMIN: "Admin",
 };
 
@@ -90,7 +90,7 @@ export function Header() {
 
   const lienEspace = utilisateur ? LIEN_ESPACE_PAR_ROLE[utilisateur.role] : undefined;
   const libelleCourtEspace = utilisateur ? LIBELLE_COURT_PAR_ROLE[utilisateur.role] : undefined;
-  // L'espace dédié au rôle (Contributeur/Chercheur/Admin) a son propre
+  // L'espace dédié au rôle (Contributeur/Analyste/Admin) a son propre
   // bouton vert (à côté du logo sur mobile, à côté du pseudo sur sm+, cf. plus
   // bas) — inutile de le dupliquer ici dans la nav centrale.
   const liensNavigation = LIENS_NAVIGATION;

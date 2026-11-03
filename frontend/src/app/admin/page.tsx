@@ -63,7 +63,7 @@ function ContenuPageAdmin() {
     try {
       await telechargerExportCsv();
     } catch {
-      // Le bouton reste silencieux en cas d'échec ponctuel ; l'export complet reste disponible côté Chercheur.
+      // Le bouton reste silencieux en cas d'échec ponctuel ; l'export complet reste disponible côté Analyste.
     } finally {
       setEnCoursExport(false);
     }

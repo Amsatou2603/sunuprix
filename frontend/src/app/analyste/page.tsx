@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { BarChart3 } from "lucide-react";
 import { RouteProtegee } from "@/components/auth/RouteProtegee";
-import { BoutonExportCsv } from "@/components/chercheur/BoutonExportCsv";
-import { VueComparative } from "@/components/chercheur/VueComparative";
+import { BoutonExportCsv } from "@/components/analyste/BoutonExportCsv";
+import { VueComparative } from "@/components/analyste/VueComparative";
 import { referentielApi } from "@/lib/api/referentiel";
 import type { Produit, Region } from "@/lib/api/types";
 
@@ -13,7 +13,7 @@ interface ResultatComparaison {
   entitesComparees: number;
 }
 
-function ContenuPageChercheur() {
+function ContenuPageAnalyste() {
   const [produits, setProduits] = useState<Produit[]>([]);
   const [regions, setRegions] = useState<Region[]>([]);
   const [resultatComparaison, setResultatComparaison] = useState<ResultatComparaison | null>(null);
@@ -34,7 +34,7 @@ function ContenuPageChercheur() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-[#0F172A]">
-              Dashboard Chercheur
+              Dashboard Analyste
             </h1>
             <p className="mt-1 flex items-center gap-2 text-sm font-medium text-gray-500">
               <BarChart3 className="h-4 w-4" strokeWidth={1.75} /> Analyse comparative des prix au Sénégal
@@ -86,10 +86,10 @@ function ContenuPageChercheur() {
   );
 }
 
-export default function PageChercheur() {
+export default function PageAnalyste() {
   return (
-    <RouteProtegee rolesAutorises={["CHERCHEUR", "ADMIN"]}>
-      <ContenuPageChercheur />
+    <RouteProtegee rolesAutorises={["ANALYSTE", "ADMIN"]}>
+      <ContenuPageAnalyste />
     </RouteProtegee>
   );
 }

@@ -14,7 +14,7 @@ Comptes de démonstration (mot de passe identique : `SunuPrix2026!`) :
 | Rôle | E-mail |
 | --- | --- |
 | Administrateur | `admin@sunuprix.sn` |
-| Chercheur | `chercheur@sunuprix.sn` |
+| Analyste | `analyste@sunuprix.sn` |
 | Contributeur | `contributeur@sunuprix.sn` |
 | Consommateur | `consommateur@sunuprix.sn` |
 
@@ -59,14 +59,14 @@ URL de démonstration : voir le tableau en tête du [README](README.md#sunuprix)
 5. Montrer brièvement la configuration des seuils d'alerte par défaut du
    système.
 6. Point à souligner : tenter d'ouvrir directement une URL d'un autre espace
-   (ex. `/contributeur` ou `/chercheur`) avec ce compte pour illustrer que
+   (ex. `/contributeur` ou `/analyste`) avec ce compte pour illustrer que
    la garde de route (`RouteProtegee`) et le contrôle d'accès côté API
    refusent l'accès à un rôle non autorisé.
 
-## 3. Rôle Chercheur — analyse et export (2 min)
+## 3. Rôle Analyste — analyse et export (2 min)
 
-1. Se reconnecter avec `chercheur@sunuprix.sn`.
-2. Aller dans **Espace chercheur**.
+1. Se reconnecter avec `analyste@sunuprix.sn`.
+2. Aller dans **Espace analyste**.
 3. Utiliser la vue comparative : comparer plusieurs régions pour un même
    produit (ex. le prix du riz à Dakar, Thiès et Kaolack), puis basculer sur
    la comparaison inverse (plusieurs produits pour une région).

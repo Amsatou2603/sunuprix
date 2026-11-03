@@ -182,7 +182,10 @@ function ContenuPageDonnees() {
           <div className="rounded-2xl border border-gray-100 bg-[#F5F5F7] p-6 shadow-sm lg:col-span-7">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-bold text-gray-900">Synthèse par région — {produitCourant?.nom ?? "…"}</h2>
-              <Link href="/chercheur" className="text-xs font-semibold text-[#00B493] hover:underline">
+              <Link
+                href={`/donnees/details?produit=${produitId}&region=${regionId}`}
+                className="text-xs font-semibold text-[#00B493] hover:underline"
+              >
                 Voir détails
               </Link>
             </div>

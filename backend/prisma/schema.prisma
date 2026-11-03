@@ -23,7 +23,7 @@ datasource db {
 /// endroits en même temps.
 enum RoleUtilisateur {
   ADMIN
-  CHERCHEUR
+  ANALYSTE
   CONTRIBUTEUR
   CONSOMMATEUR
 }
