@@ -138,7 +138,7 @@ export function Header() {
         </div>
 
         {/* Center Nav Items */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {liensNavigation.map((lien) => {
             const estActif = pathname === lien.href;
             return (
@@ -216,7 +216,7 @@ export function Header() {
       </header>
 
       {/* Mobile Nav strip */}
-      <nav className="verre mx-auto mt-2 flex max-w-6xl items-center gap-4 overflow-x-auto !rounded-full px-4 py-2 md:hidden">
+      <nav className="verre mx-auto mt-2 flex max-w-6xl items-center gap-4 overflow-x-auto !rounded-full px-4 py-2 lg:hidden">
         {liensNavigation.map((lien) => (
           <Link
             key={lien.href}
