@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { lienAvecSuivant, lireCheminSuivant } from "@/lib/navigation/suivant";
 import { Mail, Phone } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { ErreurApi } from "@/lib/api/api-client";
@@ -25,7 +26,12 @@ export default function PageConnexion() {
   const [erreur, setErreur] = useState<string | null>(null);
   const [erreurGoogle, setErreurGoogle] = useState<string | null>(null);
 
-  const versAccueil = useCallback(() => router.push("/"), [router]);
+  // Après connexion : retour à la page d'origine (?suivant=), sinon l'accueil.
+  const versAccueil = useCallback(() => router.push(lireCheminSuivant()), [router]);
+  const [lienAutrePage, setLienAutrePage] = useState("/inscription");
+  useEffect(() => {
+    setLienAutrePage(lienAvecSuivant("/inscription", lireCheminSuivant()));
+  }, []);
 
   const soumettre = async (evenement: FormEvent<HTMLFormElement>) => {
     evenement.preventDefault();
@@ -141,7 +147,7 @@ export default function PageConnexion() {
 
         <p className="mt-6 text-center text-sm text-header/60">
           Pas encore de compte ?{" "}
-          <Link href="/inscription" className="font-semibold text-primary hover:underline">
+          <Link href={lienAutrePage} className="font-semibold text-primary hover:underline">
             Créer un compte
           </Link>
         </p>

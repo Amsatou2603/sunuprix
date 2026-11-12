@@ -5,9 +5,11 @@ import * as prixController from "./prix.controller";
 
 const router = Router();
 
-// Lecture commune (page /donnees) : tout rôle authentifié.
-router.get("/historique", authentifier, prixController.obtenirHistorique);
-router.get("/carte", authentifier, prixController.obtenirCarte);
+// Consultation publique (pages /donnees et /donnees/details) : accessible sans
+// compte. Ces routes ne renvoient que des relevés VALIDÉS, sans aucune donnée
+// personnelle (ni contributeur, ni modérateur).
+router.get("/historique", prixController.obtenirHistorique);
+router.get("/carte", prixController.obtenirCarte);
 
 // Réservé aux contributeurs.
 router.post("/declarations", authentifier, autoriserRoles("CONTRIBUTEUR"), prixController.declarerPrix);

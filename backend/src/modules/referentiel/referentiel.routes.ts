@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { authentifier } from "../../middlewares/auth.middleware";
 import * as referentielController from "./referentiel.controller";
 
 const router = Router();
 
-// Accessibles à tout utilisateur authentifié, quel que soit son rôle : ce
-// sont des données de référence, pas des données sensibles.
-router.get("/regions", authentifier, referentielController.listerRegions);
-router.get("/produits", authentifier, referentielController.listerProduits);
+// Publiques : ce sont des données de référence (liste des régions et des
+// produits suivis), nécessaires à la consultation des prix sans compte.
+router.get("/regions", referentielController.listerRegions);
+router.get("/produits", referentielController.listerProduits);
 
 export default router;

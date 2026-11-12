@@ -34,8 +34,12 @@ export function GestionAlertes() {
         setAlertes(listeAlertes);
         setProduits(listeProduits);
         setRegions(listeRegions);
-        setProduitId(listeProduits[0]?.id ?? "");
-        setRegionId(listeRegions[0]?.id ?? "");
+        // Pré-sélection depuis la page Détails (« Créer une alerte pour ce produit »).
+        const parametres = new URLSearchParams(window.location.search);
+        const produitDemande = listeProduits.find((p) => p.id === parametres.get("produit"));
+        const regionDemandee = listeRegions.find((r) => r.id === parametres.get("region"));
+        setProduitId(produitDemande?.id ?? listeProduits[0]?.id ?? "");
+        setRegionId(regionDemandee?.id ?? listeRegions[0]?.id ?? "");
       })
       .catch((e) => setErreur(e instanceof ErreurApi ? e.message : "Impossible de charger vos alertes."))
       .finally(() => setChargement(false));

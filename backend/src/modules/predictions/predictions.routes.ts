@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { authentifier } from "../../middlewares/auth.middleware";
 import * as predictionsController from "./predictions.controller";
 
 const router = Router();
 
-// Commun à tout rôle authentifié (utilisé par la page /donnees).
-router.get("/:productId/:regionId", authentifier, predictionsController.obtenirPrediction);
+// Consultation publique (pages /donnees et /donnees/details) : la prédiction
+// est calculée uniquement à partir des relevés validés, sans donnée personnelle.
+router.get("/:productId/:regionId", predictionsController.obtenirPrediction);
 
 export default router;

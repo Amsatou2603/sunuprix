@@ -69,12 +69,8 @@ export default function PageAccueil() {
     statsApi.publiques().then(setStats).catch(() => undefined);
   }, []);
 
+  // Aperçu réel (carte, historique, prédiction) : public, visible même sans compte.
   useEffect(() => {
-    if (!utilisateur) {
-      setChargementApercu(false);
-      return;
-    }
-
     Promise.all([referentielApi.produits(), referentielApi.regions()])
       .then(async ([listeProduits, listeRegions]) => {
         setProduits(listeProduits);
@@ -94,7 +90,7 @@ export default function PageAccueil() {
       })
       .catch(() => undefined)
       .finally(() => setChargementApercu(false));
-  }, [utilisateur]);
+  }, []);
 
   const produitCourant = produits[0];
   const regionCourante = regions[0];
@@ -129,11 +125,11 @@ export default function PageAccueil() {
             <div className="flex flex-wrap gap-4 pt-2">
               {!chargementInitial && !utilisateur && (
                 <>
-                  <Link href="/inscription" className="bouton-primaire px-6 py-3.5 text-sm">
-                    Commencer gratuitement
+                  <Link href="/donnees" className="bouton-primaire px-6 py-3.5 text-sm">
+                    Consulter les prix
                   </Link>
-                  <Link href="/a-propos" className="bouton-verre-clair">
-                    En savoir plus
+                  <Link href="/inscription" className="bouton-verre-clair">
+                    Créer un compte
                   </Link>
                 </>
               )}
@@ -159,7 +155,7 @@ export default function PageAccueil() {
           >
             <div className="animate-flotter">
               <CarteApercuAccueil
-                connecte={!!utilisateur}
+                donneesVisibles
                 chargement={chargementApercu}
                 snapshots={carte}
                 produitNom={produitCourant?.nom}
@@ -243,7 +239,7 @@ export default function PageAccueil() {
         <div className="carte">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-bold text-header">
-              {utilisateur && produitCourant && regionCourante
+              {produitCourant && regionCourante
                 ? `Évolution — ${produitCourant.nom} à ${regionCourante.nom}`
                 : "Évolution des prix"}
             </h3>
@@ -251,24 +247,10 @@ export default function PageAccueil() {
               Explorer les données
             </Link>
           </div>
-          {utilisateur ? (
-            chargementApercu ? (
-              <div className="flex h-72 items-center justify-center text-sm text-header/40">Chargement…</div>
-            ) : (
-              <GraphiquePrix historique={historique} prediction={prediction} unite={produitCourant?.unite ?? ""} />
-            )
+          {chargementApercu ? (
+            <div className="flex h-72 items-center justify-center text-sm text-header/40">Chargement…</div>
           ) : (
-            <div className="flex h-72 flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-header/15 text-center">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-header/5 text-header/40">
-                <TrendingUp className="h-5 w-5" strokeWidth={1.75} />
-              </span>
-              <p className="max-w-xs text-xs text-header/50">
-                Connectez-vous pour voir l&apos;historique réel et la prédiction du mois suivant.
-              </p>
-              <Link href="/connexion" className="bouton-secondaire text-xs">
-                Se connecter
-              </Link>
-            </div>
+            <GraphiquePrix historique={historique} prediction={prediction} unite={produitCourant?.unite ?? ""} />
           )}
         </div>
 

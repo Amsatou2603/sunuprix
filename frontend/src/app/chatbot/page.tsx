@@ -266,7 +266,10 @@ function ContenuPageChatbot() {
 
 export default function PageChatbot() {
   return (
-    <RouteProtegee rolesAutorises={["ADMIN", "ANALYSTE", "CONTRIBUTEUR", "CONSOMMATEUR"]}>
+    <RouteProtegee
+      rolesAutorises={["ADMIN", "ANALYSTE", "CONTRIBUTEUR", "CONSOMMATEUR"]}
+      messageVisiteur="SunuBot est réservé aux utilisateurs inscrits : vos conversations sont enregistrées dans votre compte."
+    >
       <ContenuPageChatbot />
     </RouteProtegee>
   );

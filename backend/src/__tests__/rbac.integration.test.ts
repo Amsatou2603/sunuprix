@@ -112,13 +112,43 @@ describe("Contrôle d'accès par rôle (RBAC) — de bout en bout via la vraie a
   );
 
 
-  it("une route de référentiel commune reste accessible à tout rôle authentifié, mais pas sans token", async () => {
+  // Consultation sans compte : un visiteur peut voir les prix et les prédictions.
+  const ROUTES_CONSULTATION_PUBLIQUE = [
+    "/api/regions",
+    "/api/produits",
+    "/api/prix/carte?produitId=p-test",
+    "/api/prix/historique?produitId=p-test&regionId=r-test",
+    "/api/predictions/p-test/r-test",
+  ];
+
+  it.each(ROUTES_CONSULTATION_PUBLIQUE)("laisse un visiteur sans compte consulter %s", async (chemin) => {
+    const reponse = await request(app).get(chemin);
+    expect(reponse.status).not.toBe(401);
+    expect(reponse.status).not.toBe(403);
+  });
+
+  it("le référentiel reste accessible à tout rôle authentifié", async () => {
     for (const role of TOUS_LES_ROLES) {
       const reponse = await request(app).get("/api/regions").set("Authorization", `Bearer ${tokenPour(role)}`);
       expect(reponse.status).toBe(200);
     }
-
     const sansToken = await request(app).get("/api/regions");
-    expect(sansToken.status).toBe(401);
+    expect(sansToken.status).toBe(200);
+  });
+
+  // Un compte reste nécessaire dès qu'il s'agit de données personnelles ou d'une action.
+  const ROUTES_COMPTE_REQUIS: Array<{ methode: "get" | "post"; chemin: string }> = [
+    { methode: "get", chemin: "/api/alertes" },
+    { methode: "post", chemin: "/api/alertes" },
+    { methode: "get", chemin: "/api/notifications" },
+    { methode: "post", chemin: "/api/chatbot" },
+    { methode: "get", chemin: "/api/auth/moi" },
+    { methode: "post", chemin: "/api/prix/declarations" },
+    { methode: "post", chemin: "/api/analyse/diagnostic" },
+  ];
+
+  it.each(ROUTES_COMPTE_REQUIS)("exige un compte pour $methode $chemin (401 sans token)", async ({ methode, chemin }) => {
+    const reponse = await request(app)[methode](chemin);
+    expect(reponse.status).toBe(401);
   });
 });

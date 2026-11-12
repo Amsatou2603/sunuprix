@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Wand2, AlertTriangle, Lightbulb, Bell } from "lucide-react";
-import { RouteProtegee } from "@/components/auth/RouteProtegee";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { CarteRegions } from "@/components/donnees/CarteRegions";
 import { CartesSynthese } from "@/components/donnees/CartesSynthese";
@@ -14,6 +13,7 @@ import { referentielApi } from "@/lib/api/referentiel";
 import { prixApi } from "@/lib/api/prix";
 import { predictionsApi } from "@/lib/api/predictions";
 import { alertesApi } from "@/lib/api/alertes";
+import { lienAvecSuivant } from "@/lib/navigation/suivant";
 import type {
   Alerte,
   PointHistoriquePrix,
@@ -24,7 +24,7 @@ import type {
 } from "@/lib/api/types";
 
 function ContenuPageDonnees() {
-  const { utilisateur } = useAuth();
+  const { utilisateur, chargementInitial } = useAuth();
   const [produits, setProduits] = useState<Produit[]>([]);
   const [regions, setRegions] = useState<Region[]>([]);
   const [produitId, setProduitId] = useState<string>("");
@@ -48,12 +48,20 @@ function ContenuPageDonnees() {
       })
       .catch(() => undefined)
       .finally(() => setChargementReferentiel(false));
+  }, []);
 
+  // Les alertes sont personnelles : chargées seulement pour un utilisateur connecté.
+  // Les prix, la carte et la prédiction restent consultables sans compte.
+  useEffect(() => {
+    if (!utilisateur) {
+      setAlertes([]);
+      return;
+    }
     alertesApi
       .lister()
       .then(setAlertes)
       .catch(() => undefined);
-  }, []);
+  }, [utilisateur]);
 
   useEffect(() => {
     if (!produitId) return;
@@ -107,6 +115,15 @@ function ContenuPageDonnees() {
           <p className="mt-1 text-sm font-medium text-gray-500">
             Voici un résumé des tendances du marché ce mois-ci.
           </p>
+          {!chargementInitial && !utilisateur && (
+            <p className="mt-2 text-xs text-gray-500">
+              Consultation libre, sans compte.{" "}
+              <Link href={lienAvecSuivant("/inscription", "/alertes")} className="font-semibold text-[#00B493] hover:underline">
+                Créez un compte
+              </Link>{" "}
+              pour recevoir des alertes de prix.
+            </p>
+          )}
         </div>
 
         {/* 3 Top Highlight Cards — données réelles */}
@@ -136,18 +153,31 @@ function ContenuPageDonnees() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600">
                   <AlertTriangle className="h-5 w-5" strokeWidth={1.75} />
                 </div>
-                <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-600">
-                  {alertesActives.length} active{alertesActives.length > 1 ? "s" : ""}
-                </span>
+                {utilisateur && (
+                  <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-bold text-gray-600">
+                    {alertesActives.length} active{alertesActives.length > 1 ? "s" : ""}
+                  </span>
+                )}
               </div>
               <p className="mt-4 text-xs font-medium text-gray-500">Alertes de prix</p>
-              <p className="mt-1 text-3xl font-extrabold text-gray-900">
-                {alertesActives[0] ? alertesActives[0].produit.nom : "Aucune"}
-              </p>
-              {alertesActives[0] && (
-                <p className="mt-1 text-xs text-gray-400">
-                  Seuil {alertesActives[0].seuilPourcent}% — {alertesActives[0].region.nom}
-                </p>
+              {utilisateur || chargementInitial ? (
+                <>
+                  <p className="mt-1 text-3xl font-extrabold text-gray-900">
+                    {alertesActives[0] ? alertesActives[0].produit.nom : "Aucune"}
+                  </p>
+                  {alertesActives[0] && (
+                    <p className="mt-1 text-xs text-gray-400">
+                      Seuil {alertesActives[0].seuilPourcent}% — {alertesActives[0].region.nom}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <>
+                  <p className="mt-1 text-lg font-extrabold text-gray-900">Être alerté(e)</p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Un compte gratuit suffit pour recevoir une notification dès qu&apos;un prix dépasse votre seuil.
+                  </p>
+                </>
               )}
             </div>
           </div>
@@ -204,7 +234,24 @@ function ContenuPageDonnees() {
               </Link>
             </div>
 
-            {alertes.length === 0 ? (
+            {!utilisateur && !chargementInitial ? (
+              <div className="flex flex-col items-center gap-3 py-6 text-center">
+                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                  <Bell className="h-6 w-6" strokeWidth={1.75} />
+                </span>
+                <p className="max-w-xs text-sm text-gray-600">
+                  Les alertes sont personnelles : connectez-vous pour suivre un produit dans une région.
+                </p>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Link href={lienAvecSuivant("/connexion", "/alertes")} className="bouton-primaire px-4 py-2 text-xs">
+                    Se connecter
+                  </Link>
+                  <Link href={lienAvecSuivant("/inscription", "/alertes")} className="bouton-secondaire px-4 py-2 text-xs">
+                    Créer un compte
+                  </Link>
+                </div>
+              </div>
+            ) : alertes.length === 0 ? (
               <EtatVide
                 icone={<Bell className="h-7 w-7" strokeWidth={1.75} />}
                 titre="Aucune alerte"
@@ -293,10 +340,7 @@ function ContenuPageDonnees() {
   );
 }
 
+// Page publique : consultation des prix, de la carte et des prédictions sans compte.
 export default function PageDonnees() {
-  return (
-    <RouteProtegee>
-      <ContenuPageDonnees />
-    </RouteProtegee>
-  );
+  return <ContenuPageDonnees />;
 }

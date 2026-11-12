@@ -3,8 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { RouteProtegee } from "@/components/auth/RouteProtegee";
+import { ArrowLeft, Bell } from "lucide-react";
 import { CarteRegions } from "@/components/donnees/CarteRegions";
 import { CartesSynthese } from "@/components/donnees/CartesSynthese";
 import { GraphiquePrix } from "@/components/donnees/GraphiquePrix";
@@ -23,8 +22,8 @@ import type { PointHistoriquePrix, PredictionPublique, Produit, Region, Snapshot
  * rôle Analyste : un Consommateur ou un Contributeur cliquant dessus était
  * silencieusement renvoyé à l'accueil par la garde de rôle, sans aucune
  * explication (bug remonté par le formateur référent). Cette page est, comme
- * /donnees elle-même, accessible à tout rôle authentifié (pas de
- * `rolesAutorises` sur `RouteProtegee`) : elle n'est pas l'outil d'analyse
+ * /donnees elle-même, publique : consultable sans compte (seule la création
+ * d'une alerte en demande un) ; elle n'est pas l'outil d'analyse
  * comparative réservé à l'Analyste, mais le détail — filtres clairs,
  * historique complet et prédiction interprétée en phrases, pas seulement en
  * chiffre — du couple produit/région déjà affiché en synthèse sur /donnees.
@@ -102,6 +101,14 @@ function ContenuDetailsDonnees() {
           <p className="mt-1 text-sm font-medium text-gray-500">
             Historique complet, comparaison régionale et prédiction interprétée pour ce produit.
           </p>
+          {produitId && regionId && (
+            <Link
+              href={`/alertes?produit=${produitId}&region=${regionId}`}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
+            >
+              <Bell className="h-3.5 w-3.5" strokeWidth={2} /> Créer une alerte pour ce produit
+            </Link>
+          )}
         </div>
 
         {erreur && <MessageErreur message={erreur} />}
@@ -182,8 +189,7 @@ function ContenuDetailsDonnees() {
 
 export default function PageDetailsDonnees() {
   return (
-    <RouteProtegee>
-      <Suspense
+    <Suspense
         fallback={
           <div className="flex min-h-[40vh] items-center justify-center">
             <Chargement libelle="Chargement…" />
@@ -192,6 +198,5 @@ export default function PageDetailsDonnees() {
       >
         <ContenuDetailsDonnees />
       </Suspense>
-    </RouteProtegee>
   );
 }

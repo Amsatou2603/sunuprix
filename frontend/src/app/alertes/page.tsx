@@ -24,7 +24,7 @@ function ContenuPageAlertes() {
 
 export default function PageAlertes() {
   return (
-    <RouteProtegee>
+    <RouteProtegee messageVisiteur="Créez un compte gratuit (ou connectez-vous) pour être notifié(e) dès qu'un prix dépasse le seuil que vous choisissez.">
       <ContenuPageAlertes />
     </RouteProtegee>
   );

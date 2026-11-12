@@ -26,7 +26,7 @@ function classeTexteVariation(variation: number | null): string {
 }
 
 interface ProprietesCarteApercuAccueil {
-  connecte: boolean;
+  donneesVisibles: boolean;
   chargement: boolean;
   snapshots: SnapshotRegion[];
   produitNom?: string;
@@ -35,16 +35,16 @@ interface ProprietesCarteApercuAccueil {
 /**
  * Aperçu du contour du Sénégal, avec les 5 régions suivies par SunuPrix en
  * points lumineux glassmorphism, positionnées proportionnellement à leur
- * emplacement réel sur le territoire. Données réelles pour un visiteur
- * connecté ; sinon, incitation à se connecter plutôt que des valeurs
- * inventées.
+ * emplacement réel sur le territoire. Les prix réels sont publics : ils
+ * s'affichent pour tout visiteur, connecté ou non. Si `donneesVisibles` est
+ * faux, un voile remplace les valeurs (jamais de chiffres inventés).
  */
-export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom }: ProprietesCarteApercuAccueil) {
+export function CarteApercuAccueil({ donneesVisibles, chargement, snapshots, produitNom }: ProprietesCarteApercuAccueil) {
   return (
     <div className="verre-sombre relative mx-auto flex w-[min(26rem,90vw)] flex-col overflow-hidden p-4 sm:p-6">
       <div className="mb-2 flex items-center justify-between">
         <p className="text-[11px] font-bold uppercase tracking-wider text-white/60">Carte en direct</p>
-        {connecte && (
+        {donneesVisibles && (
           <span className="flex items-center gap-1.5 text-[10px] font-semibold text-primary-light">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-light" />
             {produitNom ?? "…"}
@@ -68,9 +68,9 @@ export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom
             strokeLinejoin="round"
           />
           {POSITIONS.map((position) => {
-            const snapshot = connecte ? snapshots.find((s) => s.region === position.nom) : undefined;
-            const couleur = connecte ? couleurVariation(snapshot?.variationMensuellePourcent ?? null) : "rgba(255,255,255,0.25)";
-            const animer = connecte && !!snapshot;
+            const snapshot = donneesVisibles ? snapshots.find((s) => s.region === position.nom) : undefined;
+            const couleur = donneesVisibles ? couleurVariation(snapshot?.variationMensuellePourcent ?? null) : "rgba(255,255,255,0.25)";
+            const animer = donneesVisibles && !!snapshot;
 
             return (
               <g key={position.nom}>
@@ -91,7 +91,7 @@ export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom
 
         {/* Étiquettes + info-bulles HTML, alignées sur les mêmes coordonnées proportionnelles que le SVG. */}
         {POSITIONS.map((position) => {
-          const snapshot = connecte ? snapshots.find((s) => s.region === position.nom) : undefined;
+          const snapshot = donneesVisibles ? snapshots.find((s) => s.region === position.nom) : undefined;
           const texte = classeTexteVariation(snapshot?.variationMensuellePourcent ?? null);
 
           return (
@@ -104,7 +104,7 @@ export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom
                 {position.nom}
               </span>
 
-              {connecte && snapshot && (
+              {donneesVisibles && snapshot && (
                 <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-max -translate-x-1/2 rounded-xl border border-white/10 bg-primary-dark/95 px-3 py-1.5 text-center opacity-0 shadow-lg backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100">
                   <p className="text-[11px] font-bold text-white">
                     {snapshot.prixActuelFcfa != null ? `${snapshot.prixActuelFcfa.toLocaleString("fr-FR")} FCFA` : "—"}
@@ -122,7 +122,7 @@ export function CarteApercuAccueil({ connecte, chargement, snapshots, produitNom
         })}
       </div>
 
-      {!connecte && !chargement && (
+      {!donneesVisibles && !chargement && (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-3xl bg-primary-dark/80 p-6 text-center backdrop-blur-sm">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white">
             <Lock className="h-5 w-5" strokeWidth={1.75} />
